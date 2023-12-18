@@ -1,7 +1,6 @@
 package com.xlr8code.server.common.utils;
 
-import com.xlr8code.server.common.exception.ApplicationException;
-import com.xlr8code.server.common.exception.CommonExceptionType;
+import com.xlr8code.server.user.exception.ThemeNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +21,7 @@ public enum Theme {
                 return theme;
             }
         }
-        throw new ApplicationException(CommonExceptionType.THEME_NOT_FOUND, themeCode);
+        throw new ThemeNotFoundException(themeCode);
     }
 
 }

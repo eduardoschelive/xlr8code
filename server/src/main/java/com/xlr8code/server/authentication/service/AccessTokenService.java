@@ -5,8 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
-import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.authentication.exception.ApplicationJWTCreationException;
+import com.xlr8code.server.common.utils.TimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class AccessTokenService {
     private long expirationTime;
 
     @Value("${jwt.access-token.unit}")
-    private String unit;
+    private ChronoUnit chronoUnit;
 
     public String generate(User user) {
         try {
@@ -37,11 +37,11 @@ public class AccessTokenService {
                     .withClaim("theme", user.getMetadata().getThemePreference().getCode())
                     .withClaim("profilePictureUrl", user.getMetadata().getProfilePictureUrl())
                     .withClaim("roles", user.getNamedRoles().stream().toList())
-                    .withExpiresAt(this.getExpiresAt())
+                    .withExpiresAt(TimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
                     .withIssuedAt(this.getIssuedAt())
                     .sign(this.getAlgorithm());
         } catch (JWTCreationException e) {
-            throw new ApplicationException(AuthenticationExceptionType.JWT_CREATION_ERROR);
+            throw new ApplicationJWTCreationException();
         }
     }
 
@@ -57,17 +57,8 @@ public class AccessTokenService {
         return Algorithm.HMAC256(this.getSecretKey());
     }
 
-    private Instant getExpiresAt() {
-        return Instant.now().plus(this.getExpirationTime(), this.getChronoUnit());
-    }
-
     private Instant getIssuedAt() {
         return Instant.now();
-    }
-
-    private ChronoUnit getChronoUnit() {
-        var unitName = this.getUnit().toUpperCase();
-        return ChronoUnit.valueOf(unitName);
     }
 
 }

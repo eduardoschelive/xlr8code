@@ -11,12 +11,7 @@ public class UUIDTokenValidator implements ConstraintValidator<UUIDToken, String
 
     @Override
     public boolean isValid(@Nullable String value, ConstraintValidatorContext context) {
-
-        if (value == null) {
-            return false;
-        }
-
-        return value.matches(UUID_REGEX);
+        return value != null && value.matches(UUID_REGEX);
     }
 
 }

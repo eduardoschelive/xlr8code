@@ -1,5 +1,7 @@
 package com.xlr8code.server.common.exception;
 
+import com.xlr8code.server.common.dto.ApplicationExceptionResponseDTO;
+import com.xlr8code.server.common.dto.InvalidRequestContentResponseDTO;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.StringUtils;
 import jakarta.annotation.Nonnull;
@@ -28,24 +30,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final HttpServletRequest httpServletRequest;
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ApplicationExceptionResponse> handleApplicationError(ApplicationException applicationError) {
-        var errorCode = applicationError.getExceptionType();
-        var replacements = applicationError.getPlaceholders();
+    public ResponseEntity<ApplicationExceptionResponseDTO> handleApplicationError(ApplicationException applicationError) {
+        var httpStatus = applicationError.getHttpStatus();
+        var placeholders = applicationError.getPlaceholders();
+        var messageIdentifier = applicationError.getMessageIdentifier();
+        var errorMessage = applicationError.getMessage();
 
-        var message = localeService.getMessage(errorCode.getMessageIdentifier(), httpServletRequest);
+        var message = localeService.getMessage(messageIdentifier, httpServletRequest);
 
-        if (replacements != null) {
-            for (int i = 0; i < replacements.length; i++) {
-                message = message.replace("{" + i + "}", String.valueOf(replacements[i]));
+        if (placeholders != null) {
+            for (int i = 0; i < placeholders.length; i++) {
+                message = message.replace("{" + i + "}", String.valueOf(placeholders[i]));
             }
         }
 
-        var applicationErrorResponse = new ApplicationExceptionResponse(
+        var applicationErrorResponse = new ApplicationExceptionResponseDTO(
+                httpStatus.value(),
+                errorMessage,
                 message,
                 new Date()
         );
 
-        return ResponseEntity.status(errorCode.getHttpStatus()).body(applicationErrorResponse);
+        return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
     }
 
     @Override
@@ -60,7 +66,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         (existing, replacement) -> existing
                 ));
 
-        return ResponseEntity.status(status).headers(headers).body(new InvalidRequestContentResponse(
+        return ResponseEntity.status(status).headers(headers).body(new InvalidRequestContentResponseDTO(
+                status.value(),
+                "INVALID_REQUEST_CONTENT",
                 localeService.getMessage("validation.error.invalid_request_content", httpServletRequest),
                 new Date(),
                 fieldErrors

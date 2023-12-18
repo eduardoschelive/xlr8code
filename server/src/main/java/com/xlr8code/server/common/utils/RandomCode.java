@@ -1,13 +1,10 @@
 package com.xlr8code.server.common.utils;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.security.SecureRandom;
 
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RandomCode {
 
     private String allowedCharacters;

@@ -32,7 +32,7 @@ public class AuthenticationController {
         var user = this.authenticationService.signUp(signUpBodyDTO);
 
         var token = this.accessTokenService.generate(user);
-        var userSession = this.refreshTokenService.generate(user);
+        var userSession = this.refreshTokenService.create(user);
 
         var response = new SignUpResponseDTO(token, userSession.getRefreshToken());
 
@@ -44,7 +44,7 @@ public class AuthenticationController {
         var user = this.authenticationService.signIn(signInRequestDTO);
 
         var token = this.accessTokenService.generate(user);
-        var userSession = this.refreshTokenService.generate(user);
+        var userSession = this.refreshTokenService.create(user);
 
         var response = new SignInResponseDTO(token, userSession.getRefreshToken());
 
@@ -55,7 +55,7 @@ public class AuthenticationController {
     public ResponseEntity<RefreshTokenResponseDTO> refreshToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
         var oldRefreshToken = refreshTokenRequestDTO.refreshTokenAsUUID();
 
-        var userSession = this.refreshTokenService.validate(oldRefreshToken);
+        var userSession = this.refreshTokenService.validateSessionToken(oldRefreshToken);
 
         var newRefreshToken = this.refreshTokenService.refresh(userSession);
         var newAccessToken = this.accessTokenService.generate(userSession.getUser());
@@ -68,7 +68,7 @@ public class AuthenticationController {
     @PostMapping(Endpoint.Authentication.SIGN_OUT)
     public ResponseEntity<Void> revokeToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
         var token = refreshTokenRequestDTO.refreshTokenAsUUID();
-        this.refreshTokenService.revoke(token);
+        this.refreshTokenService.delete(token);
         return ResponseEntity.noContent().build();
     }
 
