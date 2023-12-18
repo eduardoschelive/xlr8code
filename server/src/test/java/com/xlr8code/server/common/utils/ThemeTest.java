@@ -2,6 +2,9 @@ package com.xlr8code.server.common.utils;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.common.exception.CommonExceptionType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,6 +15,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ThemeTest {
 
     static Stream<Arguments> inputAndExpectedOutputProvider() {
@@ -23,7 +27,7 @@ class ThemeTest {
     }
 
     @Test
-    void itShouldBePresentOnInputAndExpectedOutputProvider() {
+    void it_should_be_present_on_input_and_expected_output_provider() {
         var themes = Theme.values();
 
         var isPresent = Stream.of(themes)
@@ -35,14 +39,14 @@ class ThemeTest {
 
     @ParameterizedTest
     @MethodSource("inputAndExpectedOutputProvider")
-    void itShouldReturnThemeFromCode(String themeCode, Theme expectedTheme) {
+    void it_should_return_theme_from_code(String themeCode, Theme expectedTheme) {
         var actualTheme = Theme.fromCode(themeCode);
 
         assertThat(actualTheme).isEqualTo(expectedTheme);
     }
 
     @Test
-    void itShouldThrowApplicationExceptionWhenThemeCodeIsInvalid() {
+    void it_should_thrown_application_error_when_invalid_code() {
         var invalidThemeCode = "invalid";
 
         assertThatThrownBy(() -> Theme.fromCode(invalidThemeCode))

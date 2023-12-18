@@ -13,7 +13,7 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public void createDefaultRoles() {
+    public void createRoles() {
         var roles = Arrays.stream(UserRole.values()).map(UserRole::toRole).toList();
         this.roleRepository.saveAll(roles);
     }
