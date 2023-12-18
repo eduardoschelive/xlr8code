@@ -1,15 +1,14 @@
 package com.xlr8code.server.authentication.filter;
 
-import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
 import com.xlr8code.server.authentication.service.CustomUserDetailsService;
 import com.xlr8code.server.authentication.service.TokenService;
-import com.xlr8code.server.common.exception.ApplicationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,22 +31,25 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         var token = recoverToken(request);
-        var validatedToken = tokenService.validateAccessToken(token);
+        var validatedToken = tokenService.decodeToken(token);
 
-        var username = validatedToken.getSubject();
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        if (validatedToken != null) {
+            var username = validatedToken.getSubject();
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-        var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
         filterChain.doFilter(request, response);
     }
 
+    @Nullable
     private String recoverToken(HttpServletRequest request) {
         var token = request.getHeader(AUTHORIZATION_HEADER);
 
         if (token == null || !token.startsWith(PREFIX)) {
-            throw new ApplicationException(AuthenticationExceptionType.CANT_RETRIEVE_AUTHORIZATION_HEADER);
+            return null;
         }
 
         return this.removePrefix(token);

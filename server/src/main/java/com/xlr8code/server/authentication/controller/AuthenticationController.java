@@ -1,9 +1,6 @@
 package com.xlr8code.server.authentication.controller;
 
-import com.xlr8code.server.authentication.dto.SignInRequestDTO;
-import com.xlr8code.server.authentication.dto.SignInResponseDTO;
-import com.xlr8code.server.authentication.dto.SignUpRequestDTO;
-import com.xlr8code.server.authentication.dto.SignUpResponseDTO;
+import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.Endpoint;
 import jakarta.validation.Valid;
@@ -25,27 +22,28 @@ public class AuthenticationController {
     public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO signUpBodyDTO) {
         var user = this.authenticationService.signUp(signUpBodyDTO);
 
-        var response = new SignUpResponseDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.isActive(),
-                user.getNamedRoles(),
-                user.getMetadata().getLanguagePreference().getCode(),
-                user.getMetadata().getThemePreference().getCode(),
-                user.getMetadata().getProfilePictureUrl()
-        );
+        var token = this.authenticationService.generateAccessToken(user);
+        var refreshToken = this.authenticationService.generateRefreshToken(user);
+
+        var response = new SignUpResponseDTO(token, refreshToken);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_IN)
     public ResponseEntity<SignInResponseDTO> signIn(@RequestBody @Valid SignInRequestDTO signInRequestDTO) {
-        var token = this.authenticationService.signIn(signInRequestDTO);
-        var response = new SignInResponseDTO(token);
+        var user = this.authenticationService.signIn(signInRequestDTO);
 
-        return ResponseEntity.ok(response);
+        var token = this.authenticationService.generateAccessToken(user);
+        var refreshToken = this.authenticationService.generateRefreshToken(user);
+
+        return ResponseEntity.ok(new SignInResponseDTO(token, refreshToken));
     }
 
+    @PostMapping(Endpoint.Authentication.REFRESH_TOKEN)
+    public ResponseEntity<SignInResponseDTO> refreshToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        var token = refreshTokenRequestDTO.refreshToken();
+        return ResponseEntity.ok(this.authenticationService.refreshToken(token));
+    }
 
 }
