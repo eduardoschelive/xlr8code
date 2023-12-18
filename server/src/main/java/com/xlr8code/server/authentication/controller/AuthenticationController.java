@@ -2,6 +2,7 @@ package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.SignUpBodyDTO;
 import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,9 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping(Endpoint.SIGN_UP)
-    public ResponseEntity signUp(@RequestBody @Valid SignUpBodyDTO signUpBodyDTO) {
-        this.userService.create(signUpBodyDTO.username(), signUpBodyDTO.email(), signUpBodyDTO.password());
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<User> signUp(@RequestBody @Valid SignUpBodyDTO signUpBodyDTO) {
+        var user = this.userService.create(signUpBodyDTO.username(), signUpBodyDTO.email(), signUpBodyDTO.password());
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping(Endpoint.SIGN_IN)
