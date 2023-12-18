@@ -11,6 +11,3 @@ spring:
     username: two-forty
     password: forty-two
     driverClassName: org.postgresql.Driver
-
-  flyway:
-    locations: classpath:db/migration

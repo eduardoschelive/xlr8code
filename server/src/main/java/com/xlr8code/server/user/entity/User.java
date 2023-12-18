@@ -61,6 +61,7 @@ public class User extends Auditable {
         );
     }
 
+    // TODO: 2021-10-10: Add activation token
     public void activate() {
         this.active = true;
         this.activatedAt = new Date();
