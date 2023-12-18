@@ -1,7 +1,7 @@
-package com.xlr8code.server.user.utils;
+package com.xlr8code.server.common.utils;
 
 import com.xlr8code.server.common.exception.ApplicationException;
-import com.xlr8code.server.user.exception.UserExceptionType;
+import com.xlr8code.server.common.exception.CommonExceptionType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum Language {
 
-    ENGLISH("en-US"),
+    ENGLISH("en_US"),
     BRAZILIAN_PORTUGUESE("pt_BR");
 
     private static final Language DEFAULT = ENGLISH;
@@ -21,7 +21,7 @@ public enum Language {
                 return language;
             }
         }
-        throw new ApplicationException(UserExceptionType.LANGUAGE_NOT_FOUND, languageCode);
+        throw new ApplicationException(CommonExceptionType.LANGUAGE_NOT_FOUND, languageCode);
     }
 
 }

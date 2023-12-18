@@ -1,7 +1,7 @@
 package com.xlr8code.server.common.exception;
 
 import com.xlr8code.server.common.service.LocaleService;
-import com.xlr8code.server.user.utils.StringUtils;
+import com.xlr8code.server.common.utils.StringUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApplicationExceptionResponse> handleApplicationError(ApplicationException applicationError) {
-        var errorCode = applicationError.getErrorCode();
+        var errorCode = applicationError.getExceptionType();
         var replacements = applicationError.getPlaceholders();
 
         var message = localeService.getMessage(errorCode.getMessageIdentifier(), httpServletRequest);
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String getMessageForError(FieldError error) {
-        String constraintName = StringUtils.splitFromPascalCase(Objects.requireNonNull(error.getCode()));
+        String constraintName = StringUtils.splitPascalCase(Objects.requireNonNull(error.getCode()));
         String messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
         return localeService.getMessage(messageKey, httpServletRequest);
     }

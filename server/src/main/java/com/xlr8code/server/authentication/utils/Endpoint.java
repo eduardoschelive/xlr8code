@@ -12,6 +12,7 @@ public class Endpoint {
         public static final String BASE_PATH = API_PREFIX + "/authentication";
         public static final String SIGN_IN = "/sign-in";
         public static final String SIGN_UP = "/sign-up";
+        public static final String REFRESH_TOKEN = "/refresh-token";
     }
 
 }

@@ -1,7 +1,7 @@
 package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.user.utils.Language;
-import com.xlr8code.server.user.utils.Theme;
+import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.utils.Theme;
 import jakarta.persistence.*;
 import lombok.*;
 
