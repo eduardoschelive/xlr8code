@@ -3,11 +3,11 @@ package com.xlr8code.server.common.exception;
 import lombok.Getter;
 
 @Getter
-public class ApplicationError extends RuntimeException {
+public class ApplicationException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final ExceptionType errorCode;
 
-    public ApplicationError(ErrorCode errorCode) {
+    public ApplicationException(ExceptionType errorCode) {
         super(errorCode.name());
         this.errorCode = errorCode;
     }

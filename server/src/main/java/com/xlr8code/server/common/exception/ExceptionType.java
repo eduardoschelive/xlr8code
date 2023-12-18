@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 
-public interface ErrorCode extends Serializable {
+public interface ExceptionType extends Serializable {
 
     String SEPARATOR = ".errors.";
 
