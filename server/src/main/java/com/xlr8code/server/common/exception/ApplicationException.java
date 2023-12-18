@@ -4,12 +4,6 @@ import jakarta.annotation.Nullable;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-/**
- * <p>
- * Base class for all application exceptions.
- * </p>
- * @implNote The {@link #getMessageIdentifier()} method must return a message defined in the messages.properties file based on all available languages.
- */
 public abstract class ApplicationException extends RuntimeException {
 
     private final Object[] placeholders;
