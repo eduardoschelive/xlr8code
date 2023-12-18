@@ -4,6 +4,5 @@ import java.util.UUID;
 
 public record SignUpResponseDTO(
         String token,
-        UUID refreshToken
-) {
+        UUID refreshToken) {
 }

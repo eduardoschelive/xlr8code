@@ -1,5 +1,6 @@
 package com.xlr8code.server.authentication.controller;
 
+import com.xlr8code.server.authentication.dto.activation.ResendCodeRequestDTO;
 import com.xlr8code.server.authentication.dto.refresh.RefreshTokenRequestDTO;
 import com.xlr8code.server.authentication.dto.refresh.RefreshTokenResponseDTO;
 import com.xlr8code.server.authentication.dto.revoke.RevokeTokenRequestDTO;
@@ -14,10 +15,7 @@ import com.xlr8code.server.authentication.utils.Endpoint;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
@@ -56,10 +54,10 @@ public class AuthenticationController {
     public ResponseEntity<RefreshTokenResponseDTO> refreshToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
         var oldRefreshToken = refreshTokenRequestDTO.refreshTokenAsUUID();
 
-        var refreshToken = this.refreshTokenService.validate(oldRefreshToken);
+        var userSession = this.refreshTokenService.validate(oldRefreshToken);
 
-        var newRefreshToken = this.refreshTokenService.refresh(refreshToken.getRefreshToken());
-        var newAccessToken = this.accessTokenService.generate(refreshToken.getUser());
+        var newRefreshToken = this.refreshTokenService.refresh(userSession);
+        var newAccessToken = this.accessTokenService.generate(userSession.getUser());
 
         var response = new RefreshTokenResponseDTO(newAccessToken, newRefreshToken);
 
@@ -67,10 +65,22 @@ public class AuthenticationController {
     }
 
     @PostMapping(Endpoint.Authentication.REVOKE_TOKEN)
-    public ResponseEntity<Void> revokeToken(@RequestBody @Valid RevokeTokenRequestDTO refreshTokenRequestDTO) {
+    public ResponseEntity<Void> revokeToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
         var token = refreshTokenRequestDTO.refreshTokenAsUUID();
         this.refreshTokenService.revoke(token);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(Endpoint.Authentication.ACTIVATE_USER)
+    public ResponseEntity<Void> activateUser(@RequestParam String code) {
+        this.authenticationService.activateUser(code);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(Endpoint.Authentication.RESEND_ACTIVATION_CODE)
+    public ResponseEntity<Void> resendActivationCode(@RequestBody @Valid ResendCodeRequestDTO resendCodeRequestDTO) {
+        this.authenticationService.resendActivationCode(resendCodeRequestDTO.login());
+        return ResponseEntity.noContent().build();
     }
 
 }

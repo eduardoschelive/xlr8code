@@ -38,4 +38,10 @@ public class UserService {
         return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login);
     }
 
+    @Transactional
+    public void activate(User user) {
+        user.activate();
+        this.userRepository.save(user);
+    }
+
 }

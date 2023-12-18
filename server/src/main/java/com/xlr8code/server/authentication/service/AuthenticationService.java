@@ -4,6 +4,7 @@ import com.xlr8code.server.authentication.dto.signin.SignInRequestDTO;
 import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
 import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
 import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.entity.User;
@@ -25,6 +26,8 @@ public class AuthenticationService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserActivationCodeService userActivationCodeService;
+    private final EmailService emailService;
 
     private User authenticate(AbstractAuthenticationToken authenticationToken) {
         try {
@@ -58,7 +61,13 @@ public class AuthenticationService {
                 .roles(roles)
                 .build();
 
-        return this.userService.createUserWithMetadata(user, userMetadata);
+        var newUser = this.userService.createUserWithMetadata(user, userMetadata);
+
+        var activationCode = this.userActivationCodeService.generate(newUser);
+
+        this.emailService.sendActivationEmail(newUser.getEmail(), activationCode.getCode());
+
+        return newUser;
     }
 
     public User signIn(SignInRequestDTO signInRequestDTO) {
@@ -68,6 +77,32 @@ public class AuthenticationService {
         );
 
         return this.authenticate(usernamePasswordAuthenticationToken);
+    }
+
+    @Transactional
+    public void activateUser(String code) {
+        var activationCode = this.userActivationCodeService.validate(code);
+
+        // TODO: 2021-10-10 change the ApplicationError to be separated classes, so we can catch them separately to resend the activation code if needed (e.g. if the user's code is expired)
+
+        var user = activationCode.getUser();
+        this.userService.activate(user);
+
+        this.userActivationCodeService.removeAllFromUser(user);
+    }
+
+    @Transactional
+    public void resendActivationCode(String login) {
+        var user = this.userService.findByLogin(login)
+                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.USER_NOT_FOUND));
+
+        if (user.isActive()) {
+            throw new ApplicationException(AuthenticationExceptionType.ACCOUNT_ALREADY_ACTIVATED);
+        }
+
+        var activationCode = this.userActivationCodeService.generate(user);
+
+        this.emailService.sendActivationEmail(user.getEmail(), activationCode.getCode());
     }
 
 }
