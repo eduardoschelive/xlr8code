@@ -3,8 +3,10 @@ package com.xlr8code.server.user.entity;
 import com.xlr8code.server.common.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @Setter
-public class User extends Auditable {
+public class User extends Auditable implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -51,18 +53,6 @@ public class User extends Auditable {
     )
     private Set<Role> roles;
 
-    public UserDetails toUserDetails() {
-        return new org.springframework.security.core.userdetails.User(
-                this.username,
-                this.passwordHash,
-                this.active,
-                true,
-                true,
-                true,
-                this.roles.stream().map(Role::toGrantedAuthority).toList()
-        );
-    }
-
     // TODO: 2021-10-10: Add activation token
     public void activate() {
         this.active = true;
@@ -71,6 +61,39 @@ public class User extends Auditable {
 
     public Set<String> getNamedRoles() {
         return this.roles.stream().map(role -> role.getUserRole().getValue()).collect(Collectors.toSet());
+    }
+
+    /*
+    *  Spring security related
+    * */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.getRoles().stream().map(Role::toGrantedAuthority).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.active;
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
 }

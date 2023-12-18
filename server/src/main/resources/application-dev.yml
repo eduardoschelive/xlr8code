@@ -12,6 +12,10 @@ spring:
     password: forty-two
     driverClassName: org.postgresql.Driver
 
+jwt:
+  secret-key: secret
+  expiration-time: 1
+
 logging:
   level:
     org:
