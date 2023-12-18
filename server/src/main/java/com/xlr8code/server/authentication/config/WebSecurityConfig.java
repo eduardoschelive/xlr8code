@@ -45,14 +45,14 @@ public class WebSecurityConfig {
         var endpoints = RoleEndpoints.getRoleEndpoints();
 
         for (var entry : endpoints.entrySet()) {
-            var role = entry.getKey();
+            var roleName = entry.getKey().name();
             var roleEndpoints = entry.getValue();
 
             httpSecurity
                     .authorizeHttpRequests(authorizeRequests -> {
                         authorizeRequests
                                 .requestMatchers(roleEndpoints)
-                                .hasRole(role.name());
+                                .hasRole(roleName);
                         authorizeRequests.anyRequest().permitAll();
                     });
         }

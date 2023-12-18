@@ -6,16 +6,10 @@ import java.io.Serializable;
 
 public interface ExceptionType extends Serializable {
 
-    String SEPARATOR = ".error.";
-
-    String getPrefix();
-
     HttpStatus getHttpStatus();
 
     String name();
 
-    default String getMessageIdentifier() {
-        return this.getPrefix() + SEPARATOR + this.name().toLowerCase();
-    }
+    String getMessageIdentifier();
 
 }
