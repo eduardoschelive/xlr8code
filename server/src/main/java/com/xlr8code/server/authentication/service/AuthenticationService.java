@@ -15,9 +15,14 @@ public class AuthenticationService implements UserDetailsService {
     private final UserService userService;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         var user = this.userService.findByLogin(login);
-        return user.toUserDetails();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user.get().toUserDetails();
     }
 
 }

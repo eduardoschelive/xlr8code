@@ -18,4 +18,8 @@ public enum UserRole {
         return Role.builder().id(this.id).userRole(this).build();
     }
 
+    public static UserRole getDefaultValue() {
+        return MEMBER;
+    }
+
 }

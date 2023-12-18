@@ -1,5 +1,5 @@
 CREATE TABLE users(
-    id UUID PRIMARY KEY NOT NULL,
+    user_id UUID PRIMARY KEY NOT NULL,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash VARCHAR(60) NOT NULL,
@@ -15,11 +15,11 @@ CREATE TABLE user_metadata(
     theme_preference TEXT NOT NULL default 'system',
     profile_picture_url TEXT,
     PRIMARY KEY (user_id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 CREATE TABLE roles(
-    id serial PRIMARY KEY,
+    role_id serial PRIMARY KEY,
     name varchar(32) NOT NULL
 );
 
@@ -27,6 +27,6 @@ CREATE TABLE user_role(
     user_id uuid NOT NULL,
     role_id serial NOT NULL,
     PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (role_id) REFERENCES roles(id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );

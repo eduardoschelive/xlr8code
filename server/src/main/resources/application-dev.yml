@@ -11,3 +11,11 @@ spring:
     username: two-forty
     password: forty-two
     driverClassName: org.postgresql.Driver
+
+logging:
+  level:
+    org:
+      springframework:
+        transaction:
+          interceptor:
+            TRACE

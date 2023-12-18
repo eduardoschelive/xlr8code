@@ -9,4 +9,8 @@ public record SignUpBodyDTO(
         @NotBlank @Email
         String email,
         @NotBlank
-        String password) {}
+        String password,
+        String themePreference,
+        String languagePreference,
+        String profilePictureUrl
+) {}

@@ -16,7 +16,7 @@ import java.util.Set;
 public class Role {
 
     @Id
-    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "SERIAL")
+    @Column(name = "role_id", nullable = false, updatable = false, unique = true, columnDefinition = "SERIAL")
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
