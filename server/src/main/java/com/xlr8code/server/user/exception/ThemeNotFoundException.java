@@ -11,7 +11,7 @@ public class ThemeNotFoundException extends ApplicationException {
 
     @Override
     public String getMessageIdentifier() {
-        return "common.error.theme_not_found";
+        return "user.error.theme_not_found";
     }
 
     @Override

@@ -68,7 +68,6 @@ public class User implements UserDetails {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    // TODO: 2021-10-10: Add activation token
     public void activate() {
         this.active = true;
         this.activatedAt = LocalDateTime.now();

@@ -5,7 +5,7 @@ import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
 import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
-import com.xlr8code.server.authentication.exception.UserNotFoundException;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;

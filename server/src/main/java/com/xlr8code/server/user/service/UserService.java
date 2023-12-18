@@ -38,8 +38,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(User user, String password) {
-        user.setPasswordHash(password);
+    public void updatePassword(User user, String passwordHash) {
+        user.setPasswordHash(passwordHash);
         this.userRepository.save(user);
     }
 

@@ -1,4 +1,4 @@
-package com.xlr8code.server.authentication.exception;
+package com.xlr8code.server.user.exception;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ public class UserNotFoundException extends ApplicationException {
 
     @Override
     public String getMessageIdentifier() {
-        return "authentication.error.user_not_found";
+        return "user.error.user_not_found";
     }
 
     @Override

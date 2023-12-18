@@ -17,4 +17,5 @@ public class CreateRolesListener implements ApplicationListener<ContextRefreshed
     public void onApplicationEvent(@Nullable ContextRefreshedEvent event) {
         this.roleService.createRoles();
     }
+
 }
