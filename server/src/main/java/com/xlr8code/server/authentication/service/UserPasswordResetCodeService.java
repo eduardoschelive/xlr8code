@@ -5,20 +5,16 @@ import com.xlr8code.server.authentication.exception.ExpiredPasswordResetCodeExce
 import com.xlr8code.server.authentication.exception.InvalidPasswordResetCodeException;
 import com.xlr8code.server.authentication.repository.UserPasswordResetCodeRepository;
 import com.xlr8code.server.common.helper.CodeGenerator;
-import com.xlr8code.server.common.utils.TimeUtils;
+import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 @Service
-@Getter
 @RequiredArgsConstructor
 public class UserPasswordResetCodeService {
 
@@ -37,7 +33,7 @@ public class UserPasswordResetCodeService {
         var userPasswordResetCode = UserPasswordResetCode.builder()
                 .code(this.codeGenerator.generatePasswordResetCode())
                 .user(user)
-                .expiresAt(TimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
+                .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();
 
         return this.userPasswordResetCodeRepository.save(userPasswordResetCode);

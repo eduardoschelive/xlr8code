@@ -1,11 +1,11 @@
 package com.xlr8code.server.authentication.entity;
 
+import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -33,7 +33,7 @@ public class UserActivationCode {
     private Date expiresAt;
 
     public boolean isExpired() {
-        return this.expiresAt.before(Date.from(Instant.now()));
+        return DateTimeUtils.isExpired(this.expiresAt);
     }
 
 }

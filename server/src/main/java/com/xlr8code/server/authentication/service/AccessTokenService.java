@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.xlr8code.server.authentication.exception.ApplicationJWTCreationException;
-import com.xlr8code.server.common.utils.TimeUtils;
+import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class AccessTokenService {
                     .withClaim("theme", user.getMetadata().getThemePreference().getCode())
                     .withClaim("profilePictureUrl", user.getMetadata().getProfilePictureUrl())
                     .withClaim("roles", user.getNamedRoles().stream().toList())
-                    .withExpiresAt(TimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
+                    .withExpiresAt(DateTimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
                     .withIssuedAt(this.getIssuedAt())
                     .sign(this.getAlgorithm());
         } catch (JWTCreationException e) {
