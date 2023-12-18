@@ -11,9 +11,9 @@ public record SignUpDTO(
         String email,
         @NotBlank
         String password,
-        @Nullable
+        @NotBlank
         String themePreference,
-        @Nullable
+        @NotBlank
         String languagePreference,
         @Nullable
         String profilePictureUrl
