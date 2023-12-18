@@ -1,4 +1,4 @@
-package com.xlr8code.server.common.service;
+package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;

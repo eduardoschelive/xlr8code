@@ -6,16 +6,16 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum AvailableRoles {
+public enum UserRole {
 
-    ROLE_MEMBER(1L, "ROLE_MEMBER"),
-    ROLE_ADMIN(2L, "ROLE_ADMIN");
+    MEMBER(1L, "ROLE_MEMBER"),
+    ADMIN(2L, "ROLE_ADMIN");
 
     private final Long id;
     private final String value;
 
     public Role toRole() {
-        return Role.builder().id(this.id).roleName(this).build();
+        return Role.builder().id(this.id).userRole(this).build();
     }
 
 }
