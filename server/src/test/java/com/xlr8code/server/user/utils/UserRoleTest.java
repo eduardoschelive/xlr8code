@@ -1,7 +1,6 @@
 package com.xlr8code.server.user.utils;
 
 import com.xlr8code.server.user.entity.Role;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

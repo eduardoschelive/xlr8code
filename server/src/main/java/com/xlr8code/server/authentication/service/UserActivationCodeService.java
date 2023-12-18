@@ -4,8 +4,8 @@ import com.xlr8code.server.authentication.entity.UserActivationCode;
 import com.xlr8code.server.authentication.exception.ExpiredActivationCodeException;
 import com.xlr8code.server.authentication.exception.InvalidActivationCodeException;
 import com.xlr8code.server.authentication.repository.UserActivationCodeRepository;
-import com.xlr8code.server.common.helper.CodeGenerator;
 import com.xlr8code.server.common.utils.DateTimeUtils;
+import com.xlr8code.server.common.utils.RandomCode;
 import com.xlr8code.server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,6 @@ import java.time.temporal.ChronoUnit;
 public class UserActivationCodeService {
 
     private final UserActivationCodeRepository userActivationCodeRepository;
-    private final CodeGenerator codeGenerator;
 
     @Value("${user.activation-code.expiration-time}")
     private long expirationTime;
@@ -27,10 +26,13 @@ public class UserActivationCodeService {
     @Value("${user.activation-code.unit}")
     private ChronoUnit chronoUnit;
 
+    @Value("${user.activation-code.length}")
+    private int length;
+
     @Transactional
     public UserActivationCode generate(User user) {
         var userActivationCode = UserActivationCode.builder()
-                .code(this.codeGenerator.generateActivationCode())
+                .code(RandomCode.generate(this.length))
                 .user(user)
                 .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();

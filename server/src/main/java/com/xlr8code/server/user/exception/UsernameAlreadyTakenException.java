@@ -3,15 +3,15 @@ package com.xlr8code.server.user.exception;
 import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
-public class UserAlreadyExistsException extends ApplicationException {
+public class UsernameAlreadyTakenException extends ApplicationException {
 
-    public UserAlreadyExistsException() {
-        super("USER_ALREADY_EXISTS");
+    public UsernameAlreadyTakenException() {
+        super("USERNAME_ALREADY_TAKEN");
     }
 
     @Override
     public String getMessageIdentifier() {
-        return "user.error.user_already_exists";
+        return "user.error.username_already_taken";
     }
 
     @Override

@@ -1,19 +1,24 @@
 package com.xlr8code.server.common.utils;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.security.SecureRandom;
 
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RandomCode {
 
-    private String allowedCharacters;
+    private static final String DEFAULT_ALLOWED_CHARACTERS = "0123456789";
 
-    public String generate(int length) {
+    public static String generate(int length) {
+        return generate(length, DEFAULT_ALLOWED_CHARACTERS);
+    }
+
+    public static String generate(int length, String allowedCharacters) {
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            sb.append(this.allowedCharacters.charAt(random.nextInt(this.allowedCharacters.length())));
+            sb.append(allowedCharacters.charAt(random.nextInt(allowedCharacters.length())));
         }
         return sb.toString();
     }

@@ -15,7 +15,7 @@ public class Endpoint {
         public static final String SIGN_UP = "/sign-up";
         public static final String SIGN_OUT = "/sign-out";
 
-        public static final String REFRESH_TOKEN = "/refresh";
+        public static final String REFRESH_SESSION = "/refresh";
 
         public static final String ACTIVATE_USER = "/activate";
         public static final String RESEND_ACTIVATION_CODE = "/resend-activation-code";

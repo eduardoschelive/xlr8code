@@ -9,7 +9,6 @@ import com.xlr8code.server.authentication.exception.ApplicationJWTCreationExcept
 import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.annotation.Nullable;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Service
-@Getter
 public class AccessTokenService {
 
     @Value("${jwt.access-token.secret-key}")
@@ -37,7 +35,7 @@ public class AccessTokenService {
                     .withClaim("theme", user.getMetadata().getThemePreference().getCode())
                     .withClaim("profilePictureUrl", user.getMetadata().getProfilePictureUrl())
                     .withClaim("roles", user.getNamedRoles().stream().toList())
-                    .withExpiresAt(DateTimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
+                    .withExpiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                     .withIssuedAt(this.getIssuedAt())
                     .sign(this.getAlgorithm());
         } catch (JWTCreationException e) {
@@ -53,8 +51,9 @@ public class AccessTokenService {
             return null;
         }
     }
+
     private Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(this.getSecretKey());
+        return Algorithm.HMAC256(this.secretKey);
     }
 
     private Instant getIssuedAt() {

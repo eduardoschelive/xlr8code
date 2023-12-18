@@ -18,7 +18,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -59,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @Nonnull HttpHeaders headers,
                                                                   @Nonnull HttpStatusCode status,
                                                                   @Nonnull WebRequest request) {
-        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+        var fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         this::getMessageForError,
@@ -76,9 +75,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String getMessageForError(FieldError error) {
-        String constraintName = StringUtils.splitPascalCase(Objects.requireNonNull(error.getCode()));
-        String messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
+        var constraintName = StringUtils.splitPascalCase(Objects.requireNonNull(error.getCode()));
+        var messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
         return localeService.getMessage(messageKey, httpServletRequest);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(@Nonnull Exception ex, Object body, @Nonnull HttpHeaders headers, HttpStatusCode statusCode, @Nonnull WebRequest request) {
+        var response = new ApplicationExceptionResponseDTO(
+                statusCode.value(),
+                "INTERNAL_SERVER_ERROR",
+                localeService.getMessage("error.internal_server_error", httpServletRequest),
+                new Date()
+        );
+
+        return ResponseEntity.status(statusCode).headers(headers).body(response);
+    }
 }

@@ -2,7 +2,7 @@ package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
-import com.xlr8code.server.authentication.exception.InvalidRefreshTokenException;
+import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.exception.SessionExpiredException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
 import com.xlr8code.server.common.utils.DateTimeUtils;
@@ -31,7 +31,7 @@ public class UserSessionService {
     public UserSession create(User user) {
         var userSession = UserSession.builder()
                 .user(user)
-                .refreshToken(UUID.randomUUID())
+                .sessionToken(UUID.randomUUID())
                 .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();
 
@@ -40,8 +40,8 @@ public class UserSessionService {
 
     @Transactional(readOnly = true)
     public UserSession validateSessionToken(UUID token) {
-        var userSession = this.userSessionRepository.findByRefreshToken(token)
-                .orElseThrow(InvalidRefreshTokenException::new);
+        var userSession = this.userSessionRepository.findBySessionToken(token)
+                .orElseThrow(InvalidRefreshSessionTokenException::new);
 
         if (!userSession.getUser().isActive()) {
             throw new AccountNotActivatedException();
@@ -56,19 +56,24 @@ public class UserSessionService {
 
     @Transactional
     public UUID refresh(UserSession userSession) {
-        userSession.refresh();
+        userSession.refresh(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit));
 
         var refreshedUserSession = this.userSessionRepository.save(userSession);
 
-        return refreshedUserSession.getRefreshToken();
+        return refreshedUserSession.getSessionToken();
     }
 
     @Transactional
-    public void delete(UUID token) {
-        var refreshToken = this.userSessionRepository.findByRefreshToken(token)
-                .orElseThrow(InvalidRefreshTokenException::new);
+    public void end(UUID token) {
+        var refreshToken = this.userSessionRepository.findBySessionToken(token)
+                .orElseThrow(InvalidRefreshSessionTokenException::new);
 
         this.userSessionRepository.delete(refreshToken);
+    }
+
+    @Transactional
+    public void endAllFromUser(User user) {
+        this.userSessionRepository.deleteAllByUser(user);
     }
 
 }

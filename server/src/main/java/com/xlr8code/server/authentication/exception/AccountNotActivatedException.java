@@ -11,7 +11,7 @@ public class AccountNotActivatedException extends ApplicationException {
 
     @Override
     public String getMessageIdentifier() {
-        return "authentication.error.account_not_activated";
+        return "authentication.error.account_not_active";
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ApplicationLocaleResolverTest {
