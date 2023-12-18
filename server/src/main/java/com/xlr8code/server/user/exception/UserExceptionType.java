@@ -1,6 +1,6 @@
 package com.xlr8code.server.user.exception;
 
-import com.xlr8code.server.common.exception.ErrorCode;
+import com.xlr8code.server.common.exception.ExceptionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum UserErrorCode implements ErrorCode {
+public enum UserExceptionType implements ExceptionType {
 
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT);
 

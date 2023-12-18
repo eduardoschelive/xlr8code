@@ -17,13 +17,13 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     private final LocaleService localeService;
     private final HttpServletRequest httpServletRequest;
 
-    @ExceptionHandler(ApplicationError.class)
-    public ResponseEntity<ApplicationErrorResponse> handleApplicationError(ApplicationError applicationError) {
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ApplicationExceptionResponse> handleApplicationError(ApplicationException applicationError) {
         var errorCode = applicationError.getErrorCode();
 
         var message = localeService.getMessage(errorCode.getMessageIdentifier(), httpServletRequest);
 
-        var applicationErrorResponse = new ApplicationErrorResponse(
+        var applicationErrorResponse = new ApplicationExceptionResponse(
                 message,
                 new Date()
         );
