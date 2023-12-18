@@ -8,7 +8,9 @@ import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -26,7 +28,7 @@ public class UserService {
         }
 
         var passwordHash = this.passwordEncoder.encode(password);
-        var roles = Set.of(UserRole.MEMBER.toRole());
+        var roles = Set.of(UserRole.getDefaultValue().toRole());
         var user = User.builder()
                 .username(username)
                 .email(email)
@@ -37,8 +39,9 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public User findByLogin(String login) {
-        return this.userRepository.findUserByLogin(login);
+    @Transactional(readOnly = true)
+    public Optional<User> findByLogin(String login) {
+        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login);
     }
 
 }

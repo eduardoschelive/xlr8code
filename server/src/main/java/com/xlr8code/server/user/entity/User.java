@@ -20,7 +20,7 @@ public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -45,8 +45,8 @@ public class User extends Auditable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false, updatable = false)
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false, updatable = false)
     )
     private Set<Role> roles;
 
