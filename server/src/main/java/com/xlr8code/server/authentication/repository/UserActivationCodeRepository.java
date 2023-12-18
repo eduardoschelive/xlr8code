@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface UserActivationCodeRepository extends JpaRepository<UserActivationCode, Long> {
 
     Optional<UserActivationCode> findByCode(String code);
+
     void deleteAllByUser(User user);
 }

@@ -1,7 +1,5 @@
 package com.xlr8code.server.common.utils;
 
-import com.xlr8code.server.common.exception.ApplicationException;
-import com.xlr8code.server.common.exception.CommonExceptionType;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -50,7 +48,7 @@ class LanguageTest {
         var invalidLanguageCode = "invalid";
 
         assertThatThrownBy(() -> Language.fromCode(invalidLanguageCode))
-                .isInstanceOf(ApplicationException.class)
+                .isInstanceOf(ApplicationExceptionOld.class)
                 .hasFieldOrPropertyWithValue("exceptionType", CommonExceptionType.LANGUAGE_NOT_FOUND);
     }
 

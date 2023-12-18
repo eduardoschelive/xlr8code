@@ -1,6 +1,5 @@
 package com.xlr8code.server.authentication.entity;
 
-import com.xlr8code.server.common.utils.RandomCode;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

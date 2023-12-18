@@ -17,8 +17,8 @@ public @interface UUIDToken {
 
     String message() default "Invalid UUID token";
 
-    Class<?> [] groups() default {};
+    Class<?>[] groups() default {};
 
-    Class<?> [] payload() default {};
+    Class<?>[] payload() default {};
 
 }

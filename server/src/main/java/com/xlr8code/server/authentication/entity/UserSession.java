@@ -3,7 +3,6 @@ package com.xlr8code.server.authentication.entity;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
@@ -15,6 +14,7 @@ import java.util.UUID;
 @Table(name = "user_sessions")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 public class UserSession {
@@ -33,12 +33,6 @@ public class UserSession {
 
     @Column(name = "expires_at", nullable = false)
     private Date expiresAt;
-
-    public UserSession(User user, Date expiresAt) {
-        this.user = user;
-        this.refreshToken = UUID.randomUUID();
-        this.expiresAt = expiresAt;
-    }
 
     public boolean isExpired() {
         return this.expiresAt.before(Date.from(Instant.now()));

@@ -2,8 +2,10 @@ package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.dto.signin.SignInRequestDTO;
 import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
-import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
-import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
+import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
+import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
+import com.xlr8code.server.authentication.exception.UserNotFoundException;
 import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
@@ -35,9 +37,9 @@ public class AuthenticationService {
             var authentication = this.authenticationManager.authenticate(authenticationToken);
             return (User) authentication.getPrincipal();
         } catch (DisabledException e) {
-            throw new ApplicationException(AuthenticationExceptionType.ACCOUNT_NOT_ACTIVATED);
+            throw new AccountNotActivatedException();
         } catch (BadCredentialsException e) {
-            throw new ApplicationException(AuthenticationExceptionType.INCORRECT_USERNAME_OR_PASSWORD);
+            throw new IncorrectUsernameOrPasswordException();
         }
     }
 
@@ -95,10 +97,10 @@ public class AuthenticationService {
     @Transactional
     public void resendActivationCode(String login) {
         var user = this.userService.findByLogin(login)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         if (user.isActive()) {
-            throw new ApplicationException(AuthenticationExceptionType.ACCOUNT_ALREADY_ACTIVATED);
+            throw new AccountAlreadyActivatedException();
         }
 
         var activationCode = this.userActivationCodeService.generate(user);
@@ -109,7 +111,7 @@ public class AuthenticationService {
     @Transactional
     public void forgotPassword(String login) {
         var user = this.userService.findByLogin(login)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         var passwordResetCode = this.userPasswordResetCodeService.generate(user);
 

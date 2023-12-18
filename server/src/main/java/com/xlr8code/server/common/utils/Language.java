@@ -1,7 +1,6 @@
 package com.xlr8code.server.common.utils;
 
-import com.xlr8code.server.common.exception.ApplicationException;
-import com.xlr8code.server.common.exception.CommonExceptionType;
+import com.xlr8code.server.user.exception.LanguageNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +20,7 @@ public enum Language {
                 return language;
             }
         }
-        throw new ApplicationException(CommonExceptionType.LANGUAGE_NOT_FOUND, languageCode);
+        throw new LanguageNotFoundException(languageCode);
     }
 
 }

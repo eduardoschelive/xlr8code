@@ -1,9 +1,11 @@
 package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.entity.UserSession;
-import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
+import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
+import com.xlr8code.server.authentication.exception.InvalidRefreshTokenException;
+import com.xlr8code.server.authentication.exception.SessionExpiredException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
-import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.common.utils.TimeUtils;
 import com.xlr8code.server.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,26 +28,30 @@ public class UserSessionService {
     private long expirationTime;
 
     @Value("${jwt.refresh-token.unit}")
-    private String unit;
+    private ChronoUnit chronoUnit;
 
     @Transactional
-    public UserSession generate(User user) {
-        var userSession = new UserSession(user, this.getExpiresAt());
+    public UserSession create(User user) {
+        var userSession = UserSession.builder()
+                .user(user)
+                .refreshToken(UUID.randomUUID())
+                .expiresAt(TimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
+                .build();
 
         return this.userSessionRepository.save(userSession);
     }
 
     @Transactional(readOnly = true)
-    public UserSession validate(UUID token) {
+    public UserSession validateSessionToken(UUID token) {
         var userSession = this.userSessionRepository.findByRefreshToken(token)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.INVALID_REFRESH_TOKEN));
-
-        if (userSession.isExpired()) {
-            throw new ApplicationException(AuthenticationExceptionType.SESSION_EXPIRED);
-        }
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         if (!userSession.getUser().isActive()) {
-            throw new ApplicationException(AuthenticationExceptionType.ACCOUNT_NOT_ACTIVATED);
+            throw new AccountNotActivatedException();
+        }
+
+        if (userSession.isExpired()) {
+            throw new SessionExpiredException();
         }
 
         return userSession;
@@ -62,20 +67,11 @@ public class UserSessionService {
     }
 
     @Transactional
-    public void revoke(UUID token) {
+    public void delete(UUID token) {
         var refreshToken = this.userSessionRepository.findByRefreshToken(token)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.INVALID_REFRESH_TOKEN));
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         this.userSessionRepository.delete(refreshToken);
-    }
-
-    private Date getExpiresAt() {
-        return Date.from(Instant.now().plus(this.getExpirationTime(), this.getChronoUnit()));
-    }
-
-    private ChronoUnit getChronoUnit() {
-        var unitName = this.getUnit().toUpperCase();
-        return ChronoUnit.valueOf(unitName);
     }
 
 }

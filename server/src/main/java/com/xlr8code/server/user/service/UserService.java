@@ -1,9 +1,8 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
-import com.xlr8code.server.user.exception.UserExceptionType;
+import com.xlr8code.server.user.exception.UserAlreadyExistsException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class UserService {
         var userOptional = this.userRepository.findUserByUsernameOrEmailIgnoreCase(user.getUsername(), user.getEmail());
 
         if (userOptional.isPresent()) {
-            throw new ApplicationException(UserExceptionType.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistsException();
         }
 
         var savedUser = this.userRepository.save(user);
