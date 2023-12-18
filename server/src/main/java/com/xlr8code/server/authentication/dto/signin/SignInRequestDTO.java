@@ -1,4 +1,4 @@
-package com.xlr8code.server.authentication.dto;
+package com.xlr8code.server.authentication.dto.signin;
 
 import jakarta.validation.constraints.NotBlank;
 

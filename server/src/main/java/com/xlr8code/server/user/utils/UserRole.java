@@ -11,10 +11,9 @@ public enum UserRole {
     MEMBER(1L, "ROLE_MEMBER"),
     ADMIN(2L, "ROLE_ADMIN");
 
+    public static final UserRole DEFAULT = MEMBER;
     private final Long id;
     private final String value;
-
-    public static final UserRole DEFAULT = MEMBER;
 
     public Role toRole() {
         return Role.builder().id(this.id).userRole(this).build();

@@ -1,13 +1,16 @@
 package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.common.entity.Auditable;
+import com.xlr8code.server.authentication.entity.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,7 +22,8 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @Setter
-public class User extends Auditable implements UserDetails {
+@EntityListeners(AuditingEntityListener.class)
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,7 +43,7 @@ public class User extends Auditable implements UserDetails {
     private boolean active;
 
     @Column(name = "activated_at")
-    private Date activatedAt;
+    private LocalDateTime activatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)
@@ -53,10 +57,21 @@ public class User extends Auditable implements UserDetails {
     )
     private Set<Role> roles;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<RefreshToken> refreshTokens;
+
+    @Column(name = "created_at")
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
     // TODO: 2021-10-10: Add activation token
     public void activate() {
         this.active = true;
-        this.activatedAt = new Date();
+        this.activatedAt = LocalDateTime.now();
     }
 
     public Set<String> getNamedRoles() {
