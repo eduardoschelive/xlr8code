@@ -42,7 +42,7 @@ public class User extends Auditable implements UserDetails {
     private Date activatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)
     private UserMetadata metadata;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -64,8 +64,8 @@ public class User extends Auditable implements UserDetails {
     }
 
     /*
-    *  Spring security related
-    * */
+     *  Spring security related
+     * */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles().stream().map(Role::toGrantedAuthority).collect(Collectors.toList());

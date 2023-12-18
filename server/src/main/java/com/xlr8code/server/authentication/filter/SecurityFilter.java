@@ -1,8 +1,9 @@
 package com.xlr8code.server.authentication.filter;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
 import com.xlr8code.server.authentication.service.CustomUserDetailsService;
 import com.xlr8code.server.authentication.service.TokenService;
+import com.xlr8code.server.common.exception.ApplicationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
-
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String PREFIX = "Bearer";
     private final TokenService tokenService;
     private final CustomUserDetailsService customUserDetailsService;
@@ -29,32 +30,24 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+
         var token = recoverToken(request);
-
-        if (token == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         var validatedToken = tokenService.validateAccessToken(token);
-
-        if (validatedToken == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         var username = validatedToken.getSubject();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
         var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
+
     private String recoverToken(HttpServletRequest request) {
-        var token = request.getHeader("Authorization");
+        var token = request.getHeader(AUTHORIZATION_HEADER);
 
         if (token == null || !token.startsWith(PREFIX)) {
-            return null;
+            throw new ApplicationException(AuthenticationExceptionType.CANT_RETRIEVE_AUTHORIZATION_HEADER);
         }
 
         return this.removePrefix(token);

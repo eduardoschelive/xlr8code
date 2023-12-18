@@ -15,7 +15,7 @@ public enum Language {
     private static final Language DEFAULT = ENGLISH;
     private final String code;
 
-    public static Language fromCode(String languageCode) throws ApplicationException {
+    public static Language fromCode(String languageCode) {
         for (Language language : Language.values()) {
             if (language.getCode().equals(languageCode)) {
                 return language;
