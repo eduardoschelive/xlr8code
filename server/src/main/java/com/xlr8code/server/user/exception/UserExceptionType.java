@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum UserExceptionType implements ExceptionType {
 
-    USER_ALREADY_EXISTS(HttpStatus.CONFLICT);
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT),
+    THEME_NOT_FOUND(HttpStatus.NOT_FOUND),
+    LANGUAGE_NOT_FOUND(HttpStatus.NOT_FOUND);
+
 
     private final HttpStatus httpStatus;
     private final String prefix = "user";

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Endpoint {
 
-    private static final String PREFIX = "/api";
+    private static final String API_PREFIX = "/api";
 
-    // Base path of authentication endpoints
-    public static final String AUTHENTICATION = PREFIX + "/authentication";
-    // Endpoints
-    public static final String SIGN_IN = "/sign-in";
-    public static final String SIGN_UP = "/sign-up";
+    public record Authentication() {
+        public static final String BASE_PATH = API_PREFIX + "/authentication";
+        public static final String SIGN_IN = BASE_PATH + "/sign-in";
+        public static final String SIGN_UP = BASE_PATH + "/sign-up";
+    }
 
 }

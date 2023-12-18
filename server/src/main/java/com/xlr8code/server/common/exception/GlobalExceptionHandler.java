@@ -30,8 +30,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApplicationExceptionResponse> handleApplicationError(ApplicationException applicationError) {
         var errorCode = applicationError.getErrorCode();
+        var replacements = applicationError.getPlaceholders();
 
         var message = localeService.getMessage(errorCode.getMessageIdentifier(), httpServletRequest);
+
+        if (replacements != null) {
+            for (int i = 0; i < replacements.length; i++) {
+                message = message.replace("{" + i + "}", String.valueOf(replacements[i]));
+            }
+        }
 
         var applicationErrorResponse = new ApplicationExceptionResponse(
                 message,

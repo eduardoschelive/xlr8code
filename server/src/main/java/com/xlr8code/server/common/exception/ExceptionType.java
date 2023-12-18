@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public interface ExceptionType extends Serializable {
 
-    String SEPARATOR = ".errors.";
+    String SEPARATOR = ".error.";
 
     String getPrefix();
 
