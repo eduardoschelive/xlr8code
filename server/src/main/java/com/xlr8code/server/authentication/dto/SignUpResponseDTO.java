@@ -1,7 +1,5 @@
 package com.xlr8code.server.authentication.dto;
 
-import com.xlr8code.server.user.entity.Role;
-
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,6 +8,9 @@ public record SignUpResponseDTO(
         String username,
         String email,
         boolean active,
-        Set<String> roles
+        Set<String> roles,
+        String languagePreference,
+        String themePreference,
+        String profilePictureUrl
 ) {
 }

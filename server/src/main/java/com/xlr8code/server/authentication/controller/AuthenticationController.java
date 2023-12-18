@@ -1,37 +1,38 @@
 package com.xlr8code.server.authentication.controller;
 
-import com.xlr8code.server.authentication.dto.SignUpBodyDTO;
+import com.xlr8code.server.authentication.dto.SignUpRequestDTO;
 import com.xlr8code.server.authentication.dto.SignUpResponseDTO;
+import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.Endpoint;
-import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping(Endpoint.AUTHENTICATION)
+@RequestMapping(Endpoint.Authentication.BASE_PATH)
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    @PostMapping(Endpoint.SIGN_UP)
-    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpBodyDTO signUpBodyDTO) {
-        var user = this.userService.create(signUpBodyDTO.username(), signUpBodyDTO.email(), signUpBodyDTO.password());
+    @PostMapping(Endpoint.Authentication.SIGN_UP)
+    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO signUpBodyDTO) {
+        var user = this.authenticationService.signUp(signUpBodyDTO);
         var response = new SignUpResponseDTO(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.isActive(),
-                user.getNamedRoles()
+                user.getNamedRoles(),
+                user.getMetadata().getLanguagePreference().getCode(),
+                user.getMetadata().getThemePreference().getCode(),
+                user.getMetadata().getProfilePictureUrl()
         );
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(Endpoint.SIGN_IN)
+    @PostMapping(Endpoint.Authentication.SIGN_IN)
     public void signIn() {
         throw new UnsupportedOperationException();
     }

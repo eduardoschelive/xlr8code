@@ -1,9 +1,9 @@
 package com.xlr8code.server.user.entity;
 
+import com.xlr8code.server.user.utils.Language;
+import com.xlr8code.server.user.utils.Theme;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,6 +11,9 @@ import java.util.UUID;
 @Table(name = "user_metadata")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Setter
+@Getter
 public class UserMetadata {
 
     @Id
@@ -18,13 +21,18 @@ public class UserMetadata {
     private UUID userId;
 
     @OneToOne
-    @PrimaryKeyJoinColumn(referencedColumnName = "id")
+    @PrimaryKeyJoinColumn(referencedColumnName = "user_id")
     private User user;
 
-    @Column(name = "language_preference", nullable = false, length = 5)
-    private String languagePreference;
+    @Column(name = "language_preference", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Language languagePreference;
 
     @Column(name = "theme_preference", nullable = false)
-    private String themePreference;
+    @Enumerated(EnumType.STRING)
+    private Theme themePreference;
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
 
 }

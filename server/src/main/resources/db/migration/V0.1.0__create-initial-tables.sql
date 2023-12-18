@@ -11,8 +11,8 @@ CREATE TABLE users(
 
 CREATE TABLE user_metadata(
     user_id UUID NOT NULL,
-    language_preference VARCHAR(5) NOT NULL default 'en-US',
-    theme_preference TEXT NOT NULL default 'system',
+    language_preference TEXT NOT NULL,
+    theme_preference TEXT NOT NULL,
     profile_picture_url TEXT,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id)

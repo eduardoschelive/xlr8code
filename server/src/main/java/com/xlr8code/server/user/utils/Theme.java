@@ -1,0 +1,29 @@
+package com.xlr8code.server.user.utils;
+
+import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.user.exception.UserExceptionType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
+public enum Theme {
+
+    SYSTEM("system"),
+    LIGHT("light"),
+    DARK("dark");
+
+    private final String code;
+
+    private static final Theme DEFAULT = SYSTEM;
+
+    public static Theme fromCode(String themeCode) throws ApplicationException {
+        for (Theme theme : Theme.values()) {
+            if (theme.getCode().equals(themeCode)) {
+                return theme;
+            }
+        }
+        throw new ApplicationException(UserExceptionType.THEME_NOT_FOUND, themeCode);
+    }
+
+}
