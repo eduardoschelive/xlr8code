@@ -15,7 +15,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
 
-
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login) {

@@ -12,7 +12,8 @@ spring:
 
 jwt:
   secret-key: secret
-  expiration-time: 1
+  access-expiration-time: 15 # minutes
+  refresh-expiration-time: 30 # days
 
 logging:
   level:

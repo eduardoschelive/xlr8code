@@ -44,18 +44,17 @@ public class WebSecurityConfig {
     private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
         var endpoints = RoleEndpoints.getRoleEndpoints();
 
-        for (var entry : endpoints.entrySet()) {
-            var roleName = entry.getKey().name();
-            var roleEndpoints = entry.getValue();
-
-            httpSecurity
-                    .authorizeHttpRequests(authorizeRequests -> {
+        httpSecurity
+                .authorizeHttpRequests(authorizeRequests -> {
+                    for (var entry : endpoints.entrySet()) {
+                        var roleName = entry.getKey().name();
+                        var roleEndpoints = entry.getValue();
                         authorizeRequests
                                 .requestMatchers(roleEndpoints)
                                 .hasRole(roleName);
-                        authorizeRequests.anyRequest().permitAll();
-                    });
-        }
+                    }
+                    authorizeRequests.anyRequest().permitAll();
+                });
     }
 
     private void configureFilters(HttpSecurity httpSecurity) {

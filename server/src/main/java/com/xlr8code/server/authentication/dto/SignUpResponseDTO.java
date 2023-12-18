@@ -1,16 +1,12 @@
 package com.xlr8code.server.authentication.dto;
 
+import com.xlr8code.server.user.entity.User;
+
 import java.util.Set;
 import java.util.UUID;
 
 public record SignUpResponseDTO(
-        UUID uuid,
-        String username,
-        String email,
-        boolean active,
-        Set<String> roles,
-        String languagePreference,
-        String themePreference,
-        String profilePictureUrl
-) {
+        String token,
+        String refreshToken
+) implements TokenResponse{
 }

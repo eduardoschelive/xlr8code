@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +24,11 @@ public class TokenService {
 
     @Value("${jwt.secret-key}")
     private String secretKey;
-    @Value("${jwt.expiration-time}")
+    @Value("${jwt.access-expiration-time}")
     private long expirationTime;
+
+    @Value("${jwt.refresh-expiration-time}")
+    private long refreshExpirationTime;
 
     public String generateAccessToken(User user) {
         try {
@@ -33,7 +38,7 @@ public class TokenService {
                     .withClaim("theme", user.getMetadata().getThemePreference().getCode())
                     .withClaim("profilePictureUrl", user.getMetadata().getProfilePictureUrl())
                     .withClaim("roles", user.getNamedRoles().stream().toList())
-                    .withExpiresAt(this.getExpirationDate())
+                    .withExpiresAt(this.getExpirationDate(this.expirationTime, ChronoUnit.MINUTES))
                     .withIssuedAt(this.getIssuedAtDate())
                     .sign(this.getAlgorithm());
         } catch (JWTCreationException e) {
@@ -41,16 +46,28 @@ public class TokenService {
         }
     }
 
-    public DecodedJWT validateAccessToken(String token) {
+    public String generateRefreshToken(User user) {
         try {
-            return JWT.require(this.getAlgorithm()).build().verify(token);
-        } catch (JWTVerificationException e) {
-            throw new ApplicationException(AuthenticationExceptionType.JWT_VERIFICATION_ERROR);
+            return JWT.create()
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(this.getExpirationDate(this.refreshExpirationTime, ChronoUnit.DAYS))
+                    .withIssuedAt(this.getIssuedAtDate())
+                    .sign(this.getAlgorithm());
+        } catch (JWTCreationException e) {
+            throw new ApplicationException(AuthenticationExceptionType.JWT_CREATION_ERROR);
         }
     }
 
-    private Instant getExpirationDate() {
-        return LocalDateTime.now().plusHours(this.expirationTime).toInstant(ZoneOffset.of("+00:00"));
+    public DecodedJWT decodeToken(String token) {
+        try {
+            return JWT.require(this.getAlgorithm()).build().verify(token);
+        } catch (JWTVerificationException e) {
+            return null;
+        }
+    }
+
+    private Instant getExpirationDate(long expirationTime, TemporalUnit temporalUnit) {
+        return LocalDateTime.now().plus(expirationTime, temporalUnit).toInstant(ZoneOffset.of("+00:00"));
     }
 
     private Instant getIssuedAtDate() {
