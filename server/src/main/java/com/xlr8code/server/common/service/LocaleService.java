@@ -13,6 +13,12 @@ public class LocaleService {
     private final MessageSource messageSource;
     private final ApplicationLocaleResolver localeResolver;
 
+
+    /**
+     * @param code the code of the message to be retrieved
+     * @param request the request from which the locale will be retrieved
+     * @return the message corresponding to the given code in the locale of the given request
+     */
     public String getMessage(String code, HttpServletRequest request) {
         return this.messageSource.getMessage(code, null, this.localeResolver.resolveLocale(request));
     }
