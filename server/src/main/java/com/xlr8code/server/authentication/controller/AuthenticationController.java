@@ -1,9 +1,10 @@
 package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.activation.ResendCodeRequestDTO;
+import com.xlr8code.server.authentication.dto.password.ForgotPasswordRequestDTO;
+import com.xlr8code.server.authentication.dto.password.ResetPasswordRequestDTO;
 import com.xlr8code.server.authentication.dto.refresh.RefreshTokenRequestDTO;
 import com.xlr8code.server.authentication.dto.refresh.RefreshTokenResponseDTO;
-import com.xlr8code.server.authentication.dto.revoke.RevokeTokenRequestDTO;
 import com.xlr8code.server.authentication.dto.signin.SignInRequestDTO;
 import com.xlr8code.server.authentication.dto.signin.SignInResponseDTO;
 import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
@@ -64,7 +65,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(Endpoint.Authentication.REVOKE_TOKEN)
+    @PostMapping(Endpoint.Authentication.SIGN_OUT)
     public ResponseEntity<Void> revokeToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) {
         var token = refreshTokenRequestDTO.refreshTokenAsUUID();
         this.refreshTokenService.revoke(token);
@@ -80,6 +81,20 @@ public class AuthenticationController {
     @PostMapping(Endpoint.Authentication.RESEND_ACTIVATION_CODE)
     public ResponseEntity<Void> resendActivationCode(@RequestBody @Valid ResendCodeRequestDTO resendCodeRequestDTO) {
         this.authenticationService.resendActivationCode(resendCodeRequestDTO.login());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(Endpoint.Authentication.FORGOT_PASSWORD)
+    public ResponseEntity<Void> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
+        this.authenticationService.forgotPassword(forgotPasswordRequestDTO.login());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(Endpoint.Authentication.RESET_PASSWORD)
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordRequestDTO resetPasswordRequestDTO) {
+        var code = resetPasswordRequestDTO.code();
+        var newPassword = resetPasswordRequestDTO.newPassword();
+        this.authenticationService.resetPassword(code, newPassword);
         return ResponseEntity.noContent().build();
     }
 

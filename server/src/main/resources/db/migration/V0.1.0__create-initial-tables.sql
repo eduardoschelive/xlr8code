@@ -40,7 +40,6 @@ CREATE TABLE user_sessions
     user_session_id SERIAL PRIMARY KEY NOT NULL,
     user_id         UUID               NOT NULL,
     refresh_token   UUID               NOT NULL UNIQUE,
-    created_at      TIMESTAMP          NOT NULL DEFAULT now(),
     expires_at      TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
@@ -50,7 +49,15 @@ CREATE TABLE user_activation_codes
     activation_code_id SERIAL PRIMARY KEY NOT NULL,
     user_id            UUID               NOT NULL,
     code               VARCHAR(8)         NOT NULL UNIQUE,
-    created_at         TIMESTAMP          NOT NULL DEFAULT now(),
     expires_at         TIMESTAMP          NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE user_password_reset_codes
+(
+    password_reset_code_id SERIAL PRIMARY KEY NOT NULL,
+    user_id                UUID               NOT NULL,
+    code                   VARCHAR(8)         NOT NULL UNIQUE,
+    expires_at             TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

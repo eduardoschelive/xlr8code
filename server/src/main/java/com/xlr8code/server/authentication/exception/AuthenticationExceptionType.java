@@ -18,7 +18,9 @@ public enum AuthenticationExceptionType implements ExceptionType {
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "authentication.error.invalid_refresh_token"),
     INVALID_ACTIVATION_CODE(HttpStatus.BAD_REQUEST, "authentication.error.invalid_activation_code"),
     EXPIRED_ACTIVATION_CODE(HttpStatus.BAD_REQUEST, "authentication.error.expired_activation_code"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "authentication.error.user_not_found");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "authentication.error.user_not_found"),
+    INVALID_PASSWORD_RESET_CODE(HttpStatus.BAD_REQUEST, "authentication.error.invalid_password_reset_code"),
+    EXPIRED_PASSWORD_RESET_CODE(HttpStatus.BAD_REQUEST, "authentication.error.expired_password_reset_code");
 
     private final HttpStatus httpStatus;
     private final String messageIdentifier;
