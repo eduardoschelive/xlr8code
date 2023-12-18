@@ -1,8 +1,8 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.common.exception.ApplicationError;
+import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.UserErrorCode;
+import com.xlr8code.server.user.exception.UserExceptionType;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User create(String username, String email, String password) throws ApplicationError {
+    public User create(String username, String email, String password) throws ApplicationException {
         var userOptional = this.userRepository.findUserByUsernameOrEmailIgnoreCase(username, email);
 
         if (userOptional.isPresent()) {
-            throw new ApplicationError(UserErrorCode.USER_ALREADY_EXISTS);
+            throw new ApplicationException(UserExceptionType.USER_ALREADY_EXISTS);
         }
 
         var passwordHash = this.passwordEncoder.encode(password);
