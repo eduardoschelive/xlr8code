@@ -1,8 +1,11 @@
 package com.xlr8code.server.common.exception;
 
+import lombok.Getter;
+
 import java.io.Serial;
 import java.io.Serializable;
 
+@Getter
 public class ApplicationError extends RuntimeException implements Serializable {
 
     @Serial
@@ -18,10 +21,6 @@ public class ApplicationError extends RuntimeException implements Serializable {
     public ApplicationError(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getMessage(), cause);
         this.errorCode = errorCode;
-    }
-
-    public ErrorCode getErrorCode() {
-        return this.errorCode;
     }
 
 }
