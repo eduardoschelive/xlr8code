@@ -1,8 +1,10 @@
-package com.xlr8code.server.domain.user.entity;
+package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.domain.common.entity.Auditable;
+import com.xlr8code.server.common.entity.Auditable;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -32,5 +34,9 @@ public class User extends Auditable {
 
     @Column(name = "activated_at")
     private OffsetDateTime activatedAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private UserMetadata metadata;
 
 }
