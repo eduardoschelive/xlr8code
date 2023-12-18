@@ -16,7 +16,6 @@ jwt:
     expiration-time: 15
     unit: MINUTES
   refresh-token:
-    secret-key: secret2
     expiration-time: 7
     unit: DAYS
 

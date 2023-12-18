@@ -1,7 +1,7 @@
 package com.xlr8code.server.authentication.filter;
 
 import com.xlr8code.server.authentication.service.CustomUserDetailsService;
-import com.xlr8code.server.authentication.service.token.AccessTokenService;
+import com.xlr8code.server.authentication.service.AccessTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
