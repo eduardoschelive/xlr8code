@@ -15,11 +15,11 @@ jwt:
     secret-key: secret
     expiration-time: 15
     unit: MINUTES
-  refresh-token:
-    expiration-time: 7
-    unit: DAYS
 
 user:
+  session:
+    expiration-time: 7
+    unit: DAYS
   activation-code:
     unit: HOURS
     expiration-time: 15

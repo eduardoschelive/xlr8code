@@ -5,29 +5,26 @@ import com.xlr8code.server.authentication.exception.AccountNotActivatedException
 import com.xlr8code.server.authentication.exception.InvalidRefreshTokenException;
 import com.xlr8code.server.authentication.exception.SessionExpiredException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
-import com.xlr8code.server.common.utils.TimeUtils;
+import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Getter
 @RequiredArgsConstructor
 public class UserSessionService {
 
     private final UserSessionRepository userSessionRepository;
 
-    @Value("${jwt.refresh-token.expiration-time}")
+    @Value("${user.session.expiration-time}")
     private long expirationTime;
 
-    @Value("${jwt.refresh-token.unit}")
+    @Value("${user.session.unit}")
     private ChronoUnit chronoUnit;
 
     @Transactional
@@ -35,7 +32,7 @@ public class UserSessionService {
         var userSession = UserSession.builder()
                 .user(user)
                 .refreshToken(UUID.randomUUID())
-                .expiresAt(TimeUtils.calculateExpiresAt(this.getExpirationTime(), this.getChronoUnit()))
+                .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();
 
         return this.userSessionRepository.save(userSession);

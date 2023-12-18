@@ -1,5 +1,6 @@
 package com.xlr8code.server.authentication.entity;
 
+import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,7 +36,7 @@ public class UserSession {
     private Date expiresAt;
 
     public boolean isExpired() {
-        return this.expiresAt.before(Date.from(Instant.now()));
+        return DateTimeUtils.isExpired(this.expiresAt);
     }
 
     public void refresh() {
