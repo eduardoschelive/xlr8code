@@ -27,9 +27,7 @@ public class UserService {
         }
 
         var savedUser = this.userRepository.save(user);
-
         var savedUserMetadata = this.userMetadataService.createForUser(savedUser, userMetadata);
-
         savedUser.setMetadata(savedUserMetadata);
 
         return savedUser;

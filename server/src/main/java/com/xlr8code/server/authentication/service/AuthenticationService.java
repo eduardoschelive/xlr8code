@@ -58,7 +58,6 @@ public class AuthenticationService {
         var authentication = this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         return (User) authentication.getPrincipal();
-
     }
 
 
