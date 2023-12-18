@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    database: h2
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    username: test
+    password: test
+    driverClassName: org.h2.Driver
+
+  flyway:
+    schemas: test
+    url: jdbc:h2:mem:test
+    user: test
+    password: test
+
+jwt:
+  secret-key: secret
+  expiration-time: 1
+

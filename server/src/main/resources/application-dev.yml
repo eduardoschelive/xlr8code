@@ -4,8 +4,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
-      format_sql: true
-      dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://localhost:6543/xlr8code
     username: two-forty
