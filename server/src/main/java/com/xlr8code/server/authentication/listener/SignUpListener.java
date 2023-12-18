@@ -1,7 +1,6 @@
 package com.xlr8code.server.authentication.listener;
 
 import com.xlr8code.server.authentication.events.OnSignUpCompleteEvent;
-import com.xlr8code.server.authentication.service.VerificationTokenService;
 import com.xlr8code.server.authentication.utils.Endpoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
