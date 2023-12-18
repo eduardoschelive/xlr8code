@@ -9,4 +9,4 @@ services:
       POSTGRES_DB: xlr8code
 
     ports:
-      - 5432:5432
+      - 6543:5432
