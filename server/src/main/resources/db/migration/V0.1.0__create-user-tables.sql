@@ -1,8 +1,7 @@
 CREATE TABLE users(
-    id uuid PRIMARY KEY NOT NULL,
-    email VARCHAR(255)  UNIQUE NOT NULL,
-    password_hash VARCHAR(72) NOT NULL,
-    password_salt VARCHAR(72) NOT NULL,
+    id UUID PRIMARY KEY NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash VARCHAR(60) NOT NULL,
     active BOOLEAN DEFAULT false NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     updated_at TIMESTAMP,
@@ -10,10 +9,10 @@ CREATE TABLE users(
 );
 
 CREATE TABLE user_metadata(
-    user_id uuid NOT NULL,
-    language_preference varchar(5) NOT NULL,
-    theme_preference varchar(16) NOT NULL,
-    profile_picture_url text
+    user_id UUID NOT NULL,
+    language_preference VARCHAR(5) NOT NULL default 'en-US',
+    theme_preference TEXT NOT NULL default 'system',
+    profile_picture_url TEXT,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
-
-ALTER TABLE user_metadata ADD FOREIGN KEY (user_id) REFERENCES users (id);
