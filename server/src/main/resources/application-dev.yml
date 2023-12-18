@@ -6,8 +6,8 @@ spring:
       ddl-auto: validate
   datasource:
     url: jdbc:postgresql://localhost:6543/xlr8code
-    username: two-forty
-    password: forty-two
+    username: two-forty # example
+    password: forty-two # example
     driverClassName: org.postgresql.Driver
 
 jwt:
@@ -22,12 +22,7 @@ jwt:
 user:
   activation-code:
     unit: HOURS
-    expiration-time: 1
-
-logging:
-  level:
-    org:
-      springframework:
-        transaction:
-          interceptor:
-            TRACE
+    expiration-time: 15
+  password-reset-code:
+    unit: MINUTES
+    expiration-time: 15

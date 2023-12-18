@@ -27,6 +27,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserActivationCodeService userActivationCodeService;
+    private final UserPasswordResetCodeService userPasswordResetCodeService;
     private final EmailService emailService;
 
     private User authenticate(AbstractAuthenticationToken authenticationToken) {
@@ -105,4 +106,29 @@ public class AuthenticationService {
         this.emailService.sendActivationEmail(user.getEmail(), activationCode.getCode());
     }
 
+    @Transactional
+    public void forgotPassword(String login) {
+        var user = this.userService.findByLogin(login)
+                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.USER_NOT_FOUND));
+
+        var passwordResetCode = this.userPasswordResetCodeService.generate(user);
+
+        this.emailService.sendPasswordResetEmail(user.getEmail(), passwordResetCode.getCode());
+    }
+
+    @Transactional
+    public void resetPassword(String code, String newPassword) {
+        var passwordResetCode = this.userPasswordResetCodeService.validate(code);
+
+        // TODO: 2021-10-10 add a confirmation step to the password reset process, like newPasswordConfirmation
+
+        var user = passwordResetCode.getUser();
+        var passwordHash = this.passwordEncoder.encode(newPassword);
+
+        this.userService.updatePassword(user, passwordHash);
+
+        this.userPasswordResetCodeService.removeAllFromUser(user);
+    }
+
 }
+

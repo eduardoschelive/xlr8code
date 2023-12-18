@@ -1,8 +1,8 @@
 package com.xlr8code.server.authentication.service;
 
-import com.xlr8code.server.authentication.entity.UserActivationCode;
+import com.xlr8code.server.authentication.entity.UserPasswordResetCode;
 import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
-import com.xlr8code.server.authentication.repository.UserActivationCodeRepository;
+import com.xlr8code.server.authentication.repository.UserPasswordResetCodeRepository;
 import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.common.helper.CodeGenerator;
 import com.xlr8code.server.user.entity.User;
@@ -19,43 +19,44 @@ import java.util.Date;
 @Service
 @Getter
 @RequiredArgsConstructor
-public class UserActivationCodeService {
+public class UserPasswordResetCodeService {
 
-    private final UserActivationCodeRepository userActivationCodeRepository;
+    private final UserPasswordResetCodeRepository userPasswordResetCodeRepository;
     private final CodeGenerator codeGenerator;
 
-    @Value("${user.activation-code.expiration-time}")
+    @Value("${user.password-reset-code.expiration-time}")
     private long expirationTime;
 
-    @Value("${user.activation-code.unit}")
+    @Value("${user.password-reset-code.unit}")
     private String unit;
 
     @Transactional
-    public UserActivationCode generate(User user) {
-        var userActivationCode = UserActivationCode.builder()
-                .code(this.codeGenerator.generateActivationCode())
+    public UserPasswordResetCode generate(User user) {
+
+        var userPasswordResetCode = UserPasswordResetCode.builder()
+                .code(this.codeGenerator.generatePasswordResetCode())
                 .user(user)
                 .expiresAt(this.getExpiresAt())
                 .build();
 
-        return this.userActivationCodeRepository.save(userActivationCode);
+        return this.userPasswordResetCodeRepository.save(userPasswordResetCode);
     }
 
     @Transactional(readOnly = true)
-    public UserActivationCode validate(String code) {
-        var userActivationCode = this.userActivationCodeRepository.findByCode(code)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.INVALID_ACTIVATION_CODE));
+    public UserPasswordResetCode validate(String code) {
+        var userPasswordResetCode = this.userPasswordResetCodeRepository.findByCode(code)
+                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.INVALID_PASSWORD_RESET_CODE));
 
-        if (userActivationCode.isExpired()) {
-            throw new ApplicationException(AuthenticationExceptionType.EXPIRED_ACTIVATION_CODE);
+        if (userPasswordResetCode.isExpired()) {
+            throw new ApplicationException(AuthenticationExceptionType.EXPIRED_PASSWORD_RESET_CODE);
         }
 
-        return userActivationCode;
+        return userPasswordResetCode;
     }
 
     @Transactional
     public void removeAllFromUser(User user) {
-        this.userActivationCodeRepository.deleteAllByUser(user);
+        this.userPasswordResetCodeRepository.deleteAllByUser(user);
     }
 
     private Date getExpiresAt() {

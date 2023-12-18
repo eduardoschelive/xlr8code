@@ -39,6 +39,12 @@ public class UserService {
     }
 
     @Transactional
+    public void updatePassword(User user, String password) {
+        user.setPasswordHash(password);
+        this.userRepository.save(user);
+    }
+
+    @Transactional
     public void activate(User user) {
         user.activate();
         this.userRepository.save(user);
