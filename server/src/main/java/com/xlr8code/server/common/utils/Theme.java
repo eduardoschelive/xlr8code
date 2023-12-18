@@ -15,9 +15,19 @@ public enum Theme {
     private static final Theme DEFAULT = SYSTEM;
     private final String code;
 
+
+    /**
+     * <p>
+     *     Converts a theme code to a {@link Theme} object. it´s case insensitive.
+     * <p>
+     * @param themeCode the theme code to be converted to a {@link Theme} object (e.g. "light")
+     * @return the {@link Theme} object corresponding to the given theme code
+     * @throws ThemeNotFoundException if the given theme code does not correspond to any {@link Theme} object
+     * @see Theme#DEFAULT
+     */
     public static Theme fromCode(String themeCode) {
         for (Theme theme : Theme.values()) {
-            if (theme.getCode().equals(themeCode)) {
+            if (theme.getCode().equalsIgnoreCase(themeCode)) {
                 return theme;
             }
         }

@@ -27,6 +27,14 @@ public class UserSessionService {
     @Value("${user.session.unit}")
     private ChronoUnit chronoUnit;
 
+    /**
+     * <p>
+     * Creates a new session for the given user. The expiration date is configured in the application properties.
+     * </p>
+     *
+     * @param user the user to create the session for
+     * @return the created {@link UserSession}
+     */
     @Transactional
     public UserSession create(User user) {
         var userSession = UserSession.builder()
@@ -38,22 +46,38 @@ public class UserSessionService {
         return this.userSessionRepository.save(userSession);
     }
 
+    /**
+     * @param token the token to validate
+     * @return the validated {@link UserSession}
+     * @throws InvalidRefreshSessionTokenException if the token is invalid
+     * @throws AccountNotActivatedException        if the user is not activated
+     * @throws SessionExpiredException             if the session is expired
+     */
     @Transactional(readOnly = true)
     public UserSession validateSessionToken(UUID token) {
         var userSession = this.userSessionRepository.findBySessionToken(token)
                 .orElseThrow(InvalidRefreshSessionTokenException::new);
 
-        if (!userSession.getUser().isActive()) {
+        if (!userSession.getUser().isActive())
             throw new AccountNotActivatedException();
-        }
 
-        if (userSession.isExpired()) {
+
+        if (userSession.isExpired())
             throw new SessionExpiredException();
-        }
+
 
         return userSession;
     }
 
+    /**
+     * <p>
+     * Refreshes the session by setting a new expiration date.
+     * The expiration date is configured in the application properties.
+     * </p>
+     *
+     * @param userSession the session to refresh
+     * @return the refreshed session token
+     */
     @Transactional
     public UUID refresh(UserSession userSession) {
         userSession.refresh(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit));
@@ -63,6 +87,10 @@ public class UserSessionService {
         return refreshedUserSession.getSessionToken();
     }
 
+    /**
+     * @param token the token to end
+     * @throws InvalidRefreshSessionTokenException if the token is not found in the database
+     */
     @Transactional
     public void end(UUID token) {
         var refreshToken = this.userSessionRepository.findBySessionToken(token)
@@ -71,6 +99,14 @@ public class UserSessionService {
         this.userSessionRepository.delete(refreshToken);
     }
 
+    /**
+     * <p>
+     * Removes all sessions from the given user. This method is used when the user changes his password.
+     * All sessions are removed so that the user has to log in again with the new password.
+     * </p>
+     *
+     * @param user the user to remove the sessions from
+     */
     @Transactional
     public void endAllFromUser(User user) {
         this.userSessionRepository.deleteAllByUser(user);

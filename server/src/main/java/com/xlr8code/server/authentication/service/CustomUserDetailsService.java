@@ -14,6 +14,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
 
+    /**
+     * @param login the username identifying the user whose data is required. Cannot be null.
+     * @return a fully populated user record (never null)
+     * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login) {

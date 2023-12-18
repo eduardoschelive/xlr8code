@@ -29,6 +29,10 @@ public class UserPasswordResetCodeService {
     @Value("${user.password-reset-code.length}")
     private int length;
 
+    /**
+     * @param user the user to generate the code for
+     * @return the generated {@link UserPasswordResetCode}
+     */
     @Transactional
     public UserPasswordResetCode generate(User user) {
 
@@ -41,6 +45,12 @@ public class UserPasswordResetCodeService {
         return this.userPasswordResetCodeRepository.save(userPasswordResetCode);
     }
 
+    /**
+     * @param code the code to validate
+     * @return the validated {@link UserPasswordResetCode}
+     * @throws InvalidPasswordResetCodeException if the code is invalid
+     * @throws ExpiredPasswordResetCodeException if the code is expired
+     */
     @Transactional(readOnly = true)
     public UserPasswordResetCode validate(String code) {
         var userPasswordResetCode = this.userPasswordResetCodeRepository.findByCode(code)
@@ -53,6 +63,9 @@ public class UserPasswordResetCodeService {
         return userPasswordResetCode;
     }
 
+    /**
+     * @param user the user to remove the codes from
+     */
     @Transactional
     public void removeAllFromUser(User user) {
         this.userPasswordResetCodeRepository.deleteAllByUser(user);

@@ -27,6 +27,11 @@ public class AccessTokenService {
     @Value("${jwt.access-token.unit}")
     private ChronoUnit chronoUnit;
 
+    /**
+     * @param user the user to generate the token for
+     * @return the generated token
+     * @throws ApplicationJWTCreationException if the token could not be created
+     */
     public String generate(User user) {
         try {
             return JWT.create()
@@ -43,6 +48,10 @@ public class AccessTokenService {
         }
     }
 
+    /**
+     * @param token the token to validate
+     * @return the validated token or null if the token is invalid or expired
+     */
     @Nullable
     public DecodedJWT validate(String token) {
         try {

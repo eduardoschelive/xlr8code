@@ -29,6 +29,15 @@ public class UserActivationCodeService {
     @Value("${user.activation-code.length}")
     private int length;
 
+    /**
+     * <p>
+     * Generates a new activation code for the given user. The expiration date is configured in the application
+     * properties.
+     * </p>
+     *
+     * @param user the user to generate the code for
+     * @return the generated {@link UserActivationCode}
+     */
     @Transactional
     public UserActivationCode generate(User user) {
         var userActivationCode = UserActivationCode.builder()
@@ -40,6 +49,12 @@ public class UserActivationCodeService {
         return this.userActivationCodeRepository.save(userActivationCode);
     }
 
+    /**
+     * @param code the code to validate
+     * @return the validated {@link UserActivationCode}
+     * @throws InvalidActivationCodeException if the code is invalid
+     * @throws ExpiredActivationCodeException if the code is expired
+     */
     @Transactional(readOnly = true)
     public UserActivationCode validate(String code) {
         var userActivationCode = this.userActivationCodeRepository.findByCode(code)
@@ -52,6 +67,9 @@ public class UserActivationCodeService {
         return userActivationCode;
     }
 
+    /**
+     * @param user the user to remove the codes from
+     */
     @Transactional
     public void removeAllFromUser(User user) {
         this.userActivationCodeRepository.deleteAllByUser(user);
