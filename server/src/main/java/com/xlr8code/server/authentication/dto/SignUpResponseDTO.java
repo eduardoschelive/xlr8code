@@ -10,6 +10,6 @@ public record SignUpResponseDTO(
         String username,
         String email,
         boolean active,
-        Set<Role> roles
+        Set<String> roles
 ) {
 }

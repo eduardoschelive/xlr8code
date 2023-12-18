@@ -8,12 +8,7 @@ public class ApplicationError extends RuntimeException {
     private final ErrorCode errorCode;
 
     public ApplicationError(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
-    }
-
-    public ApplicationError(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessage(), cause);
+        super(errorCode.name());
         this.errorCode = errorCode;
     }
 
