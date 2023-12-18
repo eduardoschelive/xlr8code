@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Entity
 @Table(name = "roles")
@@ -23,4 +24,7 @@ public class Role {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    public SimpleGrantedAuthority toGrantedAuthority() {
+        return new SimpleGrantedAuthority(this.name);
+    }
 }
