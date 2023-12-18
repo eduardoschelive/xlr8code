@@ -21,7 +21,8 @@ public class UserMetadata {
     private UUID userId;
 
     @OneToOne
-    @PrimaryKeyJoinColumn(referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)
+    @MapsId
     private User user;
 
     @Column(name = "language_preference", nullable = false)

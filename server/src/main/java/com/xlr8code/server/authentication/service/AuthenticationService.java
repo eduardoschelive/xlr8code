@@ -1,36 +1,37 @@
 package com.xlr8code.server.authentication.service;
 
-import com.xlr8code.server.authentication.dto.signin.SignInRequestDTO;
-import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
+import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserActivationCodeService userActivationCodeService;
     private final UserPasswordResetCodeService userPasswordResetCodeService;
     private final EmailService emailService;
+    private final AccessTokenService accessTokenService;
+    private final UserSessionService userSessionService;
 
     private User authenticate(AbstractAuthenticationToken authenticationToken) {
         try {
@@ -44,49 +45,48 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public User signUp(SignUpRequestDTO signUpBodyDTO) {
-        var passwordHash = this.passwordEncoder.encode(signUpBodyDTO.password());
-        var roles = Set.of(UserRole.DEFAULT.toRole());
+    public void signUp(SignUpDTO signUpDTO) {
+        var user = this.buildUserWithMetadata(signUpDTO);
 
-        var language = Language.fromCode(signUpBodyDTO.languagePreference());
-        var theme = Theme.fromCode(signUpBodyDTO.themePreference());
-
-        var userMetadata = UserMetadata.builder()
-                .languagePreference(language)
-                .themePreference(theme)
-                .profilePictureUrl(signUpBodyDTO.profilePictureUrl())
-                .build();
-
-        var user = User.builder()
-                .username(signUpBodyDTO.username())
-                .email(signUpBodyDTO.email())
-                .passwordHash(passwordHash)
-                .roles(roles)
-                .build();
-
-        var newUser = this.userService.createUserWithMetadata(user, userMetadata);
-
-        var activationCode = this.userActivationCodeService.generate(newUser);
-
-        this.emailService.sendActivationEmail(newUser.getEmail(), activationCode.getCode());
-
-        return newUser;
+        this.userService.create(user);
     }
 
-    public User signIn(SignInRequestDTO signInRequestDTO) {
+    @Transactional
+    public TokenPairDTO signIn(SignInDTO signInRequestDTO) {
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 signInRequestDTO.login(),
                 signInRequestDTO.password()
         );
 
-        return this.authenticate(usernamePasswordAuthenticationToken);
+        var user = this.authenticate(usernamePasswordAuthenticationToken);
+
+        var token = this.accessTokenService.generate(user);
+        var userSession = this.userSessionService.create(user);
+
+        return new TokenPairDTO(token, userSession.getSessionToken());
+    }
+
+    @Transactional
+    public void signOut(SignOutDTO signOutDTO) {
+        var sessionToken = UUID.fromString(signOutDTO.sessionToken());
+        this.userSessionService.end(sessionToken);
+    }
+
+    @Transactional
+    public TokenPairDTO refreshSession(RefreshSessionDTO refreshSessionDTO) {
+        var oldRefreshSessionToken = UUID.fromString(refreshSessionDTO.refreshSessionToken());
+
+        var userSession = this.userSessionService.validateSessionToken(oldRefreshSessionToken);
+
+        var newRefreshSessionToken = this.userSessionService.refresh(userSession);
+        var newAccessToken = this.accessTokenService.generate(userSession.getUser());
+
+        return new TokenPairDTO(newAccessToken, newRefreshSessionToken);
     }
 
     @Transactional
     public void activateUser(String code) {
         var activationCode = this.userActivationCodeService.validate(code);
-
-        // TODO: 2021-10-10 change the ApplicationError to be separated classes, so we can catch them separately to resend the activation code if needed (e.g. if the user's code is expired)
 
         var user = activationCode.getUser();
         this.userService.activate(user);
@@ -109,7 +109,8 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void forgotPassword(String login) {
+    public void forgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
+        var login = forgotPasswordDTO.login();
         var user = this.userService.findByLogin(login)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -119,17 +120,49 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void resetPassword(String code, String newPassword) {
+    public void resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        var code = resetPasswordDTO.code();
         var passwordResetCode = this.userPasswordResetCodeService.validate(code);
 
-        // TODO: 2021-10-10 add a confirmation step to the password reset process, like newPasswordConfirmation
+        var newPassword = resetPasswordDTO.newPassword();
+        var confirmPassword = resetPasswordDTO.newPasswordConfirmation();
 
         var user = passwordResetCode.getUser();
-        var passwordHash = this.passwordEncoder.encode(newPassword);
 
-        this.userService.updatePassword(user, passwordHash);
-
+        this.userService.changePassword(user, newPassword, confirmPassword);
         this.userPasswordResetCodeService.removeAllFromUser(user);
+    }
+
+    private User buildUserWithMetadata(SignUpDTO signUpDTO) {
+        var roles = Set.of(UserRole.DEFAULT.toRole());
+
+        var user = this.buildUser(signUpDTO, roles);
+        var userMetadata = this.buildUserMetadata(user, signUpDTO);
+
+        user.setMetadata(userMetadata);
+
+        return user;
+    }
+
+    private UserMetadata buildUserMetadata(User user, SignUpDTO signUpBodyDTO) {
+        var language = Language.fromCode(signUpBodyDTO.languagePreference());
+        var theme = Theme.fromCode(signUpBodyDTO.themePreference());
+
+        return UserMetadata.builder()
+                .languagePreference(language)
+                .user(user)
+                .themePreference(theme)
+                .profilePictureUrl(signUpBodyDTO.profilePictureUrl())
+                .build();
+    }
+
+    private User buildUser(SignUpDTO signUpBodyDTO, Set<Role> roles) {
+        return User.builder()
+                .username(signUpBodyDTO.username())
+                .email(signUpBodyDTO.email())
+                .password(signUpBodyDTO.password())
+                .roles(roles)
+                .build();
     }
 
 }

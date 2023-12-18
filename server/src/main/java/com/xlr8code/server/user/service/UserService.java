@@ -1,10 +1,15 @@
 package com.xlr8code.server.user.service;
 
+import com.xlr8code.server.authentication.exception.PasswordMatchException;
+import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.entity.UserMetadata;
-import com.xlr8code.server.user.exception.UserAlreadyExistsException;
+import com.xlr8code.server.user.event.OnCreateUserEvent;
+import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,21 +20,25 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserMetadataService userMetadataService;
+    private final UserSessionService userSessionService;
+    private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public User createUserWithMetadata(User user, UserMetadata userMetadata) {
-        var userOptional = this.userRepository.findUserByUsernameOrEmailIgnoreCase(user.getUsername(), user.getEmail());
+    public void create(User user) {
 
-        if (userOptional.isPresent()) {
-            throw new UserAlreadyExistsException();
+        if (this.isUsernameTaken(user.getUsername())) {
+            throw new UsernameAlreadyTakenException();
         }
 
-        var savedUser = this.userRepository.save(user);
-        var savedUserMetadata = this.userMetadataService.createForUser(savedUser, userMetadata);
-        savedUser.setMetadata(savedUserMetadata);
+        if (this.isEmailInUse(user.getEmail())) {
+            throw new EmailAlreadyInUseException();
+        }
 
-        return savedUser;
+        this.encodeUserPassword(user);
+        this.userRepository.save(user);
+
+        this.applicationEventPublisher.publishEvent(new OnCreateUserEvent(user));
     }
 
     @Transactional(readOnly = true)
@@ -38,15 +47,39 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(User user, String passwordHash) {
-        user.setPasswordHash(passwordHash);
+    public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
+        if (!newPassword.equals(newPasswordConfirmation)) {
+            throw new PasswordMatchException();
+        }
+
+        var passwordHash = this.passwordEncoder.encode(newPassword);
+
+        user.setPassword(passwordHash);
+
         this.userRepository.save(user);
+
+        this.userSessionService.endAllFromUser(user);
     }
 
     @Transactional
     public void activate(User user) {
         user.activate();
         this.userRepository.save(user);
+    }
+
+
+    private boolean isUsernameTaken(String username) {
+        return this.userRepository.findUserByUsernameIgnoreCase(username).isPresent();
+    }
+
+    private boolean isEmailInUse(String email) {
+        return this.userRepository.findUserByEmailIgnoreCase(email).isPresent();
+    }
+
+    private void encodeUserPassword(User user) {
+        var password = user.getPassword();
+        var passwordHash = this.passwordEncoder.encode(password);
+        user.setPassword(passwordHash);
     }
 
 }

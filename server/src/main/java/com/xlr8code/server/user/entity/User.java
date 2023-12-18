@@ -1,5 +1,7 @@
 package com.xlr8code.server.user.entity;
 
+import com.xlr8code.server.authentication.entity.UserActivationCode;
+import com.xlr8code.server.authentication.entity.UserPasswordResetCode;
 import com.xlr8code.server.authentication.entity.UserSession;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,8 +38,8 @@ public class User implements UserDetails {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password_hash", nullable = false, length = 60)
-    private String passwordHash;
+    @Column(name = "password", nullable = false, length = 60)
+    private String password;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -46,7 +48,7 @@ public class User implements UserDetails {
     private LocalDateTime activatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)
+    @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserMetadata metadata;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -58,7 +60,13 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<UserSession> refreshTokens;
+    private Set<UserSession> userSessions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<UserActivationCode> userActivationCodes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<UserPasswordResetCode> userPasswordResetCodes;
 
     @Column(name = "created_at")
     @CreatedDate
@@ -77,9 +85,6 @@ public class User implements UserDetails {
         return this.roles.stream().map(role -> role.getUserRole().getValue()).collect(Collectors.toSet());
     }
 
-    /*
-     *  Spring security related
-     * */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles().stream().map(Role::toGrantedAuthority).collect(Collectors.toList());
@@ -92,7 +97,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return passwordHash;
+        return password;
     }
 
     @Override

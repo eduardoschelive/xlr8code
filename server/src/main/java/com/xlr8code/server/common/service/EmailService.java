@@ -7,7 +7,9 @@ public class EmailService {
 
     public void sendEmail(String email, String subject, String body) {
         // TODO: Implement email sending and remove logging
+        System.out.println();
         System.out.println("Email sent to " + email + " with subject " + subject + " and body " + body);
+        System.out.println();
     }
 
     public void sendActivationEmail(String email, String activationCode) {

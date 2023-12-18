@@ -5,9 +5,9 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:postgresql://localhost:6543/xlr8code
-    username: two-forty # example
-    password: forty-two # example
+    url: jdbc:postgresql://localhost:5432/xlr8code
+    username: postgres # example
+    password: 123 # example
     driverClassName: org.postgresql.Driver
 
 jwt:
@@ -23,6 +23,8 @@ user:
   activation-code:
     unit: HOURS
     expiration-time: 15
+    length: 6
   password-reset-code:
     unit: MINUTES
     expiration-time: 15
+    length: 6

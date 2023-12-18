@@ -1,8 +1,8 @@
-package com.xlr8code.server.authentication.dto.signin;
+package com.xlr8code.server.authentication.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record SignInRequestDTO(
+public record SignInDTO(
         @NotBlank
         String login,
         @NotBlank

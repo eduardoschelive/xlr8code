@@ -32,6 +32,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         var token = recoverToken(request);
+
         var validatedToken = tokenService.validate(token);
 
         if (validatedToken != null) {

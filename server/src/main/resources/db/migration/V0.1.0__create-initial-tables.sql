@@ -1,13 +1,13 @@
 CREATE TABLE users
 (
-    user_id       UUID PRIMARY KEY         NOT NULL,
-    username      TEXT UNIQUE              NOT NULL,
-    email         TEXT UNIQUE              NOT NULL,
-    password_hash VARCHAR(60)              NOT NULL,
-    active        BOOLEAN                           DEFAULT false NOT NULL,
-    created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    activated_at  TIMESTAMP WITH TIME ZONE
+    user_id      UUID PRIMARY KEY         NOT NULL,
+    username     TEXT UNIQUE              NOT NULL,
+    email        TEXT UNIQUE              NOT NULL,
+    password     VARCHAR(60)              NOT NULL,
+    active       BOOLEAN                  NOT NULL DEFAULT false,
+    created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    activated_at TIMESTAMP WITH TIME ZONE
 );
 
 CREATE TABLE user_metadata
@@ -23,7 +23,7 @@ CREATE TABLE user_metadata
 CREATE TABLE roles
 (
     role_id serial PRIMARY KEY,
-    name    varchar(32) NOT NULL
+    name    TEXT NOT NULL
 );
 
 CREATE TABLE user_role
@@ -39,7 +39,7 @@ CREATE TABLE user_sessions
 (
     user_session_id SERIAL PRIMARY KEY NOT NULL,
     user_id         UUID               NOT NULL,
-    refresh_token   UUID               NOT NULL UNIQUE,
+    session_token   UUID               NOT NULL UNIQUE,
     expires_at      TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
@@ -48,7 +48,7 @@ CREATE TABLE user_activation_codes
 (
     activation_code_id SERIAL PRIMARY KEY NOT NULL,
     user_id            UUID               NOT NULL,
-    code               VARCHAR(8)         NOT NULL UNIQUE,
+    code               TEXT               NOT NULL UNIQUE,
     expires_at         TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
@@ -57,7 +57,7 @@ CREATE TABLE user_password_reset_codes
 (
     password_reset_code_id SERIAL PRIMARY KEY NOT NULL,
     user_id                UUID               NOT NULL,
-    code                   VARCHAR(8)         NOT NULL UNIQUE,
+    code                   TEXT               NOT NULL UNIQUE,
     expires_at             TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

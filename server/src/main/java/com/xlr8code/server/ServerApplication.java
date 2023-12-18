@@ -5,6 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ServerApplication {
+
+    // TODO: cleanup code
+    // TODO: add javadoc
+    // TODO: add swagger documentation
+    // TODO: add tests
+
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
     }
