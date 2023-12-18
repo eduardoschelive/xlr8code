@@ -27,4 +27,5 @@ public class Role {
     public SimpleGrantedAuthority toGrantedAuthority() {
         return new SimpleGrantedAuthority(this.name);
     }
+
 }
