@@ -1,9 +1,7 @@
 package com.xlr8code.server.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.xlr8code.server.user.utils.UserRole;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +20,11 @@ public class Role {
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     public SimpleGrantedAuthority toGrantedAuthority() {
-        return new SimpleGrantedAuthority(this.name);
+        return new SimpleGrantedAuthority(this.userRole.getValue());
     }
 
 }

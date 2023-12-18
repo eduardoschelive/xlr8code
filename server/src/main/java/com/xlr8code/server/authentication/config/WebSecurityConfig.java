@@ -1,5 +1,6 @@
-package com.xlr8code.server.common.config;
+package com.xlr8code.server.authentication.config;
 
+import com.xlr8code.server.authentication.utils.RoleEndpoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,13 +19,33 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.sessionManagement(
-                sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
+        configure(httpSecurity);
+        configureEndpoints(httpSecurity);
 
         return httpSecurity.build();
     }
 
+    private void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.sessionManagement(
+                sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+    }
+
+    private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
+        var endpoints = RoleEndpoints.getRoleEndpoints();
+
+        for (var entry : endpoints.entrySet()) {
+            var role = entry.getKey();
+            var roleEndpoints = entry.getValue();
+
+            httpSecurity
+                    .authorizeHttpRequests(authorizeRequests -> {
+                        authorizeRequests
+                                .requestMatchers(roleEndpoints)
+                                .hasRole(role.name());
+                        authorizeRequests.anyRequest().permitAll();
+                    });
+        }
+    }
 }
