@@ -66,19 +66,19 @@
     "commit_scope": {
         "enable": true,
         "custom_scope": false,
-        "initial_value": "app",
+        "initial_value": "",
         "options": [
             {
-                "value": "app",
-                "label": "app"
+                "value": "user",
+                "label": "user"
             },
             {
-                "value": "server",
-                "label": "server"
+                "value": "auth",
+                "label": "auth"
             },
             {
-                "value": "tools",
-                "label": "tools"
+                "value": "documentation",
+                "label": "documentation"
             },
             {
                 "value": "",
