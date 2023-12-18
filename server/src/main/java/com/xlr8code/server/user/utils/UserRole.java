@@ -14,12 +14,12 @@ public enum UserRole {
     private final Long id;
     private final String value;
 
-    public Role toRole() {
-        return Role.builder().id(this.id).userRole(this).build();
-    }
-
     public static UserRole getDefaultValue() {
         return MEMBER;
+    }
+
+    public Role toRole() {
+        return Role.builder().id(this.id).userRole(this).build();
     }
 
 }

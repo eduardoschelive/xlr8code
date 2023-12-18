@@ -17,4 +17,5 @@ public record SignUpRequestDTO(
         String languagePreference,
         @Nullable
         String profilePictureUrl
-) {}
+) {
+}

@@ -12,9 +12,8 @@ public enum Language {
     ENGLISH("en-US"),
     BRAZILIAN_PORTUGUESE("pt_BR");
 
-    private final String code;
-
     private static final Language DEFAULT = ENGLISH;
+    private final String code;
 
     public static Language fromCode(String languageCode) throws ApplicationException {
         for (Language language : Language.values()) {

@@ -16,7 +16,7 @@ public class ApplicationException extends RuntimeException {
         this.placeholders = null;
     }
 
-    public ApplicationException(ExceptionType errorCode, @Nullable Object ...placeholders) {
+    public ApplicationException(ExceptionType errorCode, @Nullable Object... placeholders) {
         super(errorCode.name());
         this.errorCode = errorCode;
         this.placeholders = placeholders;

@@ -61,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ));
 
         return ResponseEntity.status(status).headers(headers).body(new InvalidRequestContentResponse(
-                localeService.getMessage("validation.error.invalid-request-content", httpServletRequest),
+                localeService.getMessage("validation.error.invalid_request_content", httpServletRequest),
                 new Date(),
                 fieldErrors
         ));
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String getMessageForError(FieldError error) {
         String constraintName = StringUtils.splitFromPascalCase(Objects.requireNonNull(error.getCode()));
-        String messageKey = "validation.error." + constraintName.replace(" ", ".").toLowerCase();
+        String messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
         return localeService.getMessage(messageKey, httpServletRequest);
     }
 

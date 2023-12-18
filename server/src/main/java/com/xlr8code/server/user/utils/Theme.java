@@ -13,9 +13,8 @@ public enum Theme {
     LIGHT("light"),
     DARK("dark");
 
-    private final String code;
-
     private static final Theme DEFAULT = SYSTEM;
+    private final String code;
 
     public static Theme fromCode(String themeCode) throws ApplicationException {
         for (Theme theme : Theme.values()) {
