@@ -35,14 +35,12 @@ CREATE TABLE user_role
     FOREIGN KEY (role_id) REFERENCES roles (role_id)
 );
 
-CREATE TABLE refresh_tokens
+CREATE TABLE user_sessions
 (
-    refresh_token_id SERIAL PRIMARY KEY NOT NULL,
-    user_id          UUID               NOT NULL,
-    token            TEXT               NOT NULL,
-    created_at       TIMESTAMP          NOT NULL DEFAULT now(),
-    expires_at       TIMESTAMP          NOT NULL,
-    revoked          BOOLEAN            NOT NULL DEFAULT false,
-    revoked_at       TIMESTAMP,
+    user_session_id SERIAL PRIMARY KEY NOT NULL,
+    user_id         UUID               NOT NULL,
+    refresh_token   UUID               NOT NULL UNIQUE,
+    created_at      TIMESTAMP          NOT NULL DEFAULT now(),
+    expires_at      TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

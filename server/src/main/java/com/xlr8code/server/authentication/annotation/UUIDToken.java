@@ -1,0 +1,24 @@
+package com.xlr8code.server.authentication.annotation;
+
+import com.xlr8code.server.authentication.validator.UUIDTokenValidator;
+import jakarta.validation.Constraint;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(
+        validatedBy = UUIDTokenValidator.class
+)
+public @interface UUIDToken {
+
+    String message() default "Invalid UUID token";
+
+    Class<?> [] groups() default {};
+
+    Class<?> [] payload() default {};
+
+}

@@ -1,6 +1,6 @@
 package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.authentication.entity.RefreshToken;
+import com.xlr8code.server.authentication.entity.UserSession;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<RefreshToken> refreshTokens;
+    private Set<UserSession> refreshTokens;
 
     @Column(name = "created_at")
     @CreatedDate

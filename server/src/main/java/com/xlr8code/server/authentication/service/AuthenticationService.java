@@ -2,10 +2,7 @@ package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.dto.signin.SignInRequestDTO;
 import com.xlr8code.server.authentication.dto.signup.SignUpRequestDTO;
-import com.xlr8code.server.authentication.entity.RefreshToken;
 import com.xlr8code.server.authentication.exception.AuthenticationExceptionType;
-import com.xlr8code.server.authentication.service.token.AccessTokenService;
-import com.xlr8code.server.authentication.service.token.RefreshTokenService;
 import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
