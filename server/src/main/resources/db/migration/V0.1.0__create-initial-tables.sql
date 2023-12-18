@@ -30,3 +30,13 @@ CREATE TABLE user_role(
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
+
+CREATE TABLE verification_tokens(
+    id UUID PRIMARY KEY NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

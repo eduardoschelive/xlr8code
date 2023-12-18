@@ -2,14 +2,8 @@ package com.xlr8code.server.common.exception;
 
 import lombok.Getter;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
-public class ApplicationError extends RuntimeException implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class ApplicationError extends RuntimeException {
 
     private final ErrorCode errorCode;
 
