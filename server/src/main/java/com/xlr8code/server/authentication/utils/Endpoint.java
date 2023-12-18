@@ -7,7 +7,11 @@ import lombok.NoArgsConstructor;
 public class Endpoint {
 
     private static final String PREFIX = "/api";
+
     public static final String AUTHENTICATION = PREFIX + "/authentication";
+    public static final String SIGN_IN = "/sign-in";
+    public static final String SIGN_UP = "/sign-up";
+
     public static final String FAKE = PREFIX + "/fake";
 
 }

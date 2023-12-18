@@ -8,8 +8,10 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -17,12 +19,12 @@ import java.time.OffsetDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Auditable {
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     @CreatedDate
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
     @LastModifiedDate
-    private OffsetDateTime updatedAt;
+    private Date updatedAt;
 
 }
