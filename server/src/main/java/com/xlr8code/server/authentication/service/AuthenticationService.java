@@ -62,8 +62,7 @@ public class AuthenticationService {
 
     /**
      * @param signInRequestDTO the sign-in request body
-     * @return a TokenPairDTO containing the access token and the refresh session token
-     * @see TokenPairDTO
+     * @return a {@link TokenPairDTO} containing the access token and the refresh session token
      * @see AccessTokenService#generate(User)
      */
     @Transactional
@@ -83,8 +82,7 @@ public class AuthenticationService {
      * The user session is ended by removing the refresh session token from the database.
      * </p>
      *
-     * @param signOutDTO the sign-out request body
-     * @see SignOutDTO
+     * @param signOutDTO, a {@link SignOutDTO} containing the refresh session token to be removed
      * @see UserSessionService#end(UUID)
      */
     @Transactional
@@ -95,8 +93,7 @@ public class AuthenticationService {
 
     /**
      * @param refreshSessionDTO the refresh session request body
-     * @return a TokenPairDTO containing the new access token and the new refresh session token
-     * @see TokenPairDTO
+     * @return a {@link TokenPairDTO} containing the new access token and the new refresh session token
      * @see UserSessionService#validateSessionToken(UUID)
      */
     @Transactional
