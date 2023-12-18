@@ -13,4 +13,5 @@ public interface UserActivationCodeRepository extends JpaRepository<UserActivati
     Optional<UserActivationCode> findByCode(String code);
 
     void deleteAllByUser(User user);
+
 }

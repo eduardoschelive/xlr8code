@@ -22,6 +22,7 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String PREFIX = "Bearer";
+
     private final AccessTokenService tokenService;
     private final CustomUserDetailsService customUserDetailsService;
 

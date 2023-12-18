@@ -11,7 +11,7 @@ public class LanguageNotFoundException extends ApplicationException {
 
     @Override
     public String getMessageIdentifier() {
-        return "common.error.language_not_found";
+        return "user.error.language_not_found";
     }
 
     @Override

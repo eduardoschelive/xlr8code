@@ -19,5 +19,4 @@ public class UserAlreadyExistsException extends ApplicationException {
         return HttpStatus.CONFLICT;
     }
 
-
 }
