@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum AuthenticationException implements ExceptionType {
 
-    JWT_CREATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
-    JWT_VERIFICATION_ERROR(HttpStatus.UNAUTHORIZED);
+    JWT_CREATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "authentication.error.jwt_creation_error"),
+    JWT_VERIFICATION_ERROR(HttpStatus.UNAUTHORIZED, "authentication.error.jwt_verification_error");
 
     private final HttpStatus httpStatus;
-    private final String prefix = "authentication";
+    private final String messageIdentifier;
 
 }
