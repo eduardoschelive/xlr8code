@@ -2,13 +2,11 @@ package com.xlr8code.server.user.entity;
 
 import com.xlr8code.server.common.entity.Auditable;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Getter
 public class User extends Auditable {
 
     @Id
@@ -37,7 +36,7 @@ public class User extends Auditable {
     private boolean active;
 
     @Column(name = "activated_at")
-    private OffsetDateTime activatedAt;
+    private Date activatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false)
@@ -61,6 +60,11 @@ public class User extends Auditable {
                 true,
                 this.roles.stream().map(Role::toGrantedAuthority).toList()
         );
+    }
+
+    public void activate() {
+        this.active = true;
+        this.activatedAt = new Date();
     }
 
 }
