@@ -58,7 +58,7 @@ public class TokenService {
     }
 
     private Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(this.secretKey);
+        return Algorithm.HMAC512(this.secretKey);
     }
 
 }

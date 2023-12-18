@@ -6,19 +6,19 @@ import lombok.Getter;
 @Getter
 public class ApplicationException extends RuntimeException {
 
-    private final ExceptionType errorCode;
+    private final ExceptionType exceptionType;
     @Nullable
     private final Object[] placeholders;
 
-    public ApplicationException(ExceptionType errorCode) {
-        super(errorCode.name());
-        this.errorCode = errorCode;
+    public ApplicationException(ExceptionType exceptionType) {
+        super(exceptionType.name());
+        this.exceptionType = exceptionType;
         this.placeholders = null;
     }
 
-    public ApplicationException(ExceptionType errorCode, @Nullable Object... placeholders) {
-        super(errorCode.name());
-        this.errorCode = errorCode;
+    public ApplicationException(ExceptionType exceptionType, @Nullable Object... placeholders) {
+        super(exceptionType.name());
+        this.exceptionType = exceptionType;
         this.placeholders = placeholders;
     }
 
