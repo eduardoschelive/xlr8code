@@ -31,7 +31,6 @@ public class UserSessionService {
 
     @Transactional
     public UserSession generate(User user) {
-
         var userSession = new UserSession(user, this.getExpiresAt());
 
         return this.userSessionRepository.save(userSession);
@@ -46,18 +45,15 @@ public class UserSessionService {
             throw new ApplicationException(AuthenticationExceptionType.SESSION_EXPIRED);
         }
 
+        if (!userSession.getUser().isActive()) {
+            throw new ApplicationException(AuthenticationExceptionType.ACCOUNT_NOT_ACTIVATED);
+        }
+
         return userSession;
     }
 
     @Transactional
-    public UUID refresh(UUID token) {
-        var userSession = this.userSessionRepository.findByRefreshToken(token)
-                .orElseThrow(() -> new ApplicationException(AuthenticationExceptionType.INVALID_REFRESH_TOKEN));
-
-        if (userSession.isExpired()) {
-            throw new ApplicationException(AuthenticationExceptionType.SESSION_EXPIRED);
-        }
-
+    public UUID refresh(UserSession userSession) {
         userSession.refresh();
 
         var refreshedUserSession = this.userSessionRepository.save(userSession);
