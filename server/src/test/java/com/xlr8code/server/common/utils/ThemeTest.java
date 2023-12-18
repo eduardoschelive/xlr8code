@@ -22,6 +22,17 @@ class ThemeTest {
         );
     }
 
+    @Test
+    void itShouldBePresentOnInputAndExpectedOutputProvider() {
+        var themes = Theme.values();
+
+        var isPresent = Stream.of(themes)
+                .allMatch(theme -> inputAndExpectedOutputProvider()
+                        .anyMatch(arguments -> arguments.get()[0].equals(theme.getCode())));
+
+        assertThat(isPresent).isTrue();
+    }
+
     @ParameterizedTest
     @MethodSource("inputAndExpectedOutputProvider")
     void itShouldReturnThemeFromCode(String themeCode, Theme expectedTheme) {

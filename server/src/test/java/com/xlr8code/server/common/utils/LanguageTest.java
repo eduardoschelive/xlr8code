@@ -21,6 +21,17 @@ class LanguageTest {
         );
     }
 
+    @Test
+    void itShouldBePresentOnInputAndExpectedOutputProvider() {
+        var languages = Language.values();
+
+        var isPresent = Stream.of(languages)
+                .allMatch(language -> inputAndExpectedOutputProvider()
+                        .anyMatch(arguments -> arguments.get()[0].equals(language.getCode())));
+
+        assertThat(isPresent).isTrue();
+    }
+
     @ParameterizedTest
     @MethodSource("inputAndExpectedOutputProvider")
     void itShouldReturnLanguageFromCode(String languageCode, Language expectedLanguage) {
