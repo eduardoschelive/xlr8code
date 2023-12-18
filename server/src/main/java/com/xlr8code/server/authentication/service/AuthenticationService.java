@@ -29,7 +29,7 @@ public class AuthenticationService {
     @Transactional
     public User signUp(SignUpRequestDTO signUpBodyDTO) {
         var passwordHash = this.passwordEncoder.encode(signUpBodyDTO.password());
-        var roles = Set.of(UserRole.getDefaultValue().toRole());
+        var roles = Set.of(UserRole.DEFAULT.toRole());
 
         var language = Language.fromCode(signUpBodyDTO.languagePreference());
         var theme = Theme.fromCode(signUpBodyDTO.themePreference());
