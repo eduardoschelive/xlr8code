@@ -1,4 +1,4 @@
-package com.xlr8code.server.domain.user.entity;
+package com.xlr8code.server.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ public class UserMetadata {
     private UUID userId;
 
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @PrimaryKeyJoinColumn(referencedColumnName = "id")
     private User user;
 
     @Column(name = "language_preference", nullable = false, length = 5)

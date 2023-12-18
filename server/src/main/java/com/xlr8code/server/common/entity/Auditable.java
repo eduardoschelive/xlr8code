@@ -1,4 +1,4 @@
-package com.xlr8code.server.domain.common.entity;
+package com.xlr8code.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
