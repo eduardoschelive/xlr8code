@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -65,6 +66,10 @@ public class User extends Auditable {
     public void activate() {
         this.active = true;
         this.activatedAt = new Date();
+    }
+
+    public Set<String> getNamedRoles() {
+        return this.roles.stream().map(role -> role.getUserRole().getValue()).collect(Collectors.toSet());
     }
 
 }

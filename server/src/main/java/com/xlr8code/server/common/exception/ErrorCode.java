@@ -5,9 +5,17 @@ import org.springframework.http.HttpStatus;
 import java.io.Serializable;
 
 public interface ErrorCode extends Serializable {
+
+    String SEPARATOR = ".errors.";
+
+    String getPrefix();
+
     HttpStatus getHttpStatus();
 
-    int getInternalCode();
+    String name();
 
-    String getMessage();
+    default String getMessageIdentifier() {
+        return this.getPrefix() + SEPARATOR + this.name().toLowerCase();
+    }
+
 }

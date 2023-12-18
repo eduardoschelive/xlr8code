@@ -10,10 +10,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum UserErrorCode implements ErrorCode {
 
-    USER_ALREADY_EXISTS(HttpStatus.CONFLICT, 1000, "The username or email is already in use. Please choose another one.");
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;
-    private final int internalCode;
-    private final String message;
+    private final String prefix = "user";
 
 }
