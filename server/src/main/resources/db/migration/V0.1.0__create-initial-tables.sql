@@ -28,9 +28,21 @@ CREATE TABLE roles
 
 CREATE TABLE user_role
 (
-    user_id uuid   NOT NULL,
-    role_id serial NOT NULL,
+    user_id UUID   NOT NULL,
+    role_id SERIAL NOT NULL,
     PRIMARY KEY (user_id, role_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (role_id) REFERENCES roles (role_id)
+);
+
+CREATE TABLE refresh_tokens
+(
+    refresh_token_id SERIAL PRIMARY KEY NOT NULL,
+    user_id          UUID               NOT NULL,
+    token            TEXT               NOT NULL,
+    created_at       TIMESTAMP          NOT NULL DEFAULT now(),
+    expires_at       TIMESTAMP          NOT NULL,
+    revoked          BOOLEAN            NOT NULL DEFAULT false,
+    revoked_at       TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

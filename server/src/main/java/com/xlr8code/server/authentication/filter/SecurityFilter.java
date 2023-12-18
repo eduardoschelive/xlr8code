@@ -1,7 +1,7 @@
 package com.xlr8code.server.authentication.filter;
 
 import com.xlr8code.server.authentication.service.CustomUserDetailsService;
-import com.xlr8code.server.authentication.service.TokenService;
+import com.xlr8code.server.authentication.service.token.AccessTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String PREFIX = "Bearer";
-    private final TokenService tokenService;
+    private final AccessTokenService tokenService;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -31,7 +31,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         var token = recoverToken(request);
-        var validatedToken = tokenService.decodeToken(token);
+        var validatedToken = tokenService.validate(token);
 
         if (validatedToken != null) {
             var username = validatedToken.getSubject();

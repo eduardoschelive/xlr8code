@@ -11,9 +11,14 @@ spring:
     driverClassName: org.postgresql.Driver
 
 jwt:
-  secret-key: secret
-  access-expiration-time: 15 # minutes
-  refresh-expiration-time: 30 # days
+  access-token:
+    secret-key: secret
+    expiration-time: 15
+    unit: MINUTES
+  refresh-token:
+    secret-key: secret2
+    expiration-time: 7
+    unit: DAYS
 
 logging:
   level:
