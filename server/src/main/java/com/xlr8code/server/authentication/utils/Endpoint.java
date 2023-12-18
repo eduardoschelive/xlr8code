@@ -10,8 +10,8 @@ public class Endpoint {
 
     public record Authentication() {
         public static final String BASE_PATH = API_PREFIX + "/authentication";
-        public static final String SIGN_IN = BASE_PATH + "/sign-in";
-        public static final String SIGN_UP = BASE_PATH + "/sign-up";
+        public static final String SIGN_IN = "/sign-in";
+        public static final String SIGN_UP = "/sign-up";
     }
 
 }
