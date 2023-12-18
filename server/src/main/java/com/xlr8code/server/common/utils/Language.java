@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum Language {
 
-    ENGLISH("en_US"),
+    AMERICAN_ENGLISH("en_US"),
     BRAZILIAN_PORTUGUESE("pt_BR");
 
-    private static final Language DEFAULT = ENGLISH;
+    private static final Language DEFAULT = AMERICAN_ENGLISH;
     private final String code;
 
     public static Language fromCode(String languageCode) {
