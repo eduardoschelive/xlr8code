@@ -28,3 +28,6 @@ user:
     unit: MINUTES
     expiration-time: 15
     length: 6
+
+logging:
+  config: classpath:log4j2.xml
