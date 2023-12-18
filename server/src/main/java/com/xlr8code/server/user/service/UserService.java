@@ -19,7 +19,7 @@ public class UserService {
     private final UserMetadataService userMetadataService;
 
     @Transactional
-    public User createUserWithMetadata(User user, UserMetadata userMetadata) throws ApplicationException {
+    public User createUserWithMetadata(User user, UserMetadata userMetadata) {
         var userOptional = this.userRepository.findUserByUsernameOrEmailIgnoreCase(user.getUsername(), user.getEmail());
 
         if (userOptional.isPresent()) {

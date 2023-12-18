@@ -16,7 +16,7 @@ public enum Theme {
     private static final Theme DEFAULT = SYSTEM;
     private final String code;
 
-    public static Theme fromCode(String themeCode) throws ApplicationException {
+    public static Theme fromCode(String themeCode) {
         for (Theme theme : Theme.values()) {
             if (theme.getCode().equals(themeCode)) {
                 return theme;

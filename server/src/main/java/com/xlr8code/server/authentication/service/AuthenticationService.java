@@ -2,7 +2,6 @@ package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.dto.SignInRequestDTO;
 import com.xlr8code.server.authentication.dto.SignUpRequestDTO;
-import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.service.UserService;
@@ -25,9 +24,10 @@ public class AuthenticationService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     @Transactional
-    public User signUp(SignUpRequestDTO signUpBodyDTO) throws ApplicationException {
+    public User signUp(SignUpRequestDTO signUpBodyDTO) {
         var passwordHash = this.passwordEncoder.encode(signUpBodyDTO.password());
         var roles = Set.of(UserRole.getDefaultValue().toRole());
 
@@ -50,15 +50,16 @@ public class AuthenticationService {
         return this.userService.createUserWithMetadata(user, userMetadata);
     }
 
-    public User signIn(SignInRequestDTO signInRequestDTO) {
+    public String signIn(SignInRequestDTO signInRequestDTO) {
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 signInRequestDTO.login(),
                 signInRequestDTO.password()
         );
+
         var authentication = this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        var user = (User) authentication.getPrincipal();
 
-        return (User) authentication.getPrincipal();
+        return this.tokenService.generateAccessToken(user);
     }
-
 
 }

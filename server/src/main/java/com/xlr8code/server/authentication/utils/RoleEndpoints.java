@@ -12,7 +12,7 @@ public class RoleEndpoints {
 
     public static Map<UserRole, String[]> getRoleEndpoints() {
 
-        return new EnumMap<UserRole, String[]>(UserRole.class);
+        return new EnumMap<>(UserRole.class);
     }
 
 }
