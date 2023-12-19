@@ -24,4 +24,8 @@ public class Endpoint {
         public static final String RESET_PASSWORD = "/reset-password";
     }
 
+    public record User() {
+        public static final String BASE_PATH = API_PREFIX + "/user";
+    }
+
 }
