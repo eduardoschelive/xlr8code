@@ -52,12 +52,13 @@ public class AuthenticationService {
 
     /**
      * @param signUpDTO the sign-up request body
+     * @return a {@link User} containing the user's data
      */
     @Transactional
-    public void signUp(SignUpDTO signUpDTO) {
+    public User signUp(SignUpDTO signUpDTO) {
         var user = this.buildUserWithMetadata(signUpDTO);
 
-        this.userService.create(user);
+        return this.userService.create(user);
     }
 
     /**

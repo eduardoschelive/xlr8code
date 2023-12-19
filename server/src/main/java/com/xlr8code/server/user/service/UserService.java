@@ -40,7 +40,7 @@ public class UserService {
      * @see OnCreateUserEvent
      */
     @Transactional
-    public void create(User user) {
+    public User create(User user) {
 
         if (this.isUsernameTaken(user.getUsername()))
             throw new UsernameAlreadyTakenException();
@@ -49,9 +49,12 @@ public class UserService {
             throw new EmailAlreadyInUseException();
 
         this.encodeUserPassword(user);
-        this.userRepository.save(user);
 
-        this.applicationEventPublisher.publishEvent(new OnCreateUserEvent(user));
+        var newUser = this.userRepository.save(user);
+
+        this.applicationEventPublisher.publishEvent(new OnCreateUserEvent(newUser));
+
+        return newUser;
     }
 
 
