@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
 @RequiredArgsConstructor
@@ -17,8 +19,10 @@ public class AuthenticationController {
 
     @PostMapping(Endpoint.Authentication.SIGN_UP)
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDTO signUpBodyDTO) {
-        this.authenticationService.signUp(signUpBodyDTO);
-        return ResponseEntity.ok().build();
+        var newUser = this.authenticationService.signUp(signUpBodyDTO);
+        var createdUserURI = URI.create(Endpoint.User.BASE_PATH + "/" + newUser.getId());
+
+        return ResponseEntity.created(createdUserURI).build();
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_IN)
