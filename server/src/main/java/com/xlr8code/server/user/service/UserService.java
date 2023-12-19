@@ -94,12 +94,10 @@ public class UserService {
         this.userRepository.save(user);
     }
 
-
     /**
      * @param username Username to be checked
      * @return true if the username is taken, false otherwise
      */
-    @Transactional(readOnly = true)
     public boolean isUsernameTaken(String username) {
         return this.userRepository.findUserByUsernameIgnoreCase(username).isPresent();
     }
@@ -108,7 +106,6 @@ public class UserService {
      * @param email Email to be checked
      * @return true if the email is in use, false otherwise
      */
-    @Transactional(readOnly = true)
     public boolean isEmailInUse(String email) {
         return this.userRepository.findUserByEmailIgnoreCase(email).isPresent();
     }
