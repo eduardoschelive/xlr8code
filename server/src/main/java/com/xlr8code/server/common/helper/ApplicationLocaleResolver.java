@@ -30,7 +30,6 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
      * @see Language
      */
     @Override
-    @Nonnull
     public Locale resolveLocale(HttpServletRequest request) {
         var locale = request.getHeader(ACCEPT_LANGUAGE_HEADER);
 

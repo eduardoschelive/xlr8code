@@ -2,6 +2,7 @@ package com.xlr8code.server.user.service;
 
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
+import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
@@ -9,11 +10,16 @@ import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -117,6 +123,16 @@ public class UserService {
         var password = user.getPassword();
         var passwordHash = this.passwordEncoder.encode(password);
         user.setPassword(passwordHash);
+    }
+
+    public Optional<User> findById(UUID id) {
+       return this.userRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserDTO> findById(String id) {
+        var user = this.findById(UUID.fromString(id));
+        return user.map(UserDTO::fromUser);
     }
 
 }
