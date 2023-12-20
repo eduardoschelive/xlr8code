@@ -39,7 +39,7 @@ CREATE TABLE user_sessions
 (
     user_session_id SERIAL PRIMARY KEY NOT NULL,
     user_id         UUID               NOT NULL,
-    session_token   UUID               NOT NULL UNIQUE,
+    session_token   TEXT               NOT NULL UNIQUE,
     expires_at      TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

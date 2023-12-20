@@ -5,7 +5,7 @@ import com.xlr8code.server.authentication.exception.ExpiredPasswordResetCodeExce
 import com.xlr8code.server.authentication.exception.InvalidPasswordResetCodeException;
 import com.xlr8code.server.authentication.repository.UserPasswordResetCodeRepository;
 import com.xlr8code.server.common.utils.DateTimeUtils;
-import com.xlr8code.server.common.utils.RandomCode;
+import com.xlr8code.server.common.utils.RandomUtils;
 import com.xlr8code.server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ public class UserPasswordResetCodeService {
     public UserPasswordResetCode generate(User user) {
 
         var userPasswordResetCode = UserPasswordResetCode.builder()
-                .code(RandomCode.generate(this.length))
+                .code(RandomUtils.generate(this.length))
                 .user(user)
                 .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();

@@ -69,17 +69,19 @@ public class AuthenticationController {
     @PostMapping(Endpoint.Authentication.FORGOT_PASSWORD)
     public ResponseEntity<Void> forgotPassword(@RequestBody @Valid ForgotPasswordDTO forgotPasswordRequestDTO) {
         this.authenticationService.forgotPassword(forgotPasswordRequestDTO);
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(Endpoint.Authentication.RESET_PASSWORD)
     public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPasswordRequestDTO) {
         this.authenticationService.resetPassword(resetPasswordRequestDTO);
+
         return ResponseEntity.noContent().build();
     }
 
     private ResponseEntity<TokenDTO> buildAuthResponse(AuthResultDTO authResultDTO) {
-        var sessionToken = authResultDTO.userSession().getSessionToken().toString();
+        var sessionToken = authResultDTO.userSession().getSessionToken();
 
         var sessionCookie = this.buildSessionCookie(sessionToken, this.authenticationService.getSessionDuration());
 

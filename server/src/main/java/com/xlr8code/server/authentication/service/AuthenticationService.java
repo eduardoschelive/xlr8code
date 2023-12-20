@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -84,25 +83,21 @@ public class AuthenticationService {
      * </p>
      *
      * @param sessionToken the refresh session token to be removed
-     * @see UserSessionService#end(UUID)
+     * @see UserSessionService#end(String)
      */
     @Transactional
     public void signOut(String sessionToken) {
-        var sessionTokenUUID = UUID.fromString(sessionToken);
-
-        this.userSessionService.end(sessionTokenUUID);
+        this.userSessionService.end(sessionToken);
     }
 
     /**
      * @param sessionToken the refresh session request body
      * @return a {@link AuthResultDTO} containing the new access token and the new session
-     * @see UserSessionService#validateSessionToken(UUID)
+     * @see UserSessionService#validateSessionToken(String)
      */
     @Transactional
     public AuthResultDTO refreshSession(String sessionToken) {
-        var oldSessionToken = UUID.fromString(sessionToken);
-
-        var userSession = this.userSessionService.validateSessionToken(oldSessionToken);
+        var userSession = this.userSessionService.validateSessionToken(sessionToken);
 
         var newRefreshSessionToken = this.userSessionService.refresh(userSession);
         var newAccessToken = this.accessTokenService.generate(userSession.getUser());

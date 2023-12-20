@@ -1,7 +1,6 @@
 package com.xlr8code.server.common.helper;
 
 import com.xlr8code.server.common.utils.Language;
-import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -19,12 +18,13 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
 
     /**
      * <p>
-     *     Resolves the locale of the given request.
-     *     If the locale is not supported, the default locale will be returned.
-     *     The supported locales are defined in {@link ApplicationLocaleResolver#SUPPORTED_LANGUAGES}.
-     *     The default locale is defined in {@link ApplicationLocaleResolver#DEFAULT_LOCALE}.
-     *     The locale is retrieved from the request header "Accept-Language".
+     * Resolves the locale of the given request.
+     * If the locale is not supported, the default locale will be returned.
+     * The supported locales are defined in {@link ApplicationLocaleResolver#SUPPORTED_LANGUAGES}.
+     * The default locale is defined in {@link ApplicationLocaleResolver#DEFAULT_LOCALE}.
+     * The locale is retrieved from the request header "Accept-Language".
      * <p>
+     *
      * @param request the request from which the locale will be resolved
      * @return the locale corresponding to the given request
      * @see Language
