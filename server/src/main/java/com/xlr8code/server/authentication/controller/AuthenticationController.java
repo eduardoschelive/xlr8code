@@ -1,7 +1,6 @@
 package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.*;
-import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.Endpoint;
 import jakarta.validation.Valid;
@@ -21,9 +20,12 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    private static final String SESSION_TOKEN_COOKIE_NAME = "session_token";
+
     @PostMapping(Endpoint.Authentication.SIGN_UP)
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDTO signUpBodyDTO) {
         var newUser = this.authenticationService.signUp(signUpBodyDTO);
+
         var createdUserURI = URI.create(Endpoint.User.BASE_PATH + "/" + newUser.getId());
 
         return ResponseEntity.created(createdUserURI).build();
@@ -33,42 +35,36 @@ public class AuthenticationController {
     public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
         var signInResultDTO = this.authenticationService.signIn(signInRequestDTO);
 
-        var sessionToken = this.buildSessionCookie(signInResultDTO.userSession());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, sessionToken.toString())
-                .body(new TokenDTO(signInResultDTO.token()));
+        return this.buildAuthResponse(signInResultDTO);
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_OUT)
-    public ResponseEntity<Void> signOut(@CookieValue("session_token") String sessionToken) {
+    public ResponseEntity<Void> signOut(@CookieValue(SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
         this.authenticationService.signOut(sessionToken);
 
-        var invalidateSessionCookie = this.buildInvalidateSessionCookie().toString();
+        var invalidateSessionCookie = this.buildInvalidateSessionCookie();
 
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, invalidateSessionCookie).build();
     }
 
     @PostMapping(Endpoint.Authentication.REFRESH_SESSION)
-    public ResponseEntity<TokenDTO> refreshSession(@CookieValue("session_token") String sessionToken) {
-        var refreshedUserSession = this.authenticationService.refreshSession(sessionToken);
+    public ResponseEntity<TokenDTO> refreshSession(@CookieValue(SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
+        var refreshedSessionAuthResult = this.authenticationService.refreshSession(sessionToken);
 
-        var sessionCookie = this.buildSessionCookie(refreshedUserSession.userSession());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, sessionCookie.toString())
-                .body(new TokenDTO(refreshedUserSession.token()));
+        return this.buildAuthResponse(refreshedSessionAuthResult);
     }
 
     @GetMapping(Endpoint.Authentication.ACTIVATE_USER)
     public ResponseEntity<Void> activateUser(@RequestParam String code) {
         this.authenticationService.activateUser(code);
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(Endpoint.Authentication.RESEND_ACTIVATION_CODE)
     public ResponseEntity<Void> resendActivationCode(@RequestBody @Valid ResendCodeDTO resendCodeRequestDTO) {
         this.authenticationService.resendActivationCode(resendCodeRequestDTO.login());
+
         return ResponseEntity.noContent().build();
     }
 
@@ -84,20 +80,27 @@ public class AuthenticationController {
         return ResponseEntity.noContent().build();
     }
 
-    private ResponseCookie buildSessionCookie(UserSession sessionToken) {
-        return ResponseCookie.from("session_token", sessionToken.getSessionToken().toString())
+    private ResponseEntity<TokenDTO> buildAuthResponse(AuthResultDTO authResultDTO) {
+        var sessionToken = authResultDTO.userSession().getSessionToken().toString();
+
+        var sessionCookie = this.buildSessionCookie(sessionToken, this.authenticationService.getSessionDuration());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, sessionCookie)
+                .body(new TokenDTO(authResultDTO.token()));
+    }
+    private String buildSessionCookie(String sessionToken, long maxAge) {
+        var cookie = ResponseCookie.from(SESSION_TOKEN_COOKIE_NAME, sessionToken)
                 .httpOnly(true)
-                .maxAge(this.authenticationService.getSessionDuration())
+                .maxAge(maxAge)
                 .path("/")
                 .build();
+
+        return cookie.toString();
     }
 
-    private ResponseCookie buildInvalidateSessionCookie() {
-        return ResponseCookie.from("session_token", "")
-                .httpOnly(true)
-                .maxAge(Duration.ZERO)
-                .path("/")
-                .build();
+    private String buildInvalidateSessionCookie() {
+        return this.buildSessionCookie("", 0);
     }
 
 }
