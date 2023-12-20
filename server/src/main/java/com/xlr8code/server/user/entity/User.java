@@ -3,6 +3,7 @@ package com.xlr8code.server.user.entity;
 import com.xlr8code.server.authentication.entity.UserActivationCode;
 import com.xlr8code.server.authentication.entity.UserPasswordResetCode;
 import com.xlr8code.server.authentication.entity.UserSession;
+import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -83,6 +84,14 @@ public class User implements UserDetails {
 
     public Set<String> getNamedRoles() {
         return this.roles.stream().map(role -> role.getUserRole().getValue()).collect(Collectors.toSet());
+    }
+
+    public boolean hasRole(UserRole userRole) {
+        return this.roles.stream().anyMatch(role -> role.getUserRole().equals(userRole));
+    }
+
+    public boolean isAdmin() {
+        return this.hasRole(UserRole.ADMIN);
     }
 
     @Override

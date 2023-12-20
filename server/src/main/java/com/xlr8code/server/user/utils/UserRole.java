@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum UserRole {
 
-    MEMBER(1L, "ROLE_MEMBER"),
-    ADMIN(2L, "ROLE_ADMIN");
+    ADMIN(1L, "ROLE_ADMIN"),
+    MEMBER(2L, "ROLE_MEMBER");
 
     public static final UserRole DEFAULT = MEMBER;
     private final Long id;

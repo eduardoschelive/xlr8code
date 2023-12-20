@@ -11,8 +11,9 @@ import java.util.Map;
 public class RoleEndpoints {
 
     public static Map<UserRole, String[]> getRoleEndpoints() {
+        var roleEndpoints = new EnumMap<UserRole, String[]>(UserRole.class);
 
-        return new EnumMap<>(UserRole.class);
+        return roleEndpoints;
     }
 
 }
