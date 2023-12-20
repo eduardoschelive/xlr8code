@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.Duration;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
@@ -32,13 +31,13 @@ public class AuthenticationController {
 
     @PostMapping(Endpoint.Authentication.SIGN_IN)
     public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
-        var tokenPairDTO = this.authenticationService.signIn(signInRequestDTO);
+        var signInResultDTO = this.authenticationService.signIn(signInRequestDTO);
 
-        var sessionToken = this.buildSessionCookie(tokenPairDTO.userSession());
+        var sessionToken = this.buildSessionCookie(signInResultDTO.userSession());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, sessionToken.toString())
-                .body(new TokenDTO(tokenPairDTO.token()));
+                .body(new TokenDTO(signInResultDTO.token()));
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_OUT)
