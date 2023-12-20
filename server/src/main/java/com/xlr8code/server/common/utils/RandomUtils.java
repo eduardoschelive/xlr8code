@@ -33,6 +33,11 @@ public class RandomUtils {
         return sb.toString();
     }
 
+    /**
+     * @param length the length of the random code to be generated
+     * @return a random alphanumeric code of the given length
+     * @see RandomUtils#generate(int, String)
+     */
     public static String generateAlphanumeric(int length) {
         return generate(length, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
     }
