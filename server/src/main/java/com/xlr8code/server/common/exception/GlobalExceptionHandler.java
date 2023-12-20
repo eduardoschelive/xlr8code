@@ -4,7 +4,6 @@ import com.xlr8code.server.common.dto.ApplicationExceptionResponseDTO;
 import com.xlr8code.server.common.dto.InvalidRequestContentResponseDTO;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.StringUtils;
-import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,10 +13,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -58,11 +57,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
     }
 
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<ApplicationExceptionResponseDTO> handleMissingRequestCookieException(MissingRequestCookieException ex) {
+        var httpStatus = HttpStatus.BAD_REQUEST;
+        var messageIdentifier = "error.cookie_not_present";
+        var errorMessage = "COOKIE_NOT_PRESENT";
+
+        var message = localeService.getMessage(messageIdentifier, httpServletRequest);
+
+        var applicationErrorResponse = new ApplicationExceptionResponseDTO(
+                httpStatus.value(),
+                errorMessage,
+                message.replace("{0}", ex.getCookieName()),
+                new Date()
+        );
+
+        return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         var httpStatus = HttpStatus.NOT_FOUND;
         var messageIdentifier = "error.resource_not_found";
-        var errorMessage = ex.getMessage();
+        var errorMessage = "RESOURCE_NOT_FOUND";
 
         var message = localeService.getMessage(messageIdentifier, httpServletRequest);
 
@@ -84,7 +101,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
-                        this::getMessageForError,
+                        this::getMessageForField,
                         (existing, replacement) -> existing
                 ));
 
@@ -114,7 +131,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
-    private String getMessageForError(FieldError error) {
+    private String getMessageForField(FieldError error) {
         var constraintName = StringUtils.splitPascalCase(Objects.requireNonNull(error.getCode()));
         var messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
         return localeService.getMessage(messageKey, httpServletRequest);
