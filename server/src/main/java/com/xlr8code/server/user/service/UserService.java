@@ -128,13 +128,15 @@ public class UserService {
         user.setPassword(passwordHash);
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findById(UUID id) {
        return this.userRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
     public Optional<UserDTO> findById(String id) {
-        var user = this.findById(UUID.fromString(id));
+        var uuid = UUID.fromString(id);
+        var user = this.userRepository.findById(uuid);
         return user.map(UserDTO::fromUser);
     }
 

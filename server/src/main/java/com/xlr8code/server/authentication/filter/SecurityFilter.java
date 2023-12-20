@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -36,8 +37,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         var validatedToken = tokenService.validate(token);
 
         if (validatedToken != null) {
-            var username = validatedToken.getSubject();
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+            var uuid = UUID.fromString(validatedToken.getSubject());
+            UserDetails userDetails = customUserDetailsService.loadUserById(uuid);
 
             var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -50,11 +51,15 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recoverToken(HttpServletRequest request) {
         var token = request.getHeader(AUTHORIZATION_HEADER);
 
-        if (token == null || !token.startsWith(PREFIX)) {
+        if (!this.isTokenCandidate(token)) {
             return null;
         }
 
         return this.removePrefix(token);
+    }
+
+    private boolean isTokenCandidate(String token) {
+        return token != null && token.startsWith(PREFIX);
     }
 
     private String removePrefix(String token) {

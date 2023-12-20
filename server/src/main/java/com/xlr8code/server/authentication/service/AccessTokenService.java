@@ -35,10 +35,7 @@ public class AccessTokenService {
     public String generate(User user) {
         try {
             return JWT.create()
-                    .withSubject(user.getUsername())
-                    .withClaim("language", user.getMetadata().getLanguagePreference().getCode())
-                    .withClaim("theme", user.getMetadata().getThemePreference().getCode())
-                    .withClaim("profilePictureUrl", user.getMetadata().getProfilePictureUrl())
+                    .withSubject(user.getId().toString())
                     .withClaim("roles", user.getNamedRoles().stream().toList())
                     .withExpiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                     .withIssuedAt(this.getIssuedAt())

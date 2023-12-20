@@ -1,14 +1,19 @@
 package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.*;
+import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.Endpoint;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.Duration;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
@@ -26,21 +31,34 @@ public class AuthenticationController {
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_IN)
-    public ResponseEntity<TokenPairDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
-        var response = this.authenticationService.signIn(signInRequestDTO);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
+        var tokenPairDTO = this.authenticationService.signIn(signInRequestDTO);
+
+        var sessionToken = this.buildSessionCookie(tokenPairDTO.userSession());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, sessionToken.toString())
+                .body(new TokenDTO(tokenPairDTO.token()));
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_OUT)
-    public ResponseEntity<Void> revokeToken(@RequestBody @Valid SignOutDTO signOutDTO) {
-        this.authenticationService.signOut(signOutDTO);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> signOut(@CookieValue("session_token") String sessionToken) {
+        this.authenticationService.signOut(sessionToken);
+
+        var invalidateSessionCookie = this.buildInvalidateSessionCookie().toString();
+
+        return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, invalidateSessionCookie).build();
     }
 
     @PostMapping(Endpoint.Authentication.REFRESH_SESSION)
-    public ResponseEntity<TokenPairDTO> refreshSession(@RequestBody @Valid RefreshSessionDTO refreshSessionDTO) {
-        var response = this.authenticationService.refreshSession(refreshSessionDTO);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<TokenDTO> refreshSession(@CookieValue("session_token") String sessionToken) {
+        var refreshedUserSession = this.authenticationService.refreshSession(sessionToken);
+
+        var sessionCookie = this.buildSessionCookie(refreshedUserSession.userSession());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, sessionCookie.toString())
+                .body(new TokenDTO(refreshedUserSession.token()));
     }
 
     @GetMapping(Endpoint.Authentication.ACTIVATE_USER)
@@ -65,6 +83,22 @@ public class AuthenticationController {
     public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPasswordRequestDTO) {
         this.authenticationService.resetPassword(resetPasswordRequestDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    private ResponseCookie buildSessionCookie(UserSession sessionToken) {
+        return ResponseCookie.from("session_token", sessionToken.getSessionToken().toString())
+                .httpOnly(true)
+                .maxAge(this.authenticationService.getSessionDuration())
+                .path("/")
+                .build();
+    }
+
+    private ResponseCookie buildInvalidateSessionCookie() {
+        return ResponseCookie.from("session_token", "")
+                .httpOnly(true)
+                .maxAge(Duration.ZERO)
+                .path("/")
+                .build();
     }
 
 }

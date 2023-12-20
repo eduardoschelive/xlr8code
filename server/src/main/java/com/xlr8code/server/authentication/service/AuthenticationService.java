@@ -35,7 +35,7 @@ public class AuthenticationService {
 
     /**
      * @param authenticationToken the authentication token to be used for authentication
-     * @return the authenticated user
+     * @return the authenticated {@link User}
      * @throws AccountNotActivatedException         if the user is not activated
      * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
      */
@@ -63,11 +63,11 @@ public class AuthenticationService {
 
     /**
      * @param signInRequestDTO the sign-in request body
-     * @return a {@link TokenPairDTO} containing the access token and the refresh session token
+     * @return a {@link SignInResultDTO} containing the access token and the session
      * @see AccessTokenService#generate(User)
      */
     @Transactional
-    public TokenPairDTO signIn(SignInDTO signInRequestDTO) {
+    public SignInResultDTO signIn(SignInDTO signInRequestDTO) {
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signInRequestDTO.login(), signInRequestDTO.password());
 
         var user = this.authenticate(usernamePasswordAuthenticationToken);
@@ -75,7 +75,7 @@ public class AuthenticationService {
         var token = this.accessTokenService.generate(user);
         var userSession = this.userSessionService.create(user);
 
-        return new TokenPairDTO(token, userSession.getSessionToken());
+        return new SignInResultDTO(token, userSession);
     }
 
     /**
@@ -83,30 +83,31 @@ public class AuthenticationService {
      * The user session is ended by removing the refresh session token from the database.
      * </p>
      *
-     * @param signOutDTO, a {@link SignOutDTO} containing the refresh session token to be removed
+     * @param sessionToken the refresh session token to be removed
      * @see UserSessionService#end(UUID)
      */
     @Transactional
-    public void signOut(SignOutDTO signOutDTO) {
-        var sessionToken = UUID.fromString(signOutDTO.sessionToken());
-        this.userSessionService.end(sessionToken);
+    public void signOut(String sessionToken) {
+        var sessionTokenUUID = UUID.fromString(sessionToken);
+
+        this.userSessionService.end(sessionTokenUUID);
     }
 
     /**
-     * @param refreshSessionDTO the refresh session request body
-     * @return a {@link TokenPairDTO} containing the new access token and the new refresh session token
+     * @param sessionToken the refresh session request body
+     * @return a {@link SignInResultDTO} containing the new access token and the new session
      * @see UserSessionService#validateSessionToken(UUID)
      */
     @Transactional
-    public TokenPairDTO refreshSession(RefreshSessionDTO refreshSessionDTO) {
-        var oldRefreshSessionToken = UUID.fromString(refreshSessionDTO.refreshSessionToken());
+    public SignInResultDTO refreshSession(String sessionToken) {
+        var oldSessionToken = UUID.fromString(sessionToken);
 
-        var userSession = this.userSessionService.validateSessionToken(oldRefreshSessionToken);
+        var userSession = this.userSessionService.validateSessionToken(oldSessionToken);
 
         var newRefreshSessionToken = this.userSessionService.refresh(userSession);
         var newAccessToken = this.accessTokenService.generate(userSession.getUser());
 
-        return new TokenPairDTO(newAccessToken, newRefreshSessionToken);
+        return new SignInResultDTO(newAccessToken, newRefreshSessionToken);
     }
 
     /**
@@ -182,6 +183,14 @@ public class AuthenticationService {
 
         this.userService.changePassword(user, newPassword, confirmPassword);
         this.userPasswordResetCodeService.removeAllFromUser(user);
+    }
+
+
+    /**
+     * @return the duration of the session in seconds
+     */
+    public long getSessionDuration() {
+        return this.userSessionService.getSessionDuration();
     }
 
     private User buildUserWithMetadata(SignUpDTO signUpDTO) {
