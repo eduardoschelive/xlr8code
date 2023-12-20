@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "user_sessions")
@@ -28,7 +27,7 @@ public class UserSession {
     private User user;
 
     @Column(name = "session_token", nullable = false, unique = true)
-    private UUID sessionToken;
+    private String sessionToken;
 
     @Column(name = "expires_at", nullable = false)
     private Date expiresAt;
@@ -37,8 +36,8 @@ public class UserSession {
         return DateTimeUtils.isExpired(this.expiresAt);
     }
 
-    public void refresh(Date newExpiresAt) {
-        this.sessionToken = UUID.randomUUID();
+    public void refresh(String newSessionToken, Date newExpiresAt) {
+        this.sessionToken = newSessionToken;
         this.expiresAt = newExpiresAt;
     }
 

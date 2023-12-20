@@ -10,10 +10,6 @@ import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +28,9 @@ public class UserService {
 
     /**
      * @param user User to be created
-     * <p>
-     * This method creates a user and saves it to the database. Also publishes an event to send an activation email.
-     * </p>
+     *             <p>
+     *             This method creates a user and saves it to the database. Also publishes an event to send an activation email.
+     *             </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
      * @see OnCreateUserEvent
@@ -68,12 +64,12 @@ public class UserService {
     }
 
     /**
-     * @param user User to have the password changed
-     * @param newPassword New password
+     * @param user                    User to have the password changed
+     * @param newPassword             New password
      * @param newPasswordConfirmation New password confirmation
-     * <p>
-     * This method changes the password of the user and ends all sessions of the user.
-     * </p>
+     *                                <p>
+     *                                This method changes the password of the user and ends all sessions of the user.
+     *                                </p>
      * @throws PasswordMatchException if the new password and the new password confirmation do not match
      */
     @Transactional
@@ -93,9 +89,9 @@ public class UserService {
 
     /**
      * @param user User to be activated
-     * <p>
-     * This method activates the user and saves it to the database.
-     * </p>
+     *             <p>
+     *             This method activates the user and saves it to the database.
+     *             </p>
      */
     @Transactional
     public void activate(User user) {
@@ -130,7 +126,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> findById(UUID id) {
-       return this.userRepository.findById(id);
+        return this.userRepository.findById(id);
     }
 
     @Transactional(readOnly = true)

@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import java.security.SecureRandom;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RandomCode {
+public class RandomUtils {
 
     private static final String DEFAULT_ALLOWED_CHARACTERS = "0123456789";
 
     /**
      * @param length the length of the random code to be generated
      * @return a random code of the given length
-     * @see RandomCode#generate(int, String)
+     * @see RandomUtils#generate(int, String)
      */
     public static String generate(int length) {
         return generate(length, DEFAULT_ALLOWED_CHARACTERS);
@@ -31,6 +31,10 @@ public class RandomCode {
             sb.append(allowedCharacters.charAt(random.nextInt(allowedCharacters.length())));
         }
         return sb.toString();
+    }
+
+    public static String generateAlphanumeric(int length) {
+        return generate(length, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
     }
 
 }

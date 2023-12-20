@@ -17,8 +17,9 @@ public enum Language {
 
     /**
      * <p>
-     *     Converts a language code to a {@link Language} object. it´s case insensitive.
+     * Converts a language code to a {@link Language} object. it´s case insensitive.
      * </p>
+     *
      * @param languageCode the language code to be converted to a {@link Language} object (e.g. "pt_BR")
      * @return the {@link Language} object corresponding to the given language code
      * @throws LanguageNotFoundException if the given language code does not correspond to any {@link Language} object

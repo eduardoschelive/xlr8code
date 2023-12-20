@@ -15,7 +15,7 @@ public class LocaleService {
 
 
     /**
-     * @param code the code of the message to be retrieved
+     * @param code    the code of the message to be retrieved
      * @param request the request from which the locale will be retrieved
      * @return the message corresponding to the given code in the locale of the given request
      */

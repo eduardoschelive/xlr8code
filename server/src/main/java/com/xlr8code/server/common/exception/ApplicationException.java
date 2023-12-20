@@ -1,7 +1,6 @@
 package com.xlr8code.server.common.exception;
 
 import jakarta.annotation.Nullable;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 public abstract class ApplicationException extends RuntimeException {
