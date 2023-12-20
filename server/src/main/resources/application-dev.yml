@@ -13,8 +13,8 @@ spring:
 jwt:
   access-token:
     secret-key: secret
-    expiration-time: 15
-    unit: MINUTES
+    expiration-time: 1
+    unit: HOURS
 
 user:
   session:
