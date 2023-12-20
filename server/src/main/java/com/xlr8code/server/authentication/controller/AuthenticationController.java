@@ -11,16 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.Duration;
 
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
-
     private static final String SESSION_TOKEN_COOKIE_NAME = "session_token";
+    private final AuthenticationService authenticationService;
 
     @PostMapping(Endpoint.Authentication.SIGN_UP)
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDTO signUpBodyDTO) {
@@ -63,7 +61,7 @@ public class AuthenticationController {
 
     @PostMapping(Endpoint.Authentication.RESEND_ACTIVATION_CODE)
     public ResponseEntity<Void> resendActivationCode(@RequestBody @Valid ResendCodeDTO resendCodeRequestDTO) {
-        this.authenticationService.resendActivationCode(resendCodeRequestDTO.login());
+        this.authenticationService.resendActivationCode(resendCodeRequestDTO);
 
         return ResponseEntity.noContent().build();
     }
@@ -89,6 +87,7 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE, sessionCookie)
                 .body(new TokenDTO(authResultDTO.token()));
     }
+
     private String buildSessionCookie(String sessionToken, long maxAge) {
         var cookie = ResponseCookie.from(SESSION_TOKEN_COOKIE_NAME, sessionToken)
                 .httpOnly(true)

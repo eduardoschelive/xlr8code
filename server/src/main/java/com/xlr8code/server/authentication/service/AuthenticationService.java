@@ -129,13 +129,14 @@ public class AuthenticationService {
      * The activation code is sent to the user's email address.
      * </p>
      *
-     * @param login the login of the user to whom the activation code will be sent
+     * @param resendCodeDTO a {@link ResendCodeDTO} containing the user's login
      * @throws AccountAlreadyActivatedException if the user is already activated
      * @throws UserNotFoundException            if the user is not found
      * @see UserActivationCodeService#generate(User)
      */
     @Transactional
-    public void resendActivationCode(String login) {
+    public void resendActivationCode(ResendCodeDTO resendCodeDTO) {
+        var login = resendCodeDTO.login();
         var user = this.userService.findByLogin(login).orElseThrow(UserNotFoundException::new);
 
         if (user.isActive()) {
@@ -149,8 +150,9 @@ public class AuthenticationService {
 
     /**
      * <p>
-     *     The password reset code is sent to the user's email address.
+     * The password reset code is sent to the user's email address.
      * </p>
+     *
      * @param forgotPasswordDTO the forgot password request body
      * @throws UserNotFoundException if the user is not found
      * @see UserPasswordResetCodeService#generate(User)
