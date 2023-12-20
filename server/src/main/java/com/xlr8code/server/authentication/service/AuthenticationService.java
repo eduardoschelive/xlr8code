@@ -62,20 +62,20 @@ public class AuthenticationService {
     }
 
     /**
-     * @param signInRequestDTO the sign-in request body
-     * @return a {@link SignInResultDTO} containing the access token and the session
+     * @param signInDTO the sign-in request body
+     * @return a {@link AuthResultDTO} containing the access token and the session
      * @see AccessTokenService#generate(User)
      */
     @Transactional
-    public SignInResultDTO signIn(SignInDTO signInRequestDTO) {
-        var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signInRequestDTO.login(), signInRequestDTO.password());
+    public AuthResultDTO signIn(SignInDTO signInDTO) {
+        var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signInDTO.login(), signInDTO.password());
 
         var user = this.authenticate(usernamePasswordAuthenticationToken);
 
         var token = this.accessTokenService.generate(user);
         var userSession = this.userSessionService.create(user);
 
-        return new SignInResultDTO(token, userSession);
+        return new AuthResultDTO(token, userSession);
     }
 
     /**
@@ -95,11 +95,11 @@ public class AuthenticationService {
 
     /**
      * @param sessionToken the refresh session request body
-     * @return a {@link SignInResultDTO} containing the new access token and the new session
+     * @return a {@link AuthResultDTO} containing the new access token and the new session
      * @see UserSessionService#validateSessionToken(UUID)
      */
     @Transactional
-    public SignInResultDTO refreshSession(String sessionToken) {
+    public AuthResultDTO refreshSession(String sessionToken) {
         var oldSessionToken = UUID.fromString(sessionToken);
 
         var userSession = this.userSessionService.validateSessionToken(oldSessionToken);
@@ -107,7 +107,7 @@ public class AuthenticationService {
         var newRefreshSessionToken = this.userSessionService.refresh(userSession);
         var newAccessToken = this.accessTokenService.generate(userSession.getUser());
 
-        return new SignInResultDTO(newAccessToken, newRefreshSessionToken);
+        return new AuthResultDTO(newAccessToken, newRefreshSessionToken);
     }
 
     /**
