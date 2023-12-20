@@ -76,15 +76,13 @@ public class UserSessionService {
      * </p>
      *
      * @param userSession the session to refresh
-     * @return the refreshed session token
+     * @return the refreshed {@link UserSession}
      */
     @Transactional
-    public UUID refresh(UserSession userSession) {
+    public UserSession refresh(UserSession userSession) {
         userSession.refresh(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit));
 
-        var refreshedUserSession = this.userSessionRepository.save(userSession);
-
-        return refreshedUserSession.getSessionToken();
+        return this.userSessionRepository.save(userSession);
     }
 
     /**
@@ -110,6 +108,13 @@ public class UserSessionService {
     @Transactional
     public void endAllFromUser(User user) {
         this.userSessionRepository.deleteAllByUser(user);
+    }
+
+    /**
+     * @return the session duration in seconds
+     */
+    public long getSessionDuration() {
+        return this.expirationTime * this.chronoUnit.getDuration().getSeconds();
     }
 
 }
