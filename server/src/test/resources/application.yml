@@ -1,9 +1,9 @@
 spring:
   jpa:
-    database: h2
+    database: H2
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
 
   datasource:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
@@ -12,13 +12,27 @@ spring:
     driverClassName: org.h2.Driver
 
   flyway:
-    schemas: test
-    url: jdbc:h2:mem:test
-    user: test
-    password: test
+    enabled: false
 
 jwt:
-  secret-key: secret
-  access-expiration-time: 15 # minutes
-  refresh-expiration-time: 30 # days
+  access-token:
+    secret-key: secret
+    expiration-time: 1
+    unit: HOURS
 
+user:
+  session:
+    expiration-time: 7
+    unit: DAYS
+    token-length : 64
+  activation-code:
+    unit: HOURS
+    expiration-time: 15
+    length: 6
+  password-reset-code:
+    unit: MINUTES
+    expiration-time: 15
+    length: 6
+
+logging:
+  config: classpath:log4j2.xml
