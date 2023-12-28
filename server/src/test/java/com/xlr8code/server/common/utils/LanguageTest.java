@@ -1,5 +1,6 @@
 package com.xlr8code.server.common.utils;
 
+import com.xlr8code.server.user.exception.LanguageNotFoundException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,7 @@ class LanguageTest {
         var invalidLanguageCode = "invalid";
 
         assertThatThrownBy(() -> Language.fromCode(invalidLanguageCode))
-                .isInstanceOf(ApplicationExceptionOld.class)
-                .hasFieldOrPropertyWithValue("exceptionType", CommonExceptionType.LANGUAGE_NOT_FOUND);
+                .isInstanceOf(LanguageNotFoundException.class);
     }
 
 }

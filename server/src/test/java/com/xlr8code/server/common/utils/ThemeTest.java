@@ -1,5 +1,6 @@
 package com.xlr8code.server.common.utils;
 
+import com.xlr8code.server.user.exception.ThemeNotFoundException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -47,8 +48,7 @@ class ThemeTest {
         var invalidThemeCode = "invalid";
 
         assertThatThrownBy(() -> Theme.fromCode(invalidThemeCode))
-                .isInstanceOf(ApplicationExceptionOld.class)
-                .hasFieldOrPropertyWithValue("exceptionType", CommonExceptionType.THEME_NOT_FOUND);
+                .isInstanceOf(ThemeNotFoundException.class);
 
     }
 
