@@ -1,7 +1,9 @@
 package com.xlr8code.server.authentication.filter;
 
+import com.xlr8code.server.authentication.exception.InvalidTokenException;
 import com.xlr8code.server.authentication.service.AccessTokenService;
 import com.xlr8code.server.authentication.service.CustomUserDetailsService;
+import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +38,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         var validatedToken = tokenService.validate(token);
 
         if (validatedToken != null) {
-            var uuid = UUID.fromString(validatedToken.getSubject());
+            var uuid = UUIDUtils.fromString(validatedToken.getSubject())
+                    .orElseThrow(InvalidTokenException::new);
             UserDetails userDetails = customUserDetailsService.loadUserById(uuid);
 
             var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

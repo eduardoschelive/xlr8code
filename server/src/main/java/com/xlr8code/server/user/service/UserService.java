@@ -3,6 +3,7 @@ package com.xlr8code.server.user.service;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
+import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
@@ -135,7 +136,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserDTO findById(String id) {
-        var uuid = UUID.fromString(id);
+        var uuid = UUIDUtils.fromString(id).orElseThrow(UserNotFoundException::new);
+
         var user = this.userRepository.findById(uuid).orElseThrow(UserNotFoundException::new);
 
         return UserDTO.fromUser(user);

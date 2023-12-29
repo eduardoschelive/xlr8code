@@ -6,6 +6,7 @@ import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -121,6 +122,13 @@ class UserServiceTest {
                 var user = userService.findById(idString);
 
                 assertNotNull(user);
+            }
+
+            @Test
+            void it_should_not_find_by_invalid_uuid() {
+                var id = "not_a_uuid";
+
+                assertThrows(UserNotFoundException.class, () -> userService.findById(id));
             }
 
     }
