@@ -1,11 +1,13 @@
 package com.xlr8code.server.user.service;
 
+import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,6 +45,7 @@ public class UserService {
         if (this.isEmailInUse(user.getEmail()))
             throw new EmailAlreadyInUseException();
 
+        // FIXME: 2021-08-15 This should not change the original user object
         this.encodeUserPassword(user);
 
         var newUser = this.userRepository.save(user);
@@ -59,8 +61,9 @@ public class UserService {
      * @return Optional of the user
      */
     @Transactional(readOnly = true)
-    public Optional<User> findByLogin(String login) {
-        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login);
+    public User findByLogin(String login) {
+        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login)
+                .orElseThrow(IncorrectUsernameOrPasswordException::new);
     }
 
     /**
@@ -125,15 +128,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> findById(UUID id) {
-        return this.userRepository.findById(id);
+    public User findById(UUID id) {
+        return this.userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserDTO> findById(String id) {
+    public UserDTO findById(String id) {
         var uuid = UUID.fromString(id);
-        var user = this.userRepository.findById(uuid);
-        return user.map(UserDTO::fromUser);
+        var user = this.userRepository.findById(uuid).orElseThrow(UserNotFoundException::new);
+
+        return UserDTO.fromUser(user);
     }
 
 }

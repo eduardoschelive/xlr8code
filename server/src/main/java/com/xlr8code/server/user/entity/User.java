@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
     @Id
