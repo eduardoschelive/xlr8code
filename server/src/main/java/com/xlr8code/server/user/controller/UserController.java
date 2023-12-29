@@ -19,9 +19,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
-        var user = this.userService.findById(id);
+        var userDTO = this.userService.findById(id);
 
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(userDTO);
     }
 
 }

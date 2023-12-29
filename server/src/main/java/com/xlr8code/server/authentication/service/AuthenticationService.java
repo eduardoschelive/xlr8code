@@ -132,7 +132,7 @@ public class AuthenticationService {
     @Transactional
     public void resendActivationCode(ResendCodeDTO resendCodeDTO) {
         var login = resendCodeDTO.login();
-        var user = this.userService.findByLogin(login).orElseThrow(UserNotFoundException::new);
+        var user = this.userService.findByLogin(login);
 
         if (user.isActive()) {
             throw new AccountAlreadyActivatedException();
@@ -155,7 +155,7 @@ public class AuthenticationService {
     @Transactional
     public void forgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
         var login = forgotPasswordDTO.login();
-        var user = this.userService.findByLogin(login).orElseThrow(UserNotFoundException::new);
+        var user = this.userService.findByLogin(login);
 
         var passwordResetCode = this.userPasswordResetCodeService.generate(user);
 
