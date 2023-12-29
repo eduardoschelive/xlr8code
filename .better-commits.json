@@ -76,6 +76,10 @@
                 "value": "auth",
                 "label": "auth"
             },
+	    {                 
+                "value": "i18n",
+                "label": "i18n"
+            },
             {
                 "value": "documentation",
                 "label": "documentation"

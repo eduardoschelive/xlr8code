@@ -133,7 +133,6 @@ class UserServiceTest {
 
     }
 
-
     private User buildUser(String username, String email) {
         var userMetadata = UserMetadata.builder()
                 .languagePreference(Language.AMERICAN_ENGLISH)

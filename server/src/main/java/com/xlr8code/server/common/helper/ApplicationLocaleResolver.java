@@ -46,7 +46,7 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
      */
     private boolean isSupported(String locale) {
         var supportedLocales = List.of(SUPPORTED_LANGUAGES);
-        return supportedLocales.stream().anyMatch(supportedLocale -> supportedLocale.getCode().equals(locale));
+        return supportedLocales.stream().anyMatch(supportedLocale -> supportedLocale.getCode().equalsIgnoreCase(locale));
     }
 
 }
