@@ -72,6 +72,10 @@
                 "value": "user",
                 "label": "user"
             },
+	    {
+	        "value": "common",
+		"label": "common"
+	    },
             {
                 "value": "auth",
                 "label": "auth"
