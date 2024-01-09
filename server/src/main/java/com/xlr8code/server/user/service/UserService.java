@@ -146,7 +146,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public UserDTO findByUUID(String id) {
-        var uuid = UUIDUtils.fromString(id).orElseThrow(UserNotFoundException::new);
+        var uuid = UUIDUtils.convertFromString(id).orElseThrow(UserNotFoundException::new);
 
         var user = this.userRepository.findById(uuid).orElseThrow(UserNotFoundException::new);
 

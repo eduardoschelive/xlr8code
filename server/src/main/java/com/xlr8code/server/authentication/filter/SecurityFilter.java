@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var validatedToken = tokenService.validate(token);
 
         if (validatedToken != null) {
-            var uuid = UUIDUtils.fromString(validatedToken.getSubject())
+            var uuid = UUIDUtils.convertFromString(validatedToken.getSubject())
                     .orElseThrow(InvalidTokenException::new);
             UserDetails userDetails = customUserDetailsService.loadUserById(uuid);
 
