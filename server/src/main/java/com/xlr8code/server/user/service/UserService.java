@@ -139,6 +139,11 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    /**
+     * @param id UUID of the user
+     * @return UserDTO of the user
+     * @throws UserNotFoundException if the user is not found
+     */
     @Transactional(readOnly = true)
     public UserDTO findByUUID(String id) {
         var uuid = UUIDUtils.fromString(id).orElseThrow(UserNotFoundException::new);
