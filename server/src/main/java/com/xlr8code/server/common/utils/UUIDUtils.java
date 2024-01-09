@@ -9,7 +9,13 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UUIDUtils {
 
-    public static Optional<UUID> fromString(String string) {
+    /**
+     * Converts the given string to a {@link UUID} object.
+     *
+     * @param string the string to be converted to a {@link UUID} object
+     * @return an {@link Optional} containing the {@link UUID} object corresponding to the given string, or an empty {@link Optional} if the given string is not a valid {@link UUID}
+     */
+    public static Optional<UUID> convertFromString(String string) {
         try {
             return Optional.of(UUID.fromString(string));
         } catch (IllegalArgumentException e) {

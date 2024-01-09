@@ -10,7 +10,7 @@ public class UserSecurityService {
 
     public boolean canModifyResource(Authentication authentication, String userId) {
         var user = (User) authentication.getPrincipal();
-        var uuidOptional = UUIDUtils.fromString(userId);
+        var uuidOptional = UUIDUtils.convertFromString(userId);
 
         if (uuidOptional.isEmpty()) {
             return false;
