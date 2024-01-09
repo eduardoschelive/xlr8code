@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Transactional(readOnly = true)
     public UserDetails loadUserById(UUID id) {
-        return this.userService.findById(id);
+        return this.userService.findByUUID(id);
     }
 
 }

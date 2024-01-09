@@ -128,14 +128,19 @@ public class UserService {
         user.setPassword(passwordHash);
     }
 
+    /**
+     * @param uuid UUID of the user
+     * @return User with the given id
+     * @throws UserNotFoundException if the user is not found
+     */
     @Transactional(readOnly = true)
-    public User findById(UUID id) {
-        return this.userRepository.findById(id)
+    public User findByUUID(UUID uuid) {
+        return this.userRepository.findById(uuid)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public UserDTO findById(String id) {
+    public UserDTO findByUUID(String id) {
         var uuid = UUIDUtils.fromString(id).orElseThrow(UserNotFoundException::new);
 
         var user = this.userRepository.findById(uuid).orElseThrow(UserNotFoundException::new);

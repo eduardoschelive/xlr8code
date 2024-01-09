@@ -110,7 +110,7 @@ class UserServiceTest {
             void it_should_find_by_uuid() {
                 var id = defaultUser.getId();
 
-                var user = userService.findById(id);
+                var user = userService.findByUUID(id);
 
                 assertNotNull(user);
             }
@@ -119,7 +119,7 @@ class UserServiceTest {
             void it_should_find_by_uuid_string() {
                 var idString = defaultUser.getId().toString();
 
-                var user = userService.findById(idString);
+                var user = userService.findByUUID(idString);
 
                 assertNotNull(user);
             }
@@ -128,7 +128,7 @@ class UserServiceTest {
             void it_should_not_find_by_invalid_uuid() {
                 var id = "not_a_uuid";
 
-                assertThrows(UserNotFoundException.class, () -> userService.findById(id));
+                assertThrows(UserNotFoundException.class, () -> userService.findByUUID(id));
             }
 
     }
