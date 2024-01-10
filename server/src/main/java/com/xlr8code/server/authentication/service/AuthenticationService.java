@@ -5,18 +5,13 @@ import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedExcep
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.common.service.EmailService;
-import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserService;
-import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

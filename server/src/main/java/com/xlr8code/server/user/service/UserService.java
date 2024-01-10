@@ -31,9 +31,9 @@ public class UserService {
 
     /**
      * @param userCreateDTO User to be created
-     *             <p>
-     *             This method creates a user and saves it to the database. Also publishes an event to send an activation email.
-     *             </p>
+     *                      <p>
+     *                      This method creates a user and saves it to the database. Also publishes an event to send an activation email.
+     *                      </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
      * @see OnCreateUserEvent

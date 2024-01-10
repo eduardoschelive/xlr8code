@@ -25,17 +25,17 @@ public record SignUpDTO(
         @Nullable
         String profilePictureUrl
 ) {
-        public CreateUserDTO toCreateUserDTO() {
-                return new CreateUserDTO(
-                        this.username(),
-                        this.email(),
-                        this.password(),
-                        Set.of(UserRole.MEMBER.toRole()),
-                        this.themePreference(),
-                        this.languagePreference(),
-                        this.profilePictureUrl(),
-                        true
-                );
-        }
+    public CreateUserDTO toCreateUserDTO() {
+        return new CreateUserDTO(
+                this.username(),
+                this.email(),
+                this.password(),
+                Set.of(UserRole.MEMBER.toRole()),
+                this.themePreference(),
+                this.languagePreference(),
+                this.profilePictureUrl(),
+                true
+        );
+    }
 
 }

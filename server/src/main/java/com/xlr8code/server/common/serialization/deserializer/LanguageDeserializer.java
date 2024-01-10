@@ -1,4 +1,4 @@
-package com.xlr8code.server.common.deserializers;
+package com.xlr8code.server.common.serialization.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
