@@ -4,7 +4,7 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.user.dto.UserCreateDTO;
+import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
@@ -39,7 +39,7 @@ public class UserService {
      * @see OnCreateUserEvent
      */
     @Transactional
-    public User create(UserCreateDTO userCreateDTO) {
+    public User create(CreateUserDTO userCreateDTO) {
         if (this.isUsernameTaken(userCreateDTO.username()))
             throw new UsernameAlreadyTakenException();
 
