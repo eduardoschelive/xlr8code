@@ -10,13 +10,11 @@ public record UserDTO(
         UUID id,
         String username,
         String email,
-        String themePreference,
-        String languagePreference,
-        String profilePictureUrl,
         boolean active,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        Set<String> roles
+        Set<String> roles,
+        UserMetadataDTO metadata
 ) {
 
     public static UserDTO fromUser(User user) {
@@ -24,13 +22,15 @@ public record UserDTO(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getMetadata().getThemePreference().getCode(),
-                user.getMetadata().getLanguagePreference().getCode(),
-                user.getMetadata().getProfilePictureUrl(),
                 user.isActive(),
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
-                user.getNamedRoles()
+                user.getNamedRoles(),
+                UserMetadataDTO.fromUserMetadata(
+                        user.getMetadata().getThemePreference(),
+                        user.getMetadata().getLanguagePreference(),
+                        user.getMetadata().getProfilePictureUrl()
+                )
         );
     }
 
