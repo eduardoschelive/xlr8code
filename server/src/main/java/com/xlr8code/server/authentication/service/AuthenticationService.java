@@ -202,8 +202,8 @@ public class AuthenticationService {
     }
 
     private UserMetadata buildUserMetadata(User user, SignUpDTO signUpBodyDTO) {
-        var language = Language.fromCode(signUpBodyDTO.languagePreference());
-        var theme = Theme.fromCode(signUpBodyDTO.themePreference());
+        var language = signUpBodyDTO.languagePreference();
+        var theme = signUpBodyDTO.themePreference();
 
         return UserMetadata.builder().languagePreference(language).user(user).themePreference(theme).profilePictureUrl(signUpBodyDTO.profilePictureUrl()).build();
     }

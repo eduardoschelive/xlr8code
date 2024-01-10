@@ -1,17 +1,13 @@
 package com.xlr8code.server.common.exception;
 
-import com.xlr8code.server.common.dto.ApplicationExceptionResponseDTO;
-import com.xlr8code.server.common.dto.InvalidRequestContentResponseDTO;
-import com.xlr8code.server.common.service.LocaleService;
-import com.xlr8code.server.common.utils.StringUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.xlr8code.server.common.helper.ApplicationExceptionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,59 +16,43 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @ControllerAdvice
 @RequiredArgsConstructor
 @Log4j2
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final LocaleService localeService;
-    private final HttpServletRequest httpServletRequest;
+    private final ApplicationExceptionHelper applicationExceptionHelper;
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ApplicationExceptionResponseDTO> handleApplicationError(ApplicationException applicationError) {
+    public ResponseEntity<Object> handleApplicationError(ApplicationException applicationError) {
         var httpStatus = applicationError.getHttpStatus();
-        var placeholders = applicationError.getPlaceholders();
-        var messageIdentifier = applicationError.getMessageIdentifier();
-        var errorMessage = applicationError.getMessage();
+        var responseBody = this.applicationExceptionHelper.buildApplicationResponseFromApplicationException(applicationError);
 
-        var message = localeService.getMessage(messageIdentifier, httpServletRequest);
+        return ResponseEntity.status(httpStatus).body(responseBody);
+    }
 
-        if (placeholders != null) {
-            for (int i = 0; i < placeholders.length; i++) {
-                message = message.replace("{" + i + "}", String.valueOf(placeholders[i]));
-            }
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        var applicationException = this.applicationExceptionHelper.getFirstApplicationExceptionInChain(ex);
+        if (applicationException != null) {
+            return this.handleApplicationError(applicationException);
         }
 
-        var applicationErrorResponse = new ApplicationExceptionResponseDTO(
-                httpStatus.value(),
-                errorMessage,
-                message,
-                new Date()
-        );
+        var httpStatus = HttpStatus.BAD_REQUEST;
+        var messageIdentifier = "error.invalid_request_content";
+        var errorMessage = "INVALID_REQUEST_CONTENT";
 
-        return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, errorMessage);
     }
 
     @ExceptionHandler(MissingRequestCookieException.class)
-    public ResponseEntity<ApplicationExceptionResponseDTO> handleMissingRequestCookieException(MissingRequestCookieException ex) {
+    public ResponseEntity<Object> handleMissingRequestCookieException(MissingRequestCookieException ex) {
         var httpStatus = HttpStatus.BAD_REQUEST;
         var messageIdentifier = "error.cookie_not_present";
         var errorMessage = "COOKIE_NOT_PRESENT";
+        var cookieName = ex.getCookieName();
 
-        var message = localeService.getMessage(messageIdentifier, httpServletRequest);
-
-        var applicationErrorResponse = new ApplicationExceptionResponseDTO(
-                httpStatus.value(),
-                errorMessage,
-                message.replace("{0}", ex.getCookieName()),
-                new Date()
-        );
-
-        return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorMessage, cookieName);
     }
 
     @Override
@@ -81,16 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var messageIdentifier = "error.resource_not_found";
         var errorMessage = "RESOURCE_NOT_FOUND";
 
-        var message = localeService.getMessage(messageIdentifier, httpServletRequest);
-
-        var applicationErrorResponse = new ApplicationExceptionResponseDTO(
-                httpStatus.value(),
-                errorMessage,
-                message,
-                new Date()
-        );
-
-        return ResponseEntity.status(httpStatus).body(applicationErrorResponse);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, errorMessage);
     }
 
     @Override
@@ -98,20 +69,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status,
                                                                   WebRequest request) {
-        var fieldErrors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        this::getMessageForField,
-                        (existing, replacement) -> existing
-                ));
 
-        return ResponseEntity.status(status).headers(headers).body(new InvalidRequestContentResponseDTO(
-                status.value(),
+        return this.applicationExceptionHelper.buildApplicationFieldExceptionResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                headers,
+                "error.invalid_request_content",
                 "INVALID_REQUEST_CONTENT",
-                localeService.getMessage("validation.error.invalid_request_content", httpServletRequest),
-                new Date(),
-                fieldErrors
-        ));
+                ex.getBindingResult().getFieldErrors()
+        );
     }
 
     @Override
@@ -119,22 +84,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR) {
             log.error("Internal server error", ex);
 
-            var responseBody = new ApplicationExceptionResponseDTO(
-                    statusCode.value(),
-                    "INTERNAL_SERVER_ERROR",
-                    localeService.getMessage("error.internal_server_error", httpServletRequest),
-                    new Date()
+            return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    headers,
+                    "error.internal_server_error",
+                    "INTERNAL_SERVER_ERROR"
             );
-
-            return ResponseEntity.status(statusCode).headers(headers).body(responseBody);
         }
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
-    }
-
-    private String getMessageForField(FieldError error) {
-        var constraintName = StringUtils.splitPascalCase(Objects.requireNonNull(error.getCode()));
-        var messageKey = "validation.error." + constraintName.replace(" ", "_").toLowerCase();
-        return localeService.getMessage(messageKey, httpServletRequest);
     }
 
 }
