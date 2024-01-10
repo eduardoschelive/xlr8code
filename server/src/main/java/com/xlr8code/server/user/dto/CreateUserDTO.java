@@ -30,25 +30,25 @@ public record CreateUserDTO(
         @Nullable
         boolean active
 ) {
-        public User toUserWithMetadata() {
-                var user = User.builder()
-                        .username(this.username())
-                        .email(this.email())
-                        .password(this.password())
-                        .roles(this.roles())
-                        .active(this.active())
-                        .build();
+    public User toUserWithMetadata() {
+        var user = User.builder()
+                .username(this.username())
+                .email(this.email())
+                .password(this.password())
+                .roles(this.roles())
+                .active(this.active())
+                .build();
 
-                var userMetadata = UserMetadata.builder()
-                        .languagePreference(this.languagePreference())
-                        .themePreference(this.themePreference())
-                        .profilePictureUrl(this.profilePictureUrl())
-                        .user(user)
-                        .build();
+        var userMetadata = UserMetadata.builder()
+                .languagePreference(this.languagePreference())
+                .themePreference(this.themePreference())
+                .profilePictureUrl(this.profilePictureUrl())
+                .user(user)
+                .build();
 
-                user.setMetadata(userMetadata);
+        user.setMetadata(userMetadata);
 
-                return  user;
-        }
+        return user;
+    }
 
 }
