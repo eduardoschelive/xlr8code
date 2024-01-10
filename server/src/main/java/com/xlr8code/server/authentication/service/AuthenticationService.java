@@ -5,8 +5,6 @@ import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedExcep
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.common.service.EmailService;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
@@ -55,9 +53,7 @@ public class AuthenticationService {
      */
     @Transactional
     public User signUp(SignUpDTO signUpDTO) {
-        var user = this.buildUserWithMetadata(signUpDTO);
-
-        return this.userService.create(user);
+        return this.userService.create(signUpDTO.toCreateUserDTO());
     }
 
     /**
@@ -182,34 +178,11 @@ public class AuthenticationService {
         this.userPasswordResetCodeService.removeAllFromUser(user);
     }
 
-
     /**
      * @return the duration of the session in seconds
      */
     public long getSessionDuration() {
         return this.userSessionService.getSessionDuration();
-    }
-
-    private User buildUserWithMetadata(SignUpDTO signUpDTO) {
-        var roles = Set.of(UserRole.DEFAULT.toRole());
-
-        var user = this.buildUser(signUpDTO, roles);
-        var userMetadata = this.buildUserMetadata(user, signUpDTO);
-
-        user.setMetadata(userMetadata);
-
-        return user;
-    }
-
-    private UserMetadata buildUserMetadata(User user, SignUpDTO signUpBodyDTO) {
-        var language = signUpBodyDTO.languagePreference();
-        var theme = signUpBodyDTO.themePreference();
-
-        return UserMetadata.builder().languagePreference(language).user(user).themePreference(theme).profilePictureUrl(signUpBodyDTO.profilePictureUrl()).build();
-    }
-
-    private User buildUser(SignUpDTO signUpBodyDTO, Set<Role> roles) {
-        return User.builder().username(signUpBodyDTO.username()).email(signUpBodyDTO.email()).password(signUpBodyDTO.password()).roles(roles).build();
     }
 
 }

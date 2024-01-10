@@ -4,6 +4,7 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
+import com.xlr8code.server.user.dto.UserCreateDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
@@ -29,7 +30,7 @@ public class UserService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
-     * @param user User to be created
+     * @param userCreateDTO User to be created
      *             <p>
      *             This method creates a user and saves it to the database. Also publishes an event to send an activation email.
      *             </p>
@@ -38,15 +39,16 @@ public class UserService {
      * @see OnCreateUserEvent
      */
     @Transactional
-    public User create(User user) {
-
-        if (this.isUsernameTaken(user.getUsername()))
+    public User create(UserCreateDTO userCreateDTO) {
+        if (this.isUsernameTaken(userCreateDTO.username()))
             throw new UsernameAlreadyTakenException();
 
-        if (this.isEmailInUse(user.getEmail()))
+        if (this.isEmailInUse(userCreateDTO.email()))
             throw new EmailAlreadyInUseException();
 
-        // FIXME: 2021-08-15 This should not change the original user object
+
+        var user = userCreateDTO.toUserWithMetadata();
+
         this.encodeUserPassword(user);
 
         var newUser = this.userRepository.save(user);
