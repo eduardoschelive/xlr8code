@@ -2,7 +2,7 @@ package com.xlr8code.server.authentication.dto;
 
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.UserCreateDTO;
+import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
@@ -25,8 +25,8 @@ public record SignUpDTO(
         @Nullable
         String profilePictureUrl
 ) {
-        public UserCreateDTO toCreateUserDTO() {
-                return new UserCreateDTO(
+        public CreateUserDTO toCreateUserDTO() {
+                return new CreateUserDTO(
                         this.username(),
                         this.email(),
                         this.password(),

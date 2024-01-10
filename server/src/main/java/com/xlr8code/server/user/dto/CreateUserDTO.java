@@ -1,12 +1,10 @@
 package com.xlr8code.server.user.dto;
 
-import com.xlr8code.server.authentication.dto.SignUpDTO;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
-import com.xlr8code.server.user.utils.UserRole;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
-public record UserCreateDTO(
+public record CreateUserDTO(
         @NotBlank
         String username,
         @NotBlank @Email
