@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserSecurityService {
 
+    // will be used later
+
     public boolean canModifyResource(Authentication authentication, String userId) {
         var user = (User) authentication.getPrincipal();
         var uuidOptional = UUIDUtils.convertFromString(userId);
