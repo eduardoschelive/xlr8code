@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     user_id      UUID PRIMARY KEY         NOT NULL,
     username     TEXT UNIQUE              NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users
     activated_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE user_metadata
+CREATE TABLE IF NOT EXISTS user_metadata
 (
     user_id             UUID NOT NULL,
     language_preference TEXT NOT NULL,
@@ -20,13 +20,13 @@ CREATE TABLE user_metadata
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE roles
+CREATE TABLE IF NOT EXISTS roles
 (
     role_id serial PRIMARY KEY,
     name    TEXT NOT NULL
 );
 
-CREATE TABLE user_role
+CREATE TABLE IF NOT EXISTS user_role
 (
     user_id UUID   NOT NULL,
     role_id SERIAL NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE user_role
     FOREIGN KEY (role_id) REFERENCES roles (role_id)
 );
 
-CREATE TABLE user_sessions
+CREATE TABLE IF NOT EXISTS user_sessions
 (
     user_session_id SERIAL PRIMARY KEY NOT NULL,
     user_id         UUID               NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE user_sessions
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE user_activation_codes
+CREATE TABLE IF NOT EXISTS user_activation_codes
 (
     activation_code_id SERIAL PRIMARY KEY NOT NULL,
     user_id            UUID               NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE user_activation_codes
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE user_password_reset_codes
+CREATE TABLE IF NOT EXISTS user_password_reset_codes
 (
     password_reset_code_id SERIAL PRIMARY KEY NOT NULL,
     user_id                UUID               NOT NULL,
