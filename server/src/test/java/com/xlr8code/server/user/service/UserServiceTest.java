@@ -4,17 +4,22 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
+import com.xlr8code.server.user.utils.UserRole;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -212,22 +217,16 @@ class UserServiceTest {
 
     }
 
-    private User buildUser(String username, String email) {
-        var userMetadata = UserMetadata.builder()
-                .languagePreference(Language.AMERICAN_ENGLISH)
-                .themePreference(Theme.LIGHT)
-                .build();
-
-        var user = User.builder()
-                .username(username)
-                .email(email)
-                .password(DEFAULT_PASSWORD)
-                .metadata(userMetadata)
-                .build();
-
-        userMetadata.setUser(user);
-
-        return user;
+    private CreateUserDTO buildUser(String username, String email) {
+        return new CreateUserDTO(
+                username,
+                email,
+                DEFAULT_PASSWORD,
+                Set.of(UserRole.DEFAULT.toRole()),
+                Theme.SYSTEM,
+                Language.AMERICAN_ENGLISH,
+                null,
+                false
+        );
     }
-
 }
