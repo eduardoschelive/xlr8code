@@ -105,6 +105,7 @@ public class AuthenticationService {
         var activationCode = this.userActivationCodeService.validate(code);
 
         var user = activationCode.getUser();
+
         this.userService.activate(user);
 
         this.userActivationCodeService.removeAllFromUser(user);
@@ -124,10 +125,6 @@ public class AuthenticationService {
     public void resendActivationCode(ResendCodeDTO resendCodeDTO) {
         var login = resendCodeDTO.login();
         var user = this.userService.findByLogin(login);
-
-        if (user.isActive()) {
-            throw new AccountAlreadyActivatedException();
-        }
 
         var activationCode = this.userActivationCodeService.generate(user);
 

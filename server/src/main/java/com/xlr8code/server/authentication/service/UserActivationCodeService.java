@@ -1,6 +1,7 @@
 package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.entity.UserActivationCode;
+import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
 import com.xlr8code.server.authentication.exception.ExpiredActivationCodeException;
 import com.xlr8code.server.authentication.exception.InvalidActivationCodeException;
 import com.xlr8code.server.authentication.repository.UserActivationCodeRepository;
@@ -40,6 +41,10 @@ public class UserActivationCodeService {
      */
     @Transactional
     public UserActivationCode generate(User user) {
+        if (user.isActive()) {
+            throw new AccountAlreadyActivatedException();
+        }
+
         var userActivationCode = UserActivationCode.builder()
                 .code(RandomUtils.generate(this.length))
                 .user(user)
