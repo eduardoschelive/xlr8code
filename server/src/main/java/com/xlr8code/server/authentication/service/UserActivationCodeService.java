@@ -50,7 +50,7 @@ public class UserActivationCodeService {
     }
 
     /**
-     * @param code the code to validate
+     * @param code the code to decode
      * @return the validated {@link UserActivationCode}
      * @throws InvalidActivationCodeException if the code is invalid
      * @throws ExpiredActivationCodeException if the code is expired

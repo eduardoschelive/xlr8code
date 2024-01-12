@@ -46,7 +46,7 @@ public class UserPasswordResetCodeService {
     }
 
     /**
-     * @param code the code to validate
+     * @param code the code to decode
      * @return the validated {@link UserPasswordResetCode}
      * @throws InvalidPasswordResetCodeException if the code is invalid
      * @throws ExpiredPasswordResetCodeException if the code is expired
