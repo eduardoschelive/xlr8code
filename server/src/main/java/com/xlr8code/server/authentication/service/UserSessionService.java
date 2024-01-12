@@ -50,7 +50,7 @@ public class UserSessionService {
     }
 
     /**
-     * @param token the token to validate
+     * @param token the token to decode
      * @return the validated {@link UserSession}
      * @throws InvalidRefreshSessionTokenException if the token is invalid
      * @throws AccountNotActivatedException        if the user is not activated

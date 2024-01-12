@@ -34,7 +34,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         var token = recoverToken(request);
 
-        var validatedToken = tokenService.validate(token);
+        var validatedToken = tokenService.decode(token);
 
         if (validatedToken != null) {
             var uuid = UUIDUtils.convertFromString(validatedToken.getSubject())
