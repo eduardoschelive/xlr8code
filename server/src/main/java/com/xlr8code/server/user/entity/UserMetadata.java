@@ -20,7 +20,7 @@ public class UserMetadata {
     @Column(name = "user_id", nullable = false, updatable = false)
     private UUID userId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false)
     @MapsId
     private User user;

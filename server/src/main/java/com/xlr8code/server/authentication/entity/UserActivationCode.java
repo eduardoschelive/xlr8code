@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class UserActivationCode {
