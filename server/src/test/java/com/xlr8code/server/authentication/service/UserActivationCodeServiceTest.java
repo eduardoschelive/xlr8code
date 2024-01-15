@@ -5,19 +5,16 @@ import com.xlr8code.server.authentication.exception.ExpiredActivationCodeExcepti
 import com.xlr8code.server.authentication.exception.InvalidActivationCodeException;
 import com.xlr8code.server.authentication.repository.UserActivationCodeRepository;
 import com.xlr8code.server.common.utils.DateTimeUtils;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
-import com.xlr8code.server.user.utils.UserRole;
+import com.xlr8code.server.utils.TestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,11 +34,16 @@ class UserActivationCodeServiceTest {
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
-        var createInactiveUser = buildUser("inactive-test", "inactive-test@test.com", false);
-        inactiveUser = userService.create(createInactiveUser);
+        var createInactiveUserDTO = TestUtils.buildCreateUserDTO("test", "test@test.com", "test", false);
+        inactiveUser = userService.create(createInactiveUserDTO);
 
-        var createActiveUser = buildUser("active-test", "active-test@test.com", true);
-        activeUser = userService.create(createActiveUser);
+        var createActiveUserDTO = TestUtils.buildCreateUserDTO("test2", "test2@test.com", "test2", true);
+        activeUser = userService.create(createActiveUserDTO);
+    }
+
+    @AfterAll
+    static void tearDownAll(@Autowired UserRepository userRepository) {
+        userRepository.deleteAll();
     }
 
     @Test
@@ -94,25 +96,12 @@ class UserActivationCodeServiceTest {
         var activationCode = this.userActivationCodeService.generate(inactiveUser);
 
         activationCode.setExpiresAt(DateTimeUtils.calculateExpiresAt(-1, ChronoUnit.DAYS));
-        
+
         this.userActivationCodeRepository.save(activationCode);
 
         Executable execute = () -> this.userActivationCodeService.validate(activationCode.getCode());
 
         assertThrows(ExpiredActivationCodeException.class, execute);
-    }
-
-    private static CreateUserDTO buildUser(String username, String email, boolean active) {
-        return new CreateUserDTO(
-                username,
-                email,
-                "test-activation-code",
-                Set.of(UserRole.DEFAULT.toRole()),
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null,
-                active
-        );
     }
 
 }

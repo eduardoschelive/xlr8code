@@ -62,7 +62,6 @@ class RoleServiceTest {
             assertEquals(amountExpected, roles.size());
         }
 
-
     }
 
 }

@@ -13,6 +13,7 @@ import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.utils.UserRole;
+import com.xlr8code.server.utils.TestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        var user = buildUser(DEFAULT_USERNAME, DEFAULT_EMAIL);
+        var user = TestUtils.buildCreateUserDTO(DEFAULT_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
         this.defaultUser = userService.create(user);
     }
 
@@ -67,14 +68,14 @@ class UserServiceTest {
 
         @Test
         void it_should_have_unique_username() {
-            var user = buildUser(DEFAULT_USERNAME, FALSE_EMAIL);
+            var user = TestUtils.buildCreateUserDTO(DEFAULT_USERNAME, FALSE_EMAIL, DEFAULT_PASSWORD);
 
             assertThrows(UsernameAlreadyTakenException.class, () -> userService.create(user));
         }
 
         @Test
         void it_should_have_unique_email() {
-            var user = buildUser(FALSE_USERNAME, DEFAULT_EMAIL);
+            var user = TestUtils.buildCreateUserDTO(FALSE_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
 
             assertThrows(EmailAlreadyInUseException.class, () -> userService.create(user));
         }
@@ -215,18 +216,5 @@ class UserServiceTest {
             assertTrue(passwordEncoder.matches(NEW_PASSWORD, user.getPassword()));
         }
 
-    }
-
-    private CreateUserDTO buildUser(String username, String email) {
-        return new CreateUserDTO(
-                username,
-                email,
-                DEFAULT_PASSWORD,
-                Set.of(UserRole.DEFAULT.toRole()),
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null,
-                false
-        );
     }
 }
