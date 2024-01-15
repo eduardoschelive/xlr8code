@@ -8,6 +8,7 @@ import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.user.utils.UserRole;
+import com.xlr8code.server.utils.TestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,7 @@ class CustomUserDetailsServiceTest {
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
-        var user = new CreateUserDTO(
-                USERNAME,
-                MAIL,
-                "test",
-                Set.of(UserRole.MEMBER.toRole()),
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null,
-                false);
+        var user = TestUtils.buildCreateUserDTO(USERNAME, MAIL, "test");
 
         var createdUser = userService.create(user);
         createdUserId = createdUser.getId();
