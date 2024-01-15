@@ -61,7 +61,7 @@ public class UserService {
 
     /**
      * @param login Username or email of the user
-     * @return User with the given username or email
+     * @return {@link User} with the given username or email
      */
     @Transactional(readOnly = true)
     public User findByLogin(String login) {
