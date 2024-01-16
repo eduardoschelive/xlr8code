@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class UserPasswordResetCode {
 
