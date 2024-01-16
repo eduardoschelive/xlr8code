@@ -8,7 +8,7 @@ import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
-import com.xlr8code.server.utils.TestUtils;
+import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,10 @@ class UserActivationCodeServiceTest {
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
-        var createInactiveUserDTO = TestUtils.buildCreateUserDTO("test", "test@test.com", "test", false);
+        var createInactiveUserDTO = UserTestUtils.buildCreateUserDTO("test", "test@test.com", "test", false);
         inactiveUser = userService.create(createInactiveUserDTO);
 
-        var createActiveUserDTO = TestUtils.buildCreateUserDTO("test2", "test2@test.com", "test2", true);
+        var createActiveUserDTO = UserTestUtils.buildCreateUserDTO("test2", "test2@test.com", "test2", true);
         activeUser = userService.create(createActiveUserDTO);
     }
 

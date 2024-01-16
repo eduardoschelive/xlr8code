@@ -1,20 +1,15 @@
 package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
-import com.xlr8code.server.user.utils.UserRole;
-import com.xlr8code.server.utils.TestUtils;
+import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,7 +29,7 @@ class CustomUserDetailsServiceTest {
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
-        var user = TestUtils.buildCreateUserDTO(USERNAME, MAIL, "test");
+        var user = UserTestUtils.buildCreateUserDTO(USERNAME, MAIL, "test");
 
         var createdUser = userService.create(user);
         createdUserId = createdUser.getId();
