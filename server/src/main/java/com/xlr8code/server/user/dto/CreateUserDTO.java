@@ -27,8 +27,7 @@ public record CreateUserDTO(
         Language languagePreference,
         @Nullable
         String profilePictureUrl,
-        @Nullable
-        boolean active
+        Boolean active
 ) {
     public User toUserWithMetadata() {
         var user = User.builder()
