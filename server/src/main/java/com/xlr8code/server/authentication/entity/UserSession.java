@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class UserSession {
 
