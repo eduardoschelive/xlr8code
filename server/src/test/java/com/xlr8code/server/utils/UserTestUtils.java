@@ -7,7 +7,7 @@ import com.xlr8code.server.user.utils.UserRole;
 
 import java.util.Set;
 
-public class TestUtils {
+public class UserTestUtils {
     public static CreateUserDTO buildCreateUserDTO(String username, String email, String password) {
         return buildCreateUserDTO(username, email, password, false);
     }

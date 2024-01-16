@@ -2,25 +2,17 @@ package com.xlr8code.server.user.service;
 
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.CreateUserDTO;
-import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
-import com.xlr8code.server.user.utils.UserRole;
-import com.xlr8code.server.utils.TestUtils;
+import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +40,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        var user = TestUtils.buildCreateUserDTO(DEFAULT_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        var user = UserTestUtils.buildCreateUserDTO(DEFAULT_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
         this.defaultUser = userService.create(user);
     }
 
@@ -68,14 +60,14 @@ class UserServiceTest {
 
         @Test
         void it_should_have_unique_username() {
-            var user = TestUtils.buildCreateUserDTO(DEFAULT_USERNAME, FALSE_EMAIL, DEFAULT_PASSWORD);
+            var user = UserTestUtils.buildCreateUserDTO(DEFAULT_USERNAME, FALSE_EMAIL, DEFAULT_PASSWORD);
 
             assertThrows(UsernameAlreadyTakenException.class, () -> userService.create(user));
         }
 
         @Test
         void it_should_have_unique_email() {
-            var user = TestUtils.buildCreateUserDTO(FALSE_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
+            var user = UserTestUtils.buildCreateUserDTO(FALSE_USERNAME, DEFAULT_EMAIL, DEFAULT_PASSWORD);
 
             assertThrows(EmailAlreadyInUseException.class, () -> userService.create(user));
         }
