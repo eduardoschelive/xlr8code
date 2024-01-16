@@ -34,7 +34,7 @@ public record SignUpDTO(
                 this.themePreference(),
                 this.languagePreference(),
                 this.profilePictureUrl(),
-                true
+                false
         );
     }
 

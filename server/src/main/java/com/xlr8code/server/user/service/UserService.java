@@ -62,6 +62,7 @@ public class UserService {
     /**
      * @param login Username or email of the user
      * @return {@link User} with the given username or email
+     * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
      */
     @Transactional(readOnly = true)
     public User findByLogin(String login) {

@@ -137,7 +137,7 @@ public class AuthenticationService {
      * </p>
      *
      * @param forgotPasswordDTO the forgot password request body
-     * @throws UserNotFoundException if the user is not found
+     * @throws IncorrectUsernameOrPasswordException if the user is not found
      * @see UserPasswordResetCodeService#generate(User)
      */
     @Transactional
