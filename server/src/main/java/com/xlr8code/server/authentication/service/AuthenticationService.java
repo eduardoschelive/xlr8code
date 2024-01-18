@@ -65,7 +65,7 @@ public class AuthenticationService {
         var token = this.accessTokenService.generate(user);
         var userSession = this.userSessionService.create(user);
 
-        return new AuthResultDTO(token, userSession);
+        return new AuthResultDTO(token, userSession.getSessionToken());
     }
 
     /**
@@ -93,7 +93,7 @@ public class AuthenticationService {
         var newRefreshSessionToken = this.userSessionService.refresh(userSession);
         var newAccessToken = this.accessTokenService.generate(userSession.getUser());
 
-        return new AuthResultDTO(newAccessToken, newRefreshSessionToken);
+        return new AuthResultDTO(newAccessToken, newRefreshSessionToken.getSessionToken());
     }
 
     /**

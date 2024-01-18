@@ -81,7 +81,7 @@ public class AuthenticationController {
     }
 
     private ResponseEntity<TokenDTO> buildAuthResponse(AuthResultDTO authResultDTO) {
-        var sessionToken = authResultDTO.userSession().getSessionToken();
+        var sessionToken = authResultDTO.sessionToken();
 
         var sessionCookie = this.buildSessionCookie(sessionToken, this.authenticationService.getSessionDuration());
 
