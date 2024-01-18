@@ -94,7 +94,7 @@ class AuthenticationServiceTest {
     void it_should_sign_out() {
         var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD);
         var authResultDTO = authenticationService.signIn(signInDTO);
-        var sessionToken = authResultDTO.userSession().getSessionToken();
+        var sessionToken = authResultDTO.sessionToken();
 
         authenticationService.signOut(sessionToken);
 
@@ -107,7 +107,7 @@ class AuthenticationServiceTest {
     void it_should_refresh_session() {
         var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD);
         var authResultDTO = authenticationService.signIn(signInDTO);
-        var sessionToken = authResultDTO.userSession().getSessionToken();
+        var sessionToken = authResultDTO.sessionToken();
 
         var newAuthResultDTO = authenticationService.refreshSession(sessionToken);
 
