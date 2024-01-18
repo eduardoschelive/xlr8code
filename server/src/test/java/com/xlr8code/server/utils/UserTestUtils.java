@@ -3,6 +3,7 @@ package com.xlr8code.server.utils;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.utils.UserRole;
 
 import java.util.Set;
