@@ -126,6 +126,7 @@ public class AuthenticationService {
         var login = resendCodeDTO.login();
         var user = this.userService.findByLogin(login);
 
+
         var activationCode = this.userActivationCodeService.generate(user);
 
         this.emailService.sendActivationEmail(user.getEmail(), activationCode.getCode());
