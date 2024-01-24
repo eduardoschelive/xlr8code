@@ -116,7 +116,9 @@ public class UserSessionService {
      */
     @Transactional
     public void end(String token) {
-        var refreshToken = this.userSessionRepository.findBySessionToken(token)
+        var sessionTokenHash = this.hashSessionToken(token);
+
+        var refreshToken = this.userSessionRepository.findBySessionToken(sessionTokenHash)
                 .orElseThrow(InvalidRefreshSessionTokenException::new);
 
         this.userSessionRepository.delete(refreshToken);
