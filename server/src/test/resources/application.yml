@@ -28,6 +28,7 @@ user:
     expiration-time: 7
     unit: DAYS
     token-length : 64
+    key: secret
   activation-code:
     unit: HOURS
     expiration-time: 15

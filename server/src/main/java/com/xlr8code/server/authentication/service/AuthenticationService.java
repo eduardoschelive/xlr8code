@@ -63,9 +63,9 @@ public class AuthenticationService {
         var user = this.authenticate(usernamePasswordAuthenticationToken);
 
         var token = this.accessTokenService.generate(user);
-        var userSession = this.userSessionService.create(user);
+        var userSessionToken = this.userSessionService.generate(user);
 
-        return new AuthResultDTO(token, userSession.getSessionToken());
+        return new AuthResultDTO(token, userSessionToken);
     }
 
     /**
