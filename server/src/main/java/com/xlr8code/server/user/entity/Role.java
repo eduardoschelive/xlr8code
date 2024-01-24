@@ -23,9 +23,6 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
-
     public SimpleGrantedAuthority toGrantedAuthority() {
         return new SimpleGrantedAuthority(this.userRole.getValue());
     }

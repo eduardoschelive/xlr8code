@@ -4,8 +4,10 @@ import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
 import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.exception.SessionExpiredException;
+import com.xlr8code.server.authentication.exception.UserSessionCreationException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
 import com.xlr8code.server.common.utils.DateTimeUtils;
+import com.xlr8code.server.common.utils.HashUtils;
 import com.xlr8code.server.common.utils.RandomUtils;
 import com.xlr8code.server.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -30,23 +34,38 @@ public class UserSessionService {
     @Value("${user.session.unit}")
     private ChronoUnit chronoUnit;
 
+    @Value("${user.session.key}")
+    private String key;
+
     /**
      * <p>
      * Creates a new session for the given user. The expiration date is configured in the application properties.
      * </p>
      *
      * @param user the user to create the session for
+     * @param sessionToken the session token to be used
      * @return the created {@link UserSession}
      */
     @Transactional
-    public UserSession create(User user) {
+    public UserSession create(User user, String sessionToken) {
+        var sessionTokenHash = this.hashSessionToken(sessionToken);
+
         var userSession = UserSession.builder()
                 .user(user)
-                .sessionToken(this.generateSessionToken())
+                .sessionToken(sessionTokenHash)
                 .expiresAt(DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit))
                 .build();
 
         return this.userSessionRepository.save(userSession);
+    }
+
+    @Transactional
+    public String generate(User user) {
+        var sessionToken = this.generateSessionToken();
+
+        this.create(user, sessionToken);
+
+        return sessionToken;
     }
 
     /**
@@ -58,7 +77,9 @@ public class UserSessionService {
      */
     @Transactional(readOnly = true)
     public UserSession validateSessionToken(String token) {
-        var userSession = this.userSessionRepository.findBySessionToken(token)
+        var sessionTokenHash = this.hashSessionToken(token);
+
+        var userSession = this.userSessionRepository.findBySessionToken(sessionTokenHash)
                 .orElseThrow(InvalidRefreshSessionTokenException::new);
 
         if (!userSession.getUser().isActive())
@@ -123,6 +144,14 @@ public class UserSessionService {
 
     private String generateSessionToken() {
         return RandomUtils.generateAlphanumeric(this.tokenLength);
+    }
+
+    private String hashSessionToken(String sessionToken) {
+        try {
+            return HashUtils.hash(sessionToken, this.key, HashUtils.Algorithm.HMAC_SHA512);
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new UserSessionCreationException();
+        }
     }
 
 }

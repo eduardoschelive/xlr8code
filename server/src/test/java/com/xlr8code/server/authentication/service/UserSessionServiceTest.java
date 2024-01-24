@@ -31,6 +31,8 @@ class UserSessionServiceTest {
     public static User inactiveUser;
     public static User activeUser;
 
+    public static final String SESSION_TOKEN_EXAMPLE = "test-token";
+
     @Autowired
     private UserSessionService userSessionService;
 
@@ -51,28 +53,33 @@ class UserSessionServiceTest {
         userRepository.deleteAll();
     }
 
+    @AfterEach
+    void tearDown() {
+        userSessionRepository.deleteAll();
+    }
+
 
     @Test
     void it_should_generate_user_session() {
-        var userSession = userSessionService.create(inactiveUser);
-        assertNotNull(userSession);
+        var userSessionToken = userSessionService.generate(inactiveUser);
+        assertNotNull(userSessionToken);
     }
 
     @Test
     void it_should_validate_session_token() {
-        var userSession = userSessionService.create(activeUser);
+        var userSessionToken = userSessionService.generate(activeUser);
 
-        var validatedUserSession = userSessionService.validateSessionToken(userSession.getSessionToken());
+        var validatedUserSession = userSessionService.validateSessionToken(userSessionToken);
 
         assertNotNull(validatedUserSession);
     }
 
     @Test
     void it_should_not_validate_session_when_user_inactive() {
-        var userSession = userSessionService.create(inactiveUser);
+        var userSessionToken = userSessionService.generate(inactiveUser);
 
         Executable executable = () -> {
-            userSessionService.validateSessionToken(userSession.getSessionToken());
+            userSessionService.validateSessionToken(userSessionToken);
         };
 
         assertThrows(AccountNotActivatedException.class, executable);
@@ -80,7 +87,7 @@ class UserSessionServiceTest {
 
     @Test
     void it_should_not_validate_session_when_expired() {
-        var userSession = userSessionService.create(activeUser);
+        var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
 
         var newExpireDate = userSession.getExpiresAt().toInstant().minus(userSessionService.getSessionDuration() * 10, ChronoUnit.DAYS);
         userSession.setExpiresAt(Date.from(newExpireDate));
@@ -88,7 +95,7 @@ class UserSessionServiceTest {
         userSessionRepository.save(userSession);
 
         Executable executable = () -> {
-            userSessionService.validateSessionToken(userSession.getSessionToken());
+            userSessionService.validateSessionToken(SESSION_TOKEN_EXAMPLE);
         };
 
         assertThrows(SessionExpiredException.class, executable);
@@ -105,7 +112,7 @@ class UserSessionServiceTest {
 
     @Test
     void it_should_refresh_session() {
-        var userSession = userSessionService.create(activeUser);
+        var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
         var expirationDate = userSession.getExpiresAt();
 
         var refreshedUserSession = userSessionService.refresh(userSession);
@@ -117,7 +124,7 @@ class UserSessionServiceTest {
 
     @Test
     void it_should_end_specific_session() {
-        var userSession = userSessionService.create(activeUser);
+        var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
 
         userSessionService.end(userSession.getSessionToken());
         var userSessionOptional = userSessionRepository.findBySessionToken(userSession.getSessionToken());
@@ -130,7 +137,7 @@ class UserSessionServiceTest {
         final var MAX_SESSIONS = 10;
 
         for (int i = 0; i < MAX_SESSIONS; i++) {
-            userSessionService.create(activeUser);
+            userSessionService.generate(activeUser);
         }
 
         userSessionService.endAllFromUser(activeUser);
