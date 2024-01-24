@@ -98,7 +98,9 @@ class AuthenticationServiceTest {
 
         authenticationService.signOut(sessionToken);
 
-        var userSession = userSessionRepository.findBySessionToken(sessionToken);
+        var user = userService.findByUUID(activeUser.getId());
+
+        var userSession = userSessionRepository.findAllByUser(user);
 
         assertTrue(userSession.isEmpty());
     }
