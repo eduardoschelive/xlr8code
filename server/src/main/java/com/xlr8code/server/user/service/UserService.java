@@ -156,4 +156,15 @@ public class UserService {
         return UserDTO.fromUser(user);
     }
 
+    @Transactional
+    public void deleteByUUID(String id) {
+        var uuid = UUIDUtils.convertFromString(id).orElseThrow(UserNotFoundException::new);
+
+        if (!this.userRepository.existsById(uuid)) {
+            throw new UserNotFoundException();
+        }
+
+        this.userRepository.deleteById(uuid);
+    }
+
 }
