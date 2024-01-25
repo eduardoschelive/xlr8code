@@ -1,26 +1,21 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.entity.User;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserSecurityService {
 
-    // will be used later
+    public boolean canModifyResource(UserDetails principal, String userId) {
+        var user = (User) principal;
 
-    public boolean canModifyResource(Authentication authentication, String userId) {
-        var user = (User) authentication.getPrincipal();
-        var uuidOptional = UUIDUtils.convertFromString(userId);
+        if (user.isAdmin()) return true;
 
-        if (uuidOptional.isEmpty()) {
-            return false;
-        }
+        var userIdString = user.getId().toString();
 
-        var uuid = uuidOptional.get();
-
-        return user.getId().equals(uuid) && user.isAdmin();
+        return userIdString.equals(userId);
     }
 
 }
