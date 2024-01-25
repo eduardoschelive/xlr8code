@@ -126,8 +126,8 @@ class UserSessionServiceTest {
     void it_should_end_specific_session() {
         var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
 
-        userSessionService.end(userSession.getSessionToken());
-        var userSessionOptional = userSessionRepository.findBySessionToken(userSession.getSessionToken());
+        userSessionService.end(SESSION_TOKEN_EXAMPLE);
+        var userSessionOptional = userSessionRepository.findBySessionToken(SESSION_TOKEN_EXAMPLE);
 
         assertTrue(userSessionOptional.isEmpty());
     }
