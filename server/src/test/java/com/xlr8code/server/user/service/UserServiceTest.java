@@ -209,4 +209,28 @@ class UserServiceTest {
         }
 
     }
+
+    @Nested
+    class DeletionTests {
+
+        @Test
+        void it_should_delete_user() {
+            var uuid = defaultUser.getId();
+
+            userService.deleteByUUID(uuid.toString());
+
+            var user = userRepository.findById(uuid);
+
+            assertTrue(user.isEmpty());
+        }
+
+        @Test
+        void it_should_not_delete_uuid_does_not_exists() {
+            var uuid = "not_a_uuid";
+
+            assertThrows(UserNotFoundException.class, () -> userService.deleteByUUID(uuid));
+        }
+
+    }
+
 }
