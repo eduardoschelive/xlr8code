@@ -156,6 +156,10 @@ public class UserService {
         return UserDTO.fromUser(user);
     }
 
+    /**
+     * @param id UUID of the user
+     * @throws UserNotFoundException if the user is not found or if uuid is not valid
+     */
     @Transactional
     public void deleteByUUID(String id) {
         var uuid = UUIDUtils.convertFromString(id).orElseThrow(UserNotFoundException::new);
