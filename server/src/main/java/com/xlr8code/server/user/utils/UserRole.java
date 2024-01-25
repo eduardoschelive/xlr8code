@@ -19,4 +19,8 @@ public enum UserRole {
         return Role.builder().id(this.id).userRole(this).build();
     }
 
+    public static String getHierarchy() {
+        return ADMIN.value + " > " + MEMBER.value;
+    }
+
 }

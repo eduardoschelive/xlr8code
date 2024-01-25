@@ -5,6 +5,7 @@ import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
         this.userService.deleteByUUID(id);

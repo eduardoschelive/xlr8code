@@ -1,16 +1,21 @@
 package com.xlr8code.server.authentication.config;
 
 import com.xlr8code.server.authentication.filter.SecurityFilter;
-import com.xlr8code.server.authentication.utils.RoleEndpoints;
+import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -40,19 +45,14 @@ public class WebSecurityConfig {
     }
 
     private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
-        var endpoints = RoleEndpoints.getRoleEndpoints();
-
         httpSecurity
-                .authorizeHttpRequests(authorizeRequests -> {
-                    for (var entry : endpoints.entrySet()) {
-                        var roleName = entry.getKey().name();
-                        var roleEndpoints = entry.getValue();
-                        authorizeRequests
-                                .requestMatchers(roleEndpoints)
-                                .hasRole(roleName);
-                    }
-                    authorizeRequests.anyRequest().permitAll();
-                });
+                .authorizeHttpRequests(WebSecurityConfig::configureEndpointSecurity);
+    }
+
+    private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
+        // TODO: 2021-10-10 change dto of 403 response
+        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+        authorizeRequests.anyRequest().permitAll();
     }
 
     private void configureFilters(HttpSecurity httpSecurity) {
@@ -65,6 +65,16 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        var roleHierarchy = new RoleHierarchyImpl();
+
+        var hierarchy = UserRole.getHierarchy();
+        roleHierarchy.setHierarchy(hierarchy);
+
+        return roleHierarchy;
     }
 
 }
