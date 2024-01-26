@@ -3,11 +3,14 @@ package com.xlr8code.server.utils;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.utils.UserRole;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class UserTestUtils {
     public static CreateUserDTO buildCreateUserDTO(String username, String email, String password) {
@@ -38,6 +41,14 @@ public class UserTestUtils {
                 .email(email)
                 .password(password)
                 .metadata(metadata)
+                .build();
+    }
+
+    public static User buildUserDetails(UUID id, Set<Role> roles) {
+        return User.builder()
+                .id(id)
+                .roles(roles)
+                .active(true)
                 .build();
     }
 
