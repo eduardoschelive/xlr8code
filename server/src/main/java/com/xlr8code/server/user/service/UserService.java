@@ -157,18 +157,28 @@ public class UserService {
     }
 
     /**
-     * @param id UUID of the user
+     * @param uuid {@link UUID} of the user
      * @throws UserNotFoundException if the user is not found or if uuid is not valid
      */
     @Transactional
-    public void deleteByUUID(String id) {
-        var uuid = UUIDUtils.convertFromString(id).orElseThrow(UserNotFoundException::new);
+    public void deleteByUUID(UUID uuid) {
 
         if (!this.userRepository.existsById(uuid)) {
             throw new UserNotFoundException();
         }
 
         this.userRepository.deleteById(uuid);
+    }
+
+    /**
+     * @param uuidString UUID of the user
+     * @throws UserNotFoundException if the user is not found or if uuid is not valid
+     */
+    @Transactional
+    public void deleteByUUID(String uuidString) {
+        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+
+       this.deleteByUUID(uuid);
     }
 
 }
