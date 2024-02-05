@@ -50,12 +50,23 @@ class AuthenticationServiceTest {
 
     private User inactiveUser;
 
+    private static SignUpDTO getSignUpDTO() {
+        return new SignUpDTO(
+                "SIGN_UP_TEST",
+                "SIGN_UP_TEST@test.com",
+                PASSWORD,
+                Theme.SYSTEM,
+                Language.AMERICAN_ENGLISH,
+                null
+        );
+    }
+
     @BeforeEach
     void setUp() {
         var createActiveUserDTO = UserTestUtils.buildCreateUserDTO(ACTIVE_USERNAME, ACTIVE_EMAIL, PASSWORD, true);
         this.activeUser = userService.create(createActiveUserDTO);
 
-        var createInactiveUserDTO = UserTestUtils.buildCreateUserDTO(INACTIVE_USERNAME, INACTIVE_EMAIL, PASSWORD + "2" );
+        var createInactiveUserDTO = UserTestUtils.buildCreateUserDTO(INACTIVE_USERNAME, INACTIVE_EMAIL, PASSWORD + "2");
         this.inactiveUser = userService.create(createInactiveUserDTO);
     }
 
@@ -143,7 +154,6 @@ class AuthenticationServiceTest {
         assertThrows(AccountAlreadyActivatedException.class, executable);
     }
 
-
     @Test
     void it_should_forgot_password() {
         var forgotPasswordDTO = new ForgotPasswordDTO(ACTIVE_EMAIL);
@@ -153,7 +163,7 @@ class AuthenticationServiceTest {
 
     @Test
     void it_should_not_forgot_password_with_invalid_credentials() {
-        var forgotPasswordDTO = new ForgotPasswordDTO("invalid" );
+        var forgotPasswordDTO = new ForgotPasswordDTO("invalid");
 
         Executable executable = () -> authenticationService.forgotPassword(forgotPasswordDTO);
 
@@ -192,17 +202,6 @@ class AuthenticationServiceTest {
         Executable executable = () -> authenticationService.resetPassword(resetPasswordDTO);
 
         assertThrows(PasswordMatchException.class, executable);
-    }
-
-    private static SignUpDTO getSignUpDTO() {
-        return new SignUpDTO(
-                "SIGN_UP_TEST",
-                "SIGN_UP_TEST@test.com",
-                PASSWORD,
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null
-        );
     }
 
 }

@@ -239,5 +239,5 @@ class AuthenticationControllerTest {
         }
 
     }
-    
+
 }
