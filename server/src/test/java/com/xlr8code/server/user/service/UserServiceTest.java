@@ -216,7 +216,7 @@ class UserServiceTest {
             var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", "not_matching_password", "new_password");
             var uuid = defaultUser.getId().toString();
 
-            assertThrows(IncorrectOldPassword.class, () -> userService.updateByUUID(uuid, update));
+            assertThrows(IncorrectOldPasswordException.class, () -> userService.updateByUUID(uuid, update));
         }
 
         @Test

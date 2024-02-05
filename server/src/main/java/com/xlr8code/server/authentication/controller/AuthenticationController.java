@@ -2,7 +2,7 @@ package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.service.AuthenticationService;
-import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.common.utils.Endpoint;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

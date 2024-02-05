@@ -26,7 +26,7 @@ public record UserDTO(
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
                 user.getNamedRoles(),
-                UserMetadataDTO.fromUserMetadata(
+                new UserMetadataDTO(
                         user.getMetadata().getThemePreference(),
                         user.getMetadata().getLanguagePreference(),
                         user.getMetadata().getProfilePictureUrl()

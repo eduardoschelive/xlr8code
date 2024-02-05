@@ -1,4 +1,4 @@
-package com.xlr8code.server.authentication.utils;
+package com.xlr8code.server.common.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,6 +26,10 @@ public class Endpoint {
 
     public record User() {
         public static final String BASE_PATH = API_PREFIX + "/user";
+    }
+
+    public record UserMetadata() {
+        public static final String BASE_PATH = API_PREFIX + "/user-metadata";
     }
 
 }
