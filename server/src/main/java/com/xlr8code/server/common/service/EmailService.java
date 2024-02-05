@@ -21,7 +21,7 @@ public class EmailService {
 
     public void sendPasswordResetEmail(String email, String passwordResetCode) {
         var subject = "Password reset";
-        var body = "Your password reset code is " + passwordResetCode;
+        var body = "Your currentPassword reset code is " + passwordResetCode;
 
         this.sendEmail(email, subject, body);
     }

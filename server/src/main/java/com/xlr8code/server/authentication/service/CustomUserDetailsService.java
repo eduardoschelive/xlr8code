@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     /**
      * @param login the username identifying the user whose data is required. Cannot be null.
      * @return a fully populated user record (never null)
-     * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
+     * @throws IncorrectUsernameOrPasswordException if the username or currentPassword is incorrect
      */
     @Override
     @Transactional(readOnly = true)

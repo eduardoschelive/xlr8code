@@ -1,6 +1,6 @@
-package com.xlr8code.server.authentication.annotation;
+package com.xlr8code.server.common.annotation;
 
-import com.xlr8code.server.authentication.validator.UUIDTokenValidator;
+import com.xlr8code.server.common.validator.NullOrNotBlankValidator;
 import jakarta.validation.Constraint;
 
 import java.lang.annotation.ElementType;
@@ -11,11 +11,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(
-        validatedBy = UUIDTokenValidator.class
+        validatedBy = NullOrNotBlankValidator.class
 )
-public @interface UUIDToken {
+public @interface NullOrNotBlank {
 
-    String message() default "Invalid UUID token";
+    String message() default "Field must be null or not blank";
 
     Class<?>[] groups() default {};
 

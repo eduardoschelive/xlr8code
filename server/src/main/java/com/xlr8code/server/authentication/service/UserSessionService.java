@@ -126,8 +126,8 @@ public class UserSessionService {
 
     /**
      * <p>
-     * Removes all sessions from the given user. This method is used when the user changes his password.
-     * All sessions are removed so that the user has to log in again with the new password.
+     * Removes all sessions from the given user. This method is used when the user changes his currentPassword.
+     * All sessions are removed so that the user has to log in again with the new currentPassword.
      * </p>
      *
      * @param user the user to remove the sessions from
