@@ -22,15 +22,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class UserActivationCodeServiceTest {
 
+    private static User inactiveUser;
+    private static User activeUser;
     @Autowired
     private UserActivationCodeService userActivationCodeService;
-
     @Autowired
     private UserActivationCodeRepository userActivationCodeRepository;
-
-    private static User inactiveUser;
-
-    private static User activeUser;
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {

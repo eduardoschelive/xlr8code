@@ -9,6 +9,7 @@ import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.user.utils.UserRole;
+import com.xlr8code.server.utils.JsonTestUtils;
 import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -27,8 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +42,23 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private UserDTO expectedUserDTO() {
+        return new UserDTO(
+                UUID.fromString("550e8400-e29b-41d4-a716-446655440000"),
+                "test",
+                "test@test",
+                true,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                Set.of("ROLE_USER"),
+                new UserMetadataDTO(
+                        Theme.LIGHT,
+                        Language.BRAZILIAN_PORTUGUESE,
+                        null
+                )
+        );
+    }
 
     @Nested
     class FindTests {
@@ -129,21 +146,71 @@ class UserControllerTest {
 
     }
 
-    private UserDTO expectedUserDTO() {
-        return new UserDTO(
-                UUID.fromString("550e8400-e29b-41d4-a716-446655440000"),
-                "test",
-                "test@test",
-                true,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                Set.of("ROLE_USER"),
-                new UserMetadataDTO(
-                        Theme.LIGHT,
-                        Language.BRAZILIAN_PORTUGUESE,
-                        null
-                )
-        );
+    @Nested
+    class UpdateTests {
+
+        private final User member = UserTestUtils.buildUserDetails(UUID.randomUUID(), Set.of(UserRole.MEMBER.toRole()));
+        private final User admin = UserTestUtils.buildUserDetails(UUID.randomUUID(), Set.of(UserRole.ADMIN.toRole()));
+
+        @Test
+        void it_should_update_user() throws Exception {
+            var expectedUserDTO = expectedUserDTO();
+            var update = UserTestUtils.buildUpdateUserDTO(
+                    "new_username",
+                    "new_email",
+                    "new_password",
+                    "new_password"
+            );
+
+            when(userService.updateByUUID(expectedUserDTO.id().toString(), update)).thenReturn(expectedUserDTO);
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}", member.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(update)))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void it_should_return_error_when_user_cannot_modify_resource() throws Exception {
+            var update = UserTestUtils.buildUpdateUserDTO(
+                    "new_username",
+                    "new_email",
+                    "new_password",
+                    "new_password"
+            );
+
+            var uuid = UUID.randomUUID().toString();
+
+            when(userService.updateByUUID(uuid, update)).thenThrow(UserNotFoundException.class);
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}", uuid)
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(update)))
+                    .andExpect(status().isForbidden());
+
+        }
+
+        @Test
+        void it_should_allow_admin_to_update_another_user() throws Exception {
+            var expectedUserDTO = expectedUserDTO();
+            var update = UserTestUtils.buildUpdateUserDTO(
+                    "new_username",
+                    "new_email",
+                    "new_password",
+                    "new_password"
+            );
+
+            when(userService.updateByUUID(expectedUserDTO.id().toString(), update)).thenReturn(expectedUserDTO);
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}", member.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(update)))
+                    .andExpect(status().isOk());
+        }
+
     }
 
 }

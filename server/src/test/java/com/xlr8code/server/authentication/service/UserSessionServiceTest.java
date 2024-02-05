@@ -27,12 +27,9 @@ class UserSessionServiceTest {
 
     public static final String ACTIVE_USERNAME = "test-active";
     public static final String ACTIVE_MAIL = "test-active@test.com";
-
+    public static final String SESSION_TOKEN_EXAMPLE = "test-token";
     public static User inactiveUser;
     public static User activeUser;
-
-    public static final String SESSION_TOKEN_EXAMPLE = "test-token";
-
     @Autowired
     private UserSessionService userSessionService;
 

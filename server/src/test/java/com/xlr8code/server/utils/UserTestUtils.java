@@ -3,11 +3,11 @@ package com.xlr8code.server.utils;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.utils.UserRole;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
 import java.util.UUID;
@@ -50,6 +50,10 @@ public class UserTestUtils {
                 .roles(roles)
                 .active(true)
                 .build();
+    }
+
+    public static UpdateUserDTO buildUpdateUserDTO(String username, String email, String currentPassword, String newPassword) {
+        return new UpdateUserDTO(username, email, currentPassword, newPassword);
     }
 
 }

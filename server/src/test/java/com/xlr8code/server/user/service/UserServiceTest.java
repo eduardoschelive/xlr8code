@@ -3,9 +3,7 @@ package com.xlr8code.server.user.service;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;
@@ -20,22 +18,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class UserServiceTest {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private static final String DEFAULT_USERNAME = "test";
     private static final String DEFAULT_EMAIL = "test@test.com";
     private static final String DEFAULT_PASSWORD = "test";
-
     private static final String FALSE_USERNAME = "not_test";
     private static final String FALSE_EMAIL = "not_test@nottest.com";
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     private User defaultUser;
 
     @BeforeEach
@@ -82,57 +75,57 @@ class UserServiceTest {
     @Nested
     class FindTests {
 
-            @Test
-            void it_should_find_user_by_username() {
-                var user = userService.findByLogin(DEFAULT_USERNAME);
+        @Test
+        void it_should_find_user_by_username() {
+            var user = userService.findByLogin(DEFAULT_USERNAME);
 
-                assertNotNull(user);
-                assertEquals(user, defaultUser);
-            }
+            assertNotNull(user);
+            assertEquals(user, defaultUser);
+        }
 
-            @Test
-            void it_should_find_user_by_email() {
-                var user = userService.findByLogin(DEFAULT_EMAIL);
+        @Test
+        void it_should_find_user_by_email() {
+            var user = userService.findByLogin(DEFAULT_EMAIL);
 
-                assertNotNull(user);
-                assertEquals(user, defaultUser);
-            }
+            assertNotNull(user);
+            assertEquals(user, defaultUser);
+        }
 
-            @Test
-            void it_should_not_find_user_by_username() {
-                assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_USERNAME));
-            }
+        @Test
+        void it_should_not_find_user_by_username() {
+            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_USERNAME));
+        }
 
-            @Test
-            void it_should_not_find_user_by_email() {
-                assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_EMAIL));
-            }
+        @Test
+        void it_should_not_find_user_by_email() {
+            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_EMAIL));
+        }
 
 
-            @Test
-            void it_should_find_by_uuid() {
-                var id = defaultUser.getId();
+        @Test
+        void it_should_find_by_uuid() {
+            var id = defaultUser.getId();
 
-                var user = userService.findByUUID(id);
+            var user = userService.findByUUID(id);
 
-                assertNotNull(user);
-            }
+            assertNotNull(user);
+        }
 
-            @Test
-            void it_should_find_by_uuid_string() {
-                var idString = defaultUser.getId().toString();
+        @Test
+        void it_should_find_by_uuid_string() {
+            var idString = defaultUser.getId().toString();
 
-                var user = userService.findByUUID(idString);
+            var user = userService.findByUUID(idString);
 
-                assertNotNull(user);
-            }
+            assertNotNull(user);
+        }
 
-            @Test
-            void it_should_not_find_by_invalid_uuid() {
-                var id = "not_a_uuid";
+        @Test
+        void it_should_not_find_by_invalid_uuid() {
+            var id = "not_a_uuid";
 
-                assertThrows(UserNotFoundException.class, () -> userService.findByUUID(id));
-            }
+            assertThrows(UserNotFoundException.class, () -> userService.findByUUID(id));
+        }
 
     }
 
@@ -208,6 +201,43 @@ class UserServiceTest {
             assertTrue(passwordEncoder.matches(NEW_PASSWORD, user.getPassword()));
         }
 
+        @Test
+        void it_should_update_user() {
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", DEFAULT_PASSWORD, "new_password");
+
+            var updatedUser = userService.updateByUUID(defaultUser.getId().toString(), update);
+
+            assertEquals(update.username(), updatedUser.username());
+            assertEquals(update.email(), updatedUser.email());
+        }
+
+        @Test
+        void it_should_not_update_when_password_old_password_is_invalid() {
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", "not_matching_password", "new_password");
+            var uuid = defaultUser.getId().toString();
+
+            assertThrows(IncorrectOldPassword.class, () -> userService.updateByUUID(uuid, update));
+        }
+
+        @Test
+        void it_should_not_update_password_when_null() {
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", null, "new_password");
+            var uuid = defaultUser.getId().toString();
+
+            var updatedUser = userService.updateByUUID(uuid, update);
+
+            assertEquals(update.username(), updatedUser.username());
+            assertEquals(update.email(), updatedUser.email());
+        }
+
+        @Test
+        void it_should_not_update_password_when_new_password_is_null() {
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", DEFAULT_PASSWORD, null);
+            var uuid = defaultUser.getId().toString();
+
+            assertThrows(InvalidNewPasswordException.class, () -> userService.updateByUUID(uuid, update));
+        }
+
     }
 
     @Nested
@@ -232,5 +262,6 @@ class UserServiceTest {
         }
 
     }
+
 
 }
