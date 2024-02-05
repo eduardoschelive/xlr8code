@@ -29,7 +29,7 @@ public class AuthenticationService {
      * @param authenticationToken the authentication token to be used for authentication
      * @return the authenticated {@link User}
      * @throws AccountNotActivatedException         if the user is not activated
-     * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
+     * @throws IncorrectUsernameOrPasswordException if the username or currentPassword is incorrect
      */
     private User authenticate(AbstractAuthenticationToken authenticationToken) {
         try {
@@ -134,10 +134,10 @@ public class AuthenticationService {
 
     /**
      * <p>
-     * The password reset code is sent to the user's email address.
+     * The currentPassword reset code is sent to the user's email address.
      * </p>
      *
-     * @param forgotPasswordDTO the forgot password request body
+     * @param forgotPasswordDTO the forgot currentPassword request body
      * @throws IncorrectUsernameOrPasswordException if the user is not found
      * @see UserPasswordResetCodeService#generate(User)
      */
@@ -152,7 +152,7 @@ public class AuthenticationService {
     }
 
     /**
-     * @param resetPasswordDTO the reset password request body
+     * @param resetPasswordDTO the reset currentPassword request body
      * @see UserPasswordResetCodeService#validate(String)
      * @see UserService#changePassword(User, String, String)
      * @see UserPasswordResetCodeService#removeAllFromUser(User)

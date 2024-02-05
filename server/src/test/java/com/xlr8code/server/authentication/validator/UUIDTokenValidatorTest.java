@@ -1,5 +1,6 @@
 package com.xlr8code.server.authentication.validator;
 
+import com.xlr8code.server.common.validator.UUIDTokenValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

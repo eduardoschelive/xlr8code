@@ -1,8 +1,10 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,14 @@ public class UserController {
         this.userService.deleteByUUID(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+        var updatedUserDTO = this.userService.updateByUUID(id, updateUserDTO);
+
+        return ResponseEntity.ok(updatedUserDTO);
     }
 
 }

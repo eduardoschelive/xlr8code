@@ -5,12 +5,11 @@ import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -40,12 +39,8 @@ public class UserService {
      */
     @Transactional
     public User create(CreateUserDTO userCreateDTO) {
-        if (this.isUsernameTaken(userCreateDTO.username()))
-            throw new UsernameAlreadyTakenException();
-
-        if (this.isEmailInUse(userCreateDTO.email()))
-            throw new EmailAlreadyInUseException();
-
+        this.validateUsername(userCreateDTO.username());
+        this.validateEmail(userCreateDTO.email());
 
         var user = userCreateDTO.toUserWithMetadata();
 
@@ -58,11 +53,10 @@ public class UserService {
         return newUser;
     }
 
-
     /**
      * @param login Username or email of the user
      * @return {@link User} with the given username or email
-     * @throws IncorrectUsernameOrPasswordException if the username or password is incorrect
+     * @throws IncorrectUsernameOrPasswordException if the username or currentPassword is incorrect
      */
     @Transactional(readOnly = true)
     public User findByLogin(String login) {
@@ -71,27 +65,21 @@ public class UserService {
     }
 
     /**
-     * @param user                    User to have the password changed
-     * @param newPassword             New password
-     * @param newPasswordConfirmation New password confirmation
+     * @param user                    User to have the currentPassword changed
+     * @param newPassword             New currentPassword
+     * @param newPasswordConfirmation New currentPassword confirmation
      *                                <p>
-     *                                This method changes the password of the user and ends all sessions of the user.
+     *                                This method changes the currentPassword of the user and ends all sessions of the user.
      *                                </p>
-     * @throws PasswordMatchException if the new password and the new password confirmation do not match
+     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
-        if (!newPassword.equals(newPasswordConfirmation)) {
-            throw new PasswordMatchException();
-        }
+        this.validatePasswordChange(newPassword, newPasswordConfirmation);
 
-        var passwordHash = this.passwordEncoder.encode(newPassword);
-
-        user.setPassword(passwordHash);
+        this.changeUserPassword(user, newPassword);
 
         this.userRepository.save(user);
-
-        this.userSessionService.endAllFromUser(user);
     }
 
     /**
@@ -104,6 +92,204 @@ public class UserService {
     public void activate(User user) {
         user.activate();
         this.userRepository.save(user);
+    }
+
+    /**
+     * @param uuidString UUID of the user
+     * @return {@link UserDTO} of the user
+     * @throws UserNotFoundException if the user is not found
+     */
+    @Transactional(readOnly = true)
+    public UserDTO findByUUID(String uuidString) {
+        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+        var user = this.findByUUID(uuid);
+
+        return UserDTO.fromUser(user);
+    }
+
+    /**
+     * @param uuid UUID of the user
+     * @return User with the given id
+     * @throws UserNotFoundException if the user is not found
+     */
+    @Transactional(readOnly = true)
+    public User findByUUID(UUID uuid) {
+        return this.userRepository.findById(uuid)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * @param uuidString UUID of the user
+     * @throws UserNotFoundException if the user is not found or if uuid is not valid
+     */
+    @Transactional
+    public void deleteByUUID(String uuidString) {
+        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+        this.deleteByUUID(uuid);
+    }
+
+    /**
+     * @param uuid {@link UUID} of the user
+     * @throws UserNotFoundException if the user is not found or if uuid is not valid
+     */
+    @Transactional
+    public void deleteByUUID(UUID uuid) {
+        if (!this.userRepository.existsById(uuid)) {
+            throw new UserNotFoundException();
+        }
+        this.userRepository.deleteById(uuid);
+    }
+
+    /**
+     * @param uuid          UUID of the user
+     * @param updateUserDTO {@link UpdateUserDTO} of the user
+     * @return {@link UserDTO} of the updated user
+     * @throws UserNotFoundException         if the user is not found
+     * @throws UsernameAlreadyTakenException if the username is already taken
+     * @throws EmailAlreadyInUseException    if the email is already in use
+     * @throws IncorrectOldPassword          if the current currentPassword is incorrect
+     * @throws InvalidNewPasswordException   if the new currentPassword is invalid
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
+     */
+    @Transactional
+    public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
+        var user = this.findByUUID(uuid);
+
+        if (shouldChangeUsername(user.getUsername(), updateUserDTO.username())) {
+            this.changeUsername(user, updateUserDTO.username());
+        }
+
+        if (shouldChangeEmail(user.getEmail(), updateUserDTO.email())) {
+            this.changeEmail(user, updateUserDTO.email());
+        }
+
+        boolean shouldChangePassword = shouldChangePassword(user.getPassword(),
+                updateUserDTO.currentPassword(),
+                updateUserDTO.newPassword());
+
+        if (shouldChangePassword) {
+            this.changeUserPassword(user, updateUserDTO.newPassword());
+        }
+
+        var updatedUser = this.userRepository.save(user);
+
+        return UserDTO.fromUser(updatedUser);
+    }
+
+    /**
+     * @param passwordHash    Hash of the current currentPassword
+     * @param currentPassword Current currentPassword
+     * @return true if the current currentPassword is correct, false otherwise
+     * @throws IncorrectOldPassword if the current currentPassword is incorrect
+     */
+    private boolean shouldChangePassword(String passwordHash, String currentPassword, String newPassword) {
+        if (currentPassword == null) {
+            return false;
+        }
+
+        if (newPassword == null) {
+            throw new InvalidNewPasswordException();
+        }
+
+        if (!this.passwordEncoder.matches(currentPassword, passwordHash)) {
+            throw new IncorrectOldPassword();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param uuidString    {@link UUID} of the user
+     * @param updateUserDTO {@link UpdateUserDTO} of the user
+     * @return {@link UserDTO} of the updated user
+     */
+    @Transactional
+    public UserDTO updateByUUID(String uuidString, UpdateUserDTO updateUserDTO) {
+        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+        return this.updateByUUID(uuid, updateUserDTO);
+    }
+
+    /**
+     * @param currentUsername Current username of the user
+     * @param newUsername     New username of the user
+     * @return true if the username should be updated, false otherwise
+     */
+    private boolean shouldChangeUsername(String currentUsername, String newUsername) {
+        return newUsername != null && !currentUsername.equals(newUsername);
+    }
+
+    /**
+     * @param currentEmail Current email of the user
+     * @param newEmail     New email of the user
+     * @return true if the email should be updated, false otherwise
+     */
+    private boolean shouldChangeEmail(String currentEmail, String newEmail) {
+        return newEmail != null && !currentEmail.equals(newEmail);
+    }
+
+    /**
+     * @param user        User to have the username updated
+     * @param newUsername New username
+     * @throws UsernameAlreadyTakenException if the username is already taken
+     */
+    private void changeUsername(User user, String newUsername) {
+        this.validateUsername(newUsername);
+        user.setUsername(newUsername);
+    }
+
+    /**
+     * @param user     User to have the email updated
+     * @param newEmail New email
+     * @throws EmailAlreadyInUseException if the email is already in use
+     */
+    private void changeEmail(User user, String newEmail) {
+        this.validateEmail(newEmail);
+        user.setEmail(newEmail);
+    }
+
+    /**
+     * @param username Username to be validated
+     * @throws UsernameAlreadyTakenException if the username is already taken
+     */
+    private void validateUsername(String username) {
+        if (this.isUsernameTaken(username))
+            throw new UsernameAlreadyTakenException();
+    }
+
+    /**
+     * @param email Email to be validated
+     * @throws EmailAlreadyInUseException if the email is already in use
+     */
+    private void validateEmail(String email) {
+        if (this.isEmailInUse(email))
+            throw new EmailAlreadyInUseException();
+    }
+
+    /**
+     * @param user User to have the currentPassword encoded
+     */
+    private void encodeUserPassword(User user) {
+        var password = user.getPassword();
+        var passwordHash = this.passwordEncoder.encode(password);
+        user.setPassword(passwordHash);
+    }
+
+    /**
+     * @param user        User to have the currentPassword changed
+     * @param newPassword New currentPassword
+     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     */
+    private void changeUserPassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+        this.encodeUserPassword(user);
+
+        this.userSessionService.endAllFromUser(user);
+    }
+
+    private void validatePasswordChange(String newPassword, String newPasswordConfirmation) {
+        if (!newPassword.equals(newPasswordConfirmation)) {
+            throw new PasswordMatchException();
+        }
     }
 
     /**
@@ -120,65 +306,6 @@ public class UserService {
      */
     public boolean isEmailInUse(String email) {
         return this.userRepository.findUserByEmailIgnoreCase(email).isPresent();
-    }
-
-    /**
-     * @param user User to have the password encoded
-     */
-    private void encodeUserPassword(User user) {
-        var password = user.getPassword();
-        var passwordHash = this.passwordEncoder.encode(password);
-        user.setPassword(passwordHash);
-    }
-
-    /**
-     * @param uuid UUID of the user
-     * @return User with the given id
-     * @throws UserNotFoundException if the user is not found
-     */
-    @Transactional(readOnly = true)
-    public User findByUUID(UUID uuid) {
-        return this.userRepository.findById(uuid)
-                .orElseThrow(UserNotFoundException::new);
-    }
-
-    /**
-     * @param id UUID of the user
-     * @return UserDTO of the user
-     * @throws UserNotFoundException if the user is not found
-     */
-    @Transactional(readOnly = true)
-    public UserDTO findByUUID(String id) {
-        var uuid = UUIDUtils.convertFromString(id).orElseThrow(UserNotFoundException::new);
-
-        var user = this.userRepository.findById(uuid).orElseThrow(UserNotFoundException::new);
-
-        return UserDTO.fromUser(user);
-    }
-
-    /**
-     * @param uuid {@link UUID} of the user
-     * @throws UserNotFoundException if the user is not found or if uuid is not valid
-     */
-    @Transactional
-    public void deleteByUUID(UUID uuid) {
-
-        if (!this.userRepository.existsById(uuid)) {
-            throw new UserNotFoundException();
-        }
-
-        this.userRepository.deleteById(uuid);
-    }
-
-    /**
-     * @param uuidString UUID of the user
-     * @throws UserNotFoundException if the user is not found or if uuid is not valid
-     */
-    @Transactional
-    public void deleteByUUID(String uuidString) {
-        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
-
-       this.deleteByUUID(uuid);
     }
 
 }

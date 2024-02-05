@@ -1,6 +1,6 @@
-package com.xlr8code.server.authentication.validator;
+package com.xlr8code.server.common.validator;
 
-import com.xlr8code.server.authentication.annotation.UUIDToken;
+import com.xlr8code.server.common.annotation.UUIDToken;
 import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
