@@ -1,6 +1,6 @@
 package com.xlr8code.server.user.controller;
 
-import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.UserDTO;

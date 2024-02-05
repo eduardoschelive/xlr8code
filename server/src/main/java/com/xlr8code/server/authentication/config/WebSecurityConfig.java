@@ -1,7 +1,7 @@
 package com.xlr8code.server.authentication.config;
 
 import com.xlr8code.server.authentication.filter.SecurityFilter;
-import com.xlr8code.server.authentication.utils.Endpoint;
+import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -54,6 +54,10 @@ public class WebSecurityConfig {
         // USER
         authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
         authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+
+        // USER METADATA
+        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.UserMetadata.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+
         authorizeRequests.anyRequest().permitAll();
     }
 

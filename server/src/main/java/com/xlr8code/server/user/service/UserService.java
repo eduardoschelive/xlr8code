@@ -147,7 +147,7 @@ public class UserService {
      * @throws UserNotFoundException         if the user is not found
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
-     * @throws IncorrectOldPassword          if the current currentPassword is incorrect
+     * @throws IncorrectOldPasswordException          if the current currentPassword is incorrect
      * @throws InvalidNewPasswordException   if the new currentPassword is invalid
      * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
      */
@@ -180,7 +180,7 @@ public class UserService {
      * @param passwordHash    Hash of the current currentPassword
      * @param currentPassword Current currentPassword
      * @return true if the current currentPassword is correct, false otherwise
-     * @throws IncorrectOldPassword if the current currentPassword is incorrect
+     * @throws IncorrectOldPasswordException if the current currentPassword is incorrect
      */
     private boolean shouldChangePassword(String passwordHash, String currentPassword, String newPassword) {
         if (currentPassword == null) {
@@ -192,7 +192,7 @@ public class UserService {
         }
 
         if (!this.passwordEncoder.matches(currentPassword, passwordHash)) {
-            throw new IncorrectOldPassword();
+            throw new IncorrectOldPasswordException();
         }
 
         return true;
