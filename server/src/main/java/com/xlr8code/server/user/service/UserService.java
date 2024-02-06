@@ -163,11 +163,7 @@ public class UserService {
             this.changeEmail(user, updateUserDTO.email());
         }
 
-        boolean shouldChangePassword = shouldChangePassword(user.getPassword(),
-                updateUserDTO.currentPassword(),
-                updateUserDTO.newPassword());
-
-        if (shouldChangePassword) {
+        if (shouldChangePassword(user.getPassword(), updateUserDTO.currentPassword(), updateUserDTO.newPassword())) {
             this.changeUserPassword(user, updateUserDTO.newPassword());
         }
 
