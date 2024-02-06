@@ -17,6 +17,11 @@ public class UserMetadataService {
 
     private final UserMetadataRepository userMetadataRepository;
 
+    /**
+     * @param uuidString the UUID of the user whose metadata is to be updated
+     * @param updateUserMetadataDTO the new metadata to be set for the user
+     * @return the updated metadata of the user
+     */
     @Transactional
     public UserMetadataDTO updateUserMetadata(String uuidString, UpdateUserMetadataDTO updateUserMetadataDTO) {
         var uuid = UUIDUtils.convertFromString(uuidString)
@@ -25,6 +30,11 @@ public class UserMetadataService {
         return this.updateUserMetadata(uuid, updateUserMetadataDTO);
     }
 
+    /**
+     * @param uuid the UUID of the user whose metadata is to be updated
+     * @param updateUserMetadataDTO the new metadata to be set for the user
+     * @return the updated metadata of the user
+     */
     @Transactional
     public UserMetadataDTO updateUserMetadata(UUID uuid, UpdateUserMetadataDTO updateUserMetadataDTO) {
         var userMetadata = userMetadataRepository.findById(uuid)

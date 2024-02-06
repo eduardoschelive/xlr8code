@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserSecurityService {
 
+    /**
+     * @param principal the principal of the current request
+     * @param userId   the ID of the user whose resource is to be modified
+     * @return whether the principal can modify the resource of the user with the given ID
+     */
     public boolean canModifyResource(UserDetails principal, String userId) {
         var user = (User) principal;
 
