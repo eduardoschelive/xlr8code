@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class User implements UserDetails {
     private boolean active;
 
     @Column(name = "activated_at")
-    private LocalDateTime activatedAt;
+    private Instant activatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
@@ -72,15 +72,15 @@ public class User implements UserDetails {
 
     @Column(name = "created_at")
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     public void activate() {
         this.active = true;
-        this.activatedAt = LocalDateTime.now();
+        this.activatedAt = Instant.now();
     }
 
     public Set<String> getNamedRoles() {

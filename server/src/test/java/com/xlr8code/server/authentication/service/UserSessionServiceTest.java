@@ -86,8 +86,8 @@ class UserSessionServiceTest {
     void it_should_not_validate_session_when_expired() {
         var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
 
-        var newExpireDate = userSession.getExpiresAt().toInstant().minus(userSessionService.getSessionDuration() * 10, ChronoUnit.DAYS);
-        userSession.setExpiresAt(Date.from(newExpireDate));
+        var newExpireDate = userSession.getExpiresAt().minus(userSessionService.getSessionDuration() * 10, ChronoUnit.DAYS);
+        userSession.setExpiresAt(newExpireDate);
 
         userSessionRepository.save(userSession);
 
@@ -116,7 +116,7 @@ class UserSessionServiceTest {
         var newExpirationDate = refreshedUserSession.getExpiresAt();
 
         assertNotNull(refreshedUserSession);
-        assertTrue(newExpirationDate.after(expirationDate));
+        assertTrue(newExpirationDate.isAfter(expirationDate));
     }
 
     @Test

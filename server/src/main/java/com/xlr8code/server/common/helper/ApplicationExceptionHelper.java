@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -58,7 +58,8 @@ public class ApplicationExceptionHelper {
                 httpStatus.value(),
                 errorMessage,
                 message,
-                new Date()
+                Instant.now(),
+                httpServletRequest.getRequestURI()
         );
 
     }
@@ -83,7 +84,8 @@ public class ApplicationExceptionHelper {
                 httpStatus.value(),
                 errorMessage,
                 message,
-                new Date(),
+                Instant.now(),
+                httpServletRequest.getRequestURI(),
                 fields
         );
     }

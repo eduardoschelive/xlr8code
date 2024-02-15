@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -92,6 +94,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             );
         }
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
+    }
+
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    protected ResponseEntity<Object> handleInsufficientAuthenticationException() {
+        var httpStatus = HttpStatus.FORBIDDEN;
+        var messageIdentifier = "authentication.error.unauthorized";
+        var errorMessage = "UNAUTHORIZED";
+
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorMessage);
     }
 
 }

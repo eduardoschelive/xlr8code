@@ -1,11 +1,12 @@
 package com.xlr8code.server.common.dto;
 
-import java.util.Date;
+import java.time.Instant;
 
 public record ApplicationExceptionResponseDTO(
         Integer status,
         String error,
         String message,
-        Date timestamp
+        Instant timestamp,
+        String path
 ) {
 }
