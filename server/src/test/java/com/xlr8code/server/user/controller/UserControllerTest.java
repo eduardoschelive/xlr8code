@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -49,8 +50,8 @@ class UserControllerTest {
                 "test",
                 "test@test",
                 true,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 Set.of("ROLE_USER"),
                 new UserMetadataDTO(
                         Theme.LIGHT,

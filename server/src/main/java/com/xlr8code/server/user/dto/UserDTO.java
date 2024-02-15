@@ -2,7 +2,7 @@ package com.xlr8code.server.user.dto;
 
 import com.xlr8code.server.user.entity.User;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,8 +11,8 @@ public record UserDTO(
         String username,
         String email,
         boolean active,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         Set<String> roles,
         UserMetadataDTO metadata
 ) {

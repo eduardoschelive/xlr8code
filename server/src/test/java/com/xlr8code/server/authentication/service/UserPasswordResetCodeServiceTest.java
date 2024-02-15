@@ -69,9 +69,9 @@ class UserPasswordResetCodeServiceTest {
     @Test
     void it_should_not_validate_expired_reset_code() {
         var userPasswordResetCode = userPasswordResetCodeService.generate(user);
-        var expiredDate = userPasswordResetCode.getExpiresAt().toInstant().minus(1, ChronoUnit.DAYS);
+        var expiredDate = userPasswordResetCode.getExpiresAt().minus(1, ChronoUnit.DAYS);
 
-        userPasswordResetCode.setExpiresAt(Date.from(expiredDate));
+        userPasswordResetCode.setExpiresAt(expiredDate);
 
         userPasswordResetCodeRepository.save(userPasswordResetCode);
 

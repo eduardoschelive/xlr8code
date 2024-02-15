@@ -27,12 +27,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         configure(httpSecurity);
         configureEndpoints(httpSecurity);
         configureFilters(httpSecurity);
+        configureEntryPoint(httpSecurity);
 
         return httpSecurity.build();
     }
@@ -65,6 +67,12 @@ public class WebSecurityConfig {
         httpSecurity.addFilterBefore(
                 this.securityFilter,
                 UsernamePasswordAuthenticationFilter.class
+        );
+    }
+
+    private void configureEntryPoint(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.exceptionHandling(
+                exceptionHandling -> exceptionHandling.authenticationEntryPoint(this.restAuthenticationEntryPoint)
         );
     }
 

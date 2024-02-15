@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "user_password_reset_codes")
@@ -31,7 +31,7 @@ public class UserPasswordResetCode {
     private User user;
 
     @Column(name = "expires_at", nullable = false)
-    private Date expiresAt;
+    private Instant expiresAt;
 
     public boolean isExpired() {
         return DateTimeUtils.isExpired(this.expiresAt);
