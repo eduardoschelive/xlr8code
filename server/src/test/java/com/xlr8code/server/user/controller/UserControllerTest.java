@@ -159,9 +159,7 @@ class UserControllerTest {
             var expectedUserDTO = expectedUserDTO();
             var update = UserTestUtils.buildUpdateUserDTO(
                     "new_username",
-                    "new_email",
-                    "new_password",
-                    "new_password"
+                    "new_email@test.com"
             );
 
             when(userService.updateByUUID(expectedUserDTO.id().toString(), update)).thenReturn(expectedUserDTO);
@@ -177,9 +175,7 @@ class UserControllerTest {
         void it_should_return_error_when_user_cannot_modify_resource() throws Exception {
             var update = UserTestUtils.buildUpdateUserDTO(
                     "new_username",
-                    "new_email",
-                    "new_password",
-                    "new_password"
+                    "new_email@test.com"
             );
 
             var uuid = UUID.randomUUID().toString();
@@ -199,9 +195,7 @@ class UserControllerTest {
             var expectedUserDTO = expectedUserDTO();
             var update = UserTestUtils.buildUpdateUserDTO(
                     "new_username",
-                    "new_email",
-                    "new_password",
-                    "new_password"
+                    "new_email@test.com"
             );
 
             when(userService.updateByUUID(expectedUserDTO.id().toString(), update)).thenReturn(expectedUserDTO);

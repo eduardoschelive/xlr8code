@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    @PutMapping("/{id}"+ Endpoint.User.METADATA)
+    @PutMapping("/{id}" + Endpoint.User.METADATA)
     public ResponseEntity<UserMetadataDTO> updateUserMetadataById(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
         var updatedUserDTO = this.userService.updateMetadataByUUID(id, updateUserMetadataDTO);
 

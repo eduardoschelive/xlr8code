@@ -139,60 +139,6 @@ public class UserService {
     }
 
     /**
-     * @param uuid          UUID of the user
-     * @param updateUserDTO {@link UpdateUserDTO} of the user
-     * @return {@link UserDTO} of the updated user
-     * @throws UserNotFoundException         if the user is not found
-     * @throws UsernameAlreadyTakenException if the username is already taken
-     * @throws EmailAlreadyInUseException    if the email is already in use
-     * @throws IncorrectOldPasswordException          if the current currentPassword is incorrect
-     * @throws InvalidNewPasswordException   if the new currentPassword is invalid
-     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
-     */
-    @Transactional
-    public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
-        var user = this.findByUUID(uuid);
-
-        if (shouldChangeUsername(user.getUsername(), updateUserDTO.username())) {
-            this.changeUsername(user, updateUserDTO.username());
-        }
-
-        if (shouldChangeEmail(user.getEmail(), updateUserDTO.email())) {
-            this.changeEmail(user, updateUserDTO.email());
-        }
-
-        if (shouldChangePassword(user.getPassword(), updateUserDTO.currentPassword(), updateUserDTO.newPassword())) {
-            this.changeUserPassword(user, updateUserDTO.newPassword());
-        }
-
-        var updatedUser = this.userRepository.save(user);
-
-        return UserDTO.fromUser(updatedUser);
-    }
-
-    /**
-     * @param passwordHash    Hash of the current currentPassword
-     * @param currentPassword Current currentPassword
-     * @return true if the current currentPassword is correct, false otherwise
-     * @throws IncorrectOldPasswordException if the current currentPassword is incorrect
-     */
-    private boolean shouldChangePassword(String passwordHash, String currentPassword, String newPassword) {
-        if (currentPassword == null) {
-            return false;
-        }
-
-        if (newPassword == null) {
-            throw new InvalidNewPasswordException();
-        }
-
-        if (!this.passwordEncoder.matches(currentPassword, passwordHash)) {
-            throw new IncorrectOldPasswordException();
-        }
-
-        return true;
-    }
-
-    /**
      * @param uuidString    {@link UUID} of the user
      * @param updateUserDTO {@link UpdateUserDTO} of the user
      * @return {@link UserDTO} of the updated user
@@ -204,7 +150,30 @@ public class UserService {
     }
 
     /**
-     * @param uuidString UUID of the user
+     * @param uuid          UUID of the user
+     * @param updateUserDTO {@link UpdateUserDTO} of the user
+     * @return {@link UserDTO} of the updated user
+     * @throws UserNotFoundException         if the user is not found
+     * @throws UsernameAlreadyTakenException if the username is already taken
+     * @throws EmailAlreadyInUseException    if the email is already in use
+     * @throws IncorrectOldPasswordException if the current currentPassword is incorrect
+     * @throws InvalidNewPasswordException   if the new currentPassword is invalid
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
+     */
+    @Transactional
+    public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
+        var user = this.findByUUID(uuid);
+
+        this.changeUsername(user, updateUserDTO.username());
+        this.changeEmail(user, updateUserDTO.email());
+
+        var updatedUser = this.userRepository.save(user);
+
+        return UserDTO.fromUser(updatedUser);
+    }
+
+    /**
+     * @param uuidString            UUID of the user
      * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
      * @return {@link UserDTO} of the updated user
      * @throws UserNotFoundException if the user is not found
@@ -216,7 +185,7 @@ public class UserService {
     }
 
     /**
-     * @param uuid UUID of the user
+     * @param uuid                  UUID of the user
      * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
      * @return {@link UserDTO} of the updated user
      * @throws UserNotFoundException if the user is not found
@@ -233,24 +202,6 @@ public class UserService {
         var updatedUser = this.userRepository.save(user);
 
         return UserMetadataDTO.fromUserMetadata(updatedUser.getMetadata());
-    }
-
-    /**
-     * @param currentUsername Current username of the user
-     * @param newUsername     New username of the user
-     * @return true if the username should be updated, false otherwise
-     */
-    private boolean shouldChangeUsername(String currentUsername, String newUsername) {
-        return newUsername != null && !currentUsername.equals(newUsername);
-    }
-
-    /**
-     * @param currentEmail Current email of the user
-     * @param newEmail     New email of the user
-     * @return true if the email should be updated, false otherwise
-     */
-    private boolean shouldChangeEmail(String currentEmail, String newEmail) {
-        return newEmail != null && !currentEmail.equals(newEmail);
     }
 
     /**

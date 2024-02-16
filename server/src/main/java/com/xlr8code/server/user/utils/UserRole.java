@@ -15,12 +15,12 @@ public enum UserRole {
     private final Long id;
     private final String value;
 
-    public Role toRole() {
-        return Role.builder().id(this.id).userRole(this).build();
-    }
-
     public static String getHierarchy() {
         return ADMIN.value + " > " + MEMBER.value;
+    }
+
+    public Role toRole() {
+        return Role.builder().id(this.id).userRole(this).build();
     }
 
 }

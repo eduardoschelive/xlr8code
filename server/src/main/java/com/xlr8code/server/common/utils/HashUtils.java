@@ -15,14 +15,6 @@ import java.util.Base64;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HashUtils {
 
-    @RequiredArgsConstructor
-    @Getter
-    public enum Algorithm {
-        HMAC_SHA512("HmacSHA512");
-
-        private final String value;
-    }
-
     private static Mac getMAC(Algorithm algorithm, String key) throws NoSuchAlgorithmException, InvalidKeyException {
         var algorithmName = algorithm.getValue();
 
@@ -41,6 +33,14 @@ public class HashUtils {
         var macData = mac.doFinal(messageBytes);
 
         return Base64.getEncoder().encodeToString(macData);
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public enum Algorithm {
+        HMAC_SHA512("HmacSHA512");
+
+        private final String value;
     }
 
 }

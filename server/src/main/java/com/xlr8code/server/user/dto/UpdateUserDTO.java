@@ -1,13 +1,12 @@
 package com.xlr8code.server.user.dto;
 
-import com.xlr8code.server.common.annotation.NullOrNotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public record UpdateUserDTO(
-        @NullOrNotBlank
+        @NotBlank
         String username,
-        @NullOrNotBlank
-        String email,
-        String currentPassword,
-        String newPassword
+        @NotBlank @Email
+        String email
 ) {
 }

@@ -4,11 +4,11 @@ import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
 public class UserSessionCreationException extends ApplicationException {
-    
+
     public UserSessionCreationException() {
         super("USER_SESSION_CREATION_ERROR");
     }
-    
+
     @Override
     public String getMessageIdentifier() {
         return "authentication.error.session_creation";
