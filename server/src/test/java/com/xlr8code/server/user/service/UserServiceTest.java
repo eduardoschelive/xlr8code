@@ -4,6 +4,7 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.*;
@@ -214,32 +215,25 @@ class UserServiceTest {
             assertEquals(update.email(), updatedUser.email());
         }
 
-  /*      @Test
+        @Test
+        void it_should_update_password() {
+            var update = new UpdatePasswordDTO(DEFAULT_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
+            var uuid = defaultUser.getId().toString();
+
+            userService.updateUserPassword(uuid, update);
+
+            var user = userRepository.findById(defaultUser.getId()).orElseThrow(UserNotFoundException::new);
+
+            assertTrue(passwordEncoder.matches(NEW_PASSWORD, user.getPassword()));
+        }
+
+        @Test
         void it_should_not_update_when_password_old_password_is_invalid() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email");
+            var update = new UpdatePasswordDTO("invalid_old_password", "new_password", "new_password");
             var uuid = defaultUser.getId().toString();
 
-            assertThrows(IncorrectOldPasswordException.class, () -> userService.updateByUUID(uuid, update));
+            assertThrows(IncorrectOldPasswordException.class, () -> userService.updateUserPassword(uuid, update));
         }
-
-        @Test
-        void it_should_not_update_password_when_null() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email";
-            var uuid = defaultUser.getId().toString();
-
-            var updatedUser = userService.updateByUUID(uuid, update);
-
-            assertEquals(update.username(), updatedUser.username());
-            assertEquals(update.email(), updatedUser.email());
-        }
-
-        @Test
-        void it_should_not_update_password_when_new_password_is_null() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email"l);
-            var uuid = defaultUser.getId().toString();
-
-            assertThrows(InvalidNewPasswordException.class, () -> userService.updateByUUID(uuid, update));
-        }*/
 
         @Test
         void it_should_update_metadata() {

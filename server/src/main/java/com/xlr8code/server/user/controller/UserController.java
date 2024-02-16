@@ -1,10 +1,7 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.user.dto.UpdateUserDTO;
-import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
-import com.xlr8code.server.user.dto.UserDTO;
-import com.xlr8code.server.user.dto.UserMetadataDTO;
+import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,14 @@ public class UserController {
         var updatedUserDTO = this.userService.updateMetadataByUUID(id, updateUserMetadataDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
+    }
+
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
+    public ResponseEntity<Void> updateUserPasswordById(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+        this.userService.updateUserPassword(id, updatePasswordDTO);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

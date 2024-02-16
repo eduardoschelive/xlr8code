@@ -156,9 +156,7 @@ public class UserService {
      * @throws UserNotFoundException         if the user is not found
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
-     * @throws IncorrectOldPasswordException if the current currentPassword is incorrect
      * @throws InvalidNewPasswordException   if the new currentPassword is invalid
-     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
@@ -202,6 +200,43 @@ public class UserService {
         var updatedUser = this.userRepository.save(user);
 
         return UserMetadataDTO.fromUserMetadata(updatedUser.getMetadata());
+    }
+
+    /**
+     * @param userId  UUID of the user
+     * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
+     */
+    @Transactional
+    public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
+        var uuid = UUIDUtils.convertFromString(userId).orElseThrow(UserNotFoundException::new);
+        this.updateUserPassword(uuid, updatePasswordDTO);
+    }
+
+    /**
+     * @param userId            UUID of the user
+     * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
+     */
+    @Transactional
+    public void updateUserPassword(UUID userId, UpdatePasswordDTO updatePasswordDTO) {
+        var user = this.findByUUID(userId);
+
+        this.validatePassword(user.getPassword(), updatePasswordDTO.oldPassword());
+
+        this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
+
+        this.changeUserPassword(user, updatePasswordDTO.newPassword());
+        this.userRepository.save(user);
+    }
+
+    /**
+     * @param encryptedPassword Encrypted currentPassword
+     * @param password          Current currentPassword
+     * @throws IncorrectUsernameOrPasswordException if the currentPassword is incorrect
+     */
+    private void validatePassword(String encryptedPassword, String password) {
+        if (!this.passwordEncoder.matches(password, encryptedPassword)) {
+            throw new IncorrectOldPasswordException();
+        }
     }
 
     /**
@@ -263,7 +298,11 @@ public class UserService {
         this.userSessionService.endAllFromUser(user);
     }
 
-    // TODO: Document this method
+    /**
+     * @param newPassword             New currentPassword
+     * @param newPasswordConfirmation New currentPassword confirmation
+     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     */
     private void validatePasswordChange(String newPassword, String newPasswordConfirmation) {
         if (!newPassword.equals(newPasswordConfirmation)) {
             throw new PasswordMatchException();
