@@ -4,9 +4,7 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.user.dto.CreateUserDTO;
-import com.xlr8code.server.user.dto.UpdateUserDTO;
-import com.xlr8code.server.user.dto.UserDTO;
+import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
 import com.xlr8code.server.user.exception.*;
@@ -206,6 +204,38 @@ public class UserService {
     }
 
     /**
+     * @param uuidString UUID of the user
+     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
+     * @return {@link UserDTO} of the updated user
+     * @throws UserNotFoundException if the user is not found
+     */
+    @Transactional
+    public UserMetadataDTO updateMetadataByUUID(String uuidString, UpdateUserMetadataDTO updateUserMetadataDTO) {
+        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+        return this.updateMetadataByUUID(uuid, updateUserMetadataDTO);
+    }
+
+    /**
+     * @param uuid UUID of the user
+     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
+     * @return {@link UserDTO} of the updated user
+     * @throws UserNotFoundException if the user is not found
+     */
+    @Transactional
+    public UserMetadataDTO updateMetadataByUUID(UUID uuid, UpdateUserMetadataDTO updateUserMetadataDTO) {
+        var user = this.findByUUID(uuid);
+        var metadata = user.getMetadata();
+
+        metadata.setProfilePictureUrl(updateUserMetadataDTO.profilePictureUrl());
+        metadata.setLanguagePreference(updateUserMetadataDTO.languagePreference());
+        metadata.setThemePreference(updateUserMetadataDTO.themePreference());
+
+        var updatedUser = this.userRepository.save(user);
+
+        return UserMetadataDTO.fromUserMetadata(updatedUser.getMetadata());
+    }
+
+    /**
      * @param currentUsername Current username of the user
      * @param newUsername     New username of the user
      * @return true if the username should be updated, false otherwise
@@ -282,6 +312,7 @@ public class UserService {
         this.userSessionService.endAllFromUser(user);
     }
 
+    // TODO: Document this method
     private void validatePasswordChange(String newPassword, String newPasswordConfirmation) {
         if (!newPassword.equals(newPasswordConfirmation)) {
             throw new PasswordMatchException();

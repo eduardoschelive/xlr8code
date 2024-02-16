@@ -3,9 +3,11 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.user.utils.UserRole;
@@ -24,7 +26,6 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -210,6 +211,64 @@ class UserControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(update)))
                     .andExpect(status().isOk());
+        }
+
+        @Test
+        void it_should_update_user_metadata() throws Exception {
+            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+
+            when(userService.updateMetadataByUUID(member.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, member.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateUserMetadataDTO)))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void it_should_not_update_user_metadata_of_other_user_without_admin() throws Exception {
+            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+
+            when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, admin.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateUserMetadataDTO)))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void it_should_update_user_metadata_of_other_user_with_admin() throws Exception {
+            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+
+            when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, admin.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateUserMetadataDTO)))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void it_should_not_update_user_metadata_of_non_existing_user() throws Exception {
+            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            var uuid = UUID.randomUUID().toString();
+
+
+            when(userService.updateMetadataByUUID(uuid, updateUserMetadataDTO)).thenThrow(UserMetadataNotFoundException.class);
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, uuid)
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateUserMetadataDTO)))
+                    .andExpect(status().isNotFound());
+        }
+
+        private UserMetadataDTO expectedUserMetadataDTO() {
+            return new UserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
         }
 
     }

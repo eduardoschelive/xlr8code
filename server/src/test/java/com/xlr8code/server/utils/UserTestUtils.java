@@ -4,6 +4,7 @@ import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.dto.UpdateUserDTO;
+import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
@@ -54,6 +55,10 @@ public class UserTestUtils {
 
     public static UpdateUserDTO buildUpdateUserDTO(String username, String email, String currentPassword, String newPassword) {
         return new UpdateUserDTO(username, email, currentPassword, newPassword);
+    }
+
+    public static UpdateUserMetadataDTO buildUpdateUserMetadataDTO(Theme theme, Language language, String profilePictureUrl) {
+        return new UpdateUserMetadataDTO(theme, language, profilePictureUrl);
     }
 
 }
