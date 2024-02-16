@@ -26,10 +26,9 @@ public class Endpoint {
 
     public record User() {
         public static final String BASE_PATH = API_PREFIX + "/user";
-    }
 
-    public record UserMetadata() {
-        public static final String BASE_PATH = API_PREFIX + "/user-metadata";
+
+        public static final String METADATA = "/metadata";
     }
 
 }

@@ -2,6 +2,9 @@ package com.xlr8code.server.user.service;
 
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
+import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
@@ -237,6 +240,20 @@ class UserServiceTest {
 
             assertThrows(InvalidNewPasswordException.class, () -> userService.updateByUUID(uuid, update));
         }
+
+        @Test
+        void it_should_update_metadata() {
+            var update = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "new_profile_picture_url");
+            var uuid = defaultUser.getId().toString();
+
+            var updatedMetadata = userService.updateMetadataByUUID(uuid, update);
+
+            assertEquals(updatedMetadata.themePreference(), update.themePreference());
+            assertEquals(updatedMetadata.languagePreference(), update.languagePreference());
+            assertEquals(updatedMetadata.profilePictureUrl(), update.profilePictureUrl());
+        }
+
+
 
     }
 
