@@ -206,7 +206,7 @@ class UserServiceTest {
 
         @Test
         void it_should_update_user() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", DEFAULT_PASSWORD, "new_password");
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email");
 
             var updatedUser = userService.updateByUUID(defaultUser.getId().toString(), update);
 
@@ -214,9 +214,9 @@ class UserServiceTest {
             assertEquals(update.email(), updatedUser.email());
         }
 
-        @Test
+  /*      @Test
         void it_should_not_update_when_password_old_password_is_invalid() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", "not_matching_password", "new_password");
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email");
             var uuid = defaultUser.getId().toString();
 
             assertThrows(IncorrectOldPasswordException.class, () -> userService.updateByUUID(uuid, update));
@@ -224,7 +224,7 @@ class UserServiceTest {
 
         @Test
         void it_should_not_update_password_when_null() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", null, "new_password");
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email";
             var uuid = defaultUser.getId().toString();
 
             var updatedUser = userService.updateByUUID(uuid, update);
@@ -235,11 +235,11 @@ class UserServiceTest {
 
         @Test
         void it_should_not_update_password_when_new_password_is_null() {
-            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email", DEFAULT_PASSWORD, null);
+            var update = UserTestUtils.buildUpdateUserDTO("new_username", "new_email"l);
             var uuid = defaultUser.getId().toString();
 
             assertThrows(InvalidNewPasswordException.class, () -> userService.updateByUUID(uuid, update));
-        }
+        }*/
 
         @Test
         void it_should_update_metadata() {
@@ -252,8 +252,6 @@ class UserServiceTest {
             assertEquals(updatedMetadata.languagePreference(), update.languagePreference());
             assertEquals(updatedMetadata.profilePictureUrl(), update.profilePictureUrl());
         }
-
-
 
     }
 

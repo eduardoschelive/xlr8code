@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Set;
-
 @Entity
 @Table(name = "roles")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

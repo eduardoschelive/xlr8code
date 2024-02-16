@@ -42,7 +42,7 @@ public class UserSessionService {
      * Creates a new session for the given user. The expiration date is configured in the application properties.
      * </p>
      *
-     * @param user the user to create the session for
+     * @param user         the user to create the session for
      * @param sessionToken the session token to be used
      * @return the created {@link UserSession}
      */

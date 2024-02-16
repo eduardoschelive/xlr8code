@@ -53,8 +53,8 @@ public class UserTestUtils {
                 .build();
     }
 
-    public static UpdateUserDTO buildUpdateUserDTO(String username, String email, String currentPassword, String newPassword) {
-        return new UpdateUserDTO(username, email, currentPassword, newPassword);
+    public static UpdateUserDTO buildUpdateUserDTO(String username, String email) {
+        return new UpdateUserDTO(username, email);
     }
 
     public static UpdateUserMetadataDTO buildUpdateUserMetadataDTO(Theme theme, Language language, String profilePictureUrl) {
