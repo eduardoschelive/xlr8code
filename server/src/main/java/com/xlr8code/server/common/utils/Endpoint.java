@@ -25,10 +25,10 @@ public class Endpoint {
     }
 
     public record User() {
-        public static final String BASE_PATH = API_PREFIX + "/user";
-
+        public static final String BASE_PATH = API_PREFIX + "/users";
 
         public static final String METADATA = "/metadata";
+        public static final String PASSWORD = "/password";
     }
 
 }

@@ -29,15 +29,6 @@ public class WebSecurityConfig {
     private final SecurityFilter securityFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
-        // TODO: 2021-10-10 change dto of 403 response
-        // USER
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-
-        authorizeRequests.anyRequest().permitAll();
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         configure(httpSecurity);
@@ -58,6 +49,15 @@ public class WebSecurityConfig {
     private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(WebSecurityConfig::configureEndpointSecurity);
+    }
+
+    private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
+        // USER
+        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+        authorizeRequests.requestMatchers(HttpMethod.PATCH, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+
+        authorizeRequests.anyRequest().permitAll();
     }
 
     private void configureFilters(HttpSecurity httpSecurity) {
