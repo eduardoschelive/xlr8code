@@ -1,6 +1,7 @@
 package com.xlr8code.server.authentication.service;
 
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.entity.UserPassword;
 import com.xlr8code.server.user.utils.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AccessTokenServiceTest {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AccessTokenService accessTokenService;
@@ -52,7 +57,7 @@ class AccessTokenServiceTest {
         return User.builder()
                 .id(UUID.randomUUID())
                 .username("test")
-                .password("test")
+                .userPassword(new UserPassword("password", this.passwordEncoder))
                 .roles(Set.of(UserRole.DEFAULT.toRole()))
                 .build();
 

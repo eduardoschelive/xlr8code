@@ -40,9 +40,7 @@ public class UserService {
         this.validateUsername(userCreateDTO.username());
         this.validateEmail(userCreateDTO.email());
 
-        var user = userCreateDTO.toUserWithMetadata();
-
-        this.encodeUserPassword(user);
+        var user = userCreateDTO.toUserWithMetadata(passwordEncoder);
 
         var newUser = this.userRepository.save(user);
 
@@ -76,8 +74,6 @@ public class UserService {
         this.validatePasswordChange(newPassword, newPasswordConfirmation);
 
         this.changeUserPassword(user, newPassword);
-
-        this.userRepository.save(user);
     }
 
     /**
@@ -153,10 +149,6 @@ public class UserService {
      * @param uuid          UUID of the user
      * @param updateUserDTO {@link UpdateUserDTO} of the user
      * @return {@link UserDTO} of the updated user
-     * @throws UserNotFoundException         if the user is not found
-     * @throws UsernameAlreadyTakenException if the username is already taken
-     * @throws EmailAlreadyInUseException    if the email is already in use
-     * @throws InvalidNewPasswordException   if the new currentPassword is invalid
      */
     @Transactional
     public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
@@ -203,7 +195,7 @@ public class UserService {
     }
 
     /**
-     * @param userId  UUID of the user
+     * @param userId            UUID of the user
      * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
      */
     @Transactional
@@ -220,22 +212,35 @@ public class UserService {
     public void updateUserPassword(UUID userId, UpdatePasswordDTO updatePasswordDTO) {
         var user = this.findByUUID(userId);
 
-        this.validatePassword(user.getPassword(), updatePasswordDTO.oldPassword());
+        this.validatePassword(user, updatePasswordDTO.oldPassword());
 
         this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
 
         this.changeUserPassword(user, updatePasswordDTO.newPassword());
+    }
+
+    /**
+     * @param user        User to have the currentPassword changed
+     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     * <p>
+     *     This will end all user sessions and save the user to the database. The user will need to log in again.a
+     * </p>
+     */
+    @Transactional
+    public void changeUserPassword(User user, String newPassword) {
+        user.getUserPassword().setEncodedPassword(newPassword, passwordEncoder);
+        this.userSessionService.endAllFromUser(user);
         this.userRepository.save(user);
     }
 
     /**
-     * @param encryptedPassword Encrypted currentPassword
-     * @param password          Current currentPassword
-     * @throws IncorrectUsernameOrPasswordException if the currentPassword is incorrect
+     * @param user    User to have the currentPassword validated
+     * @param rawPassword  rawPassword to be validated
+     * @throws IncorrectUsernameOrPasswordException if the password is incorrect
      */
-    private void validatePassword(String encryptedPassword, String password) {
-        if (!this.passwordEncoder.matches(password, encryptedPassword)) {
-            throw new IncorrectOldPasswordException();
+    private void validatePassword(User user, String rawPassword) {
+        if (!user.getUserPassword().matches(rawPassword, passwordEncoder)) {
+            throw new IncorrectUsernameOrPasswordException();
         }
     }
 
@@ -275,27 +280,6 @@ public class UserService {
     private void validateEmail(String email) {
         if (this.isEmailInUse(email))
             throw new EmailAlreadyInUseException();
-    }
-
-    /**
-     * @param user User to have the currentPassword encoded
-     */
-    private void encodeUserPassword(User user) {
-        var password = user.getPassword();
-        var passwordHash = this.passwordEncoder.encode(password);
-        user.setPassword(passwordHash);
-    }
-
-    /**
-     * @param user        User to have the currentPassword changed
-     * @param newPassword New currentPassword
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
-     */
-    private void changeUserPassword(User user, String newPassword) {
-        user.setPassword(newPassword);
-        this.encodeUserPassword(user);
-
-        this.userSessionService.endAllFromUser(user);
     }
 
     /**

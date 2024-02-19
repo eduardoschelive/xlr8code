@@ -8,7 +8,9 @@ import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
+import com.xlr8code.server.user.entity.UserPassword;
 import com.xlr8code.server.user.utils.UserRole;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +33,7 @@ public class UserTestUtils {
         );
     }
 
-    public static User buildUser(String username, String email, String password) {
+    public static User buildUser(String username, String email, String password, PasswordEncoder passwordEncoder) {
         var metadata = UserMetadata.builder()
                 .themePreference(Theme.SYSTEM)
                 .languagePreference(Language.AMERICAN_ENGLISH)
@@ -40,15 +42,16 @@ public class UserTestUtils {
         return User.builder()
                 .username(username)
                 .email(email)
-                .password(password)
+                .userPassword(new UserPassword(password, passwordEncoder))
                 .metadata(metadata)
                 .build();
     }
 
-    public static User buildUserDetails(UUID id, Set<Role> roles) {
+    public static User buildUserDetails(UUID id, Set<Role> roles, PasswordEncoder passwordEncoder) {
         return User.builder()
                 .id(id)
                 .roles(roles)
+                .userPassword(new UserPassword("password", passwordEncoder))
                 .active(true)
                 .build();
     }

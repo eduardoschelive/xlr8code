@@ -2,6 +2,7 @@ package com.xlr8code.server.user.dto;
 
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.entity.UserPassword;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
@@ -9,6 +10,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
@@ -29,11 +31,11 @@ public record CreateUserDTO(
         String profilePictureUrl,
         Boolean active
 ) {
-    public User toUserWithMetadata() {
+    public User toUserWithMetadata(PasswordEncoder passwordEncoder) {
         var user = User.builder()
                 .username(this.username())
                 .email(this.email())
-                .password(this.password())
+                .userPassword(new UserPassword(this.password(), passwordEncoder))
                 .roles(this.roles())
                 .active(this.active())
                 .build();

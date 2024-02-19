@@ -40,8 +40,8 @@ public class User implements UserDetails {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 60)
-    private String password;
+    @Embedded
+    private UserPassword userPassword;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -107,7 +107,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return this.userPassword.getEncodedPassword();
     }
 
     @Override
