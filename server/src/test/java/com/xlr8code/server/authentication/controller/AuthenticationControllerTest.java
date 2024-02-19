@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
@@ -44,13 +45,16 @@ class AuthenticationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Nested
     class SignUpTest {
 
         @Test
         void should_sign_up() throws Exception {
 
-            var expectedUser = UserTestUtils.buildUser(USERNAME, EMAIL, PASSWORD);
+            var expectedUser = UserTestUtils.buildUser(USERNAME, EMAIL, PASSWORD, passwordEncoder);
             var signUpDTO = buildSignUpDTO(USERNAME, EMAIL, PASSWORD);
 
             when(authenticationService.signUp(signUpDTO)).thenReturn(expectedUser);
