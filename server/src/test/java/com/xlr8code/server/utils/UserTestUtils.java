@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class UserTestUtils {
+
     public static CreateUserDTO buildCreateUserDTO(String username, String email, String password) {
         return buildCreateUserDTO(username, email, password, false);
     }
@@ -34,7 +35,7 @@ public class UserTestUtils {
     }
 
     public static User buildUser(String username, String email, String password, PasswordEncoder passwordEncoder) {
-        var metadata = UserMetadata.builder()
+        UserMetadata metadata = UserMetadata.builder()
                 .themePreference(Theme.SYSTEM)
                 .languagePreference(Language.AMERICAN_ENGLISH)
                 .build();
@@ -63,5 +64,4 @@ public class UserTestUtils {
     public static UpdateUserMetadataDTO buildUpdateUserMetadataDTO(Theme theme, Language language, String profilePictureUrl) {
         return new UpdateUserMetadataDTO(theme, language, profilePictureUrl);
     }
-
 }

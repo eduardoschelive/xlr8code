@@ -55,7 +55,7 @@ class AuthenticationControllerTest {
         void should_sign_up() throws Exception {
 
             var expectedUser = UserTestUtils.buildUser(USERNAME, EMAIL, PASSWORD, passwordEncoder);
-            var signUpDTO = buildSignUpDTO(USERNAME, EMAIL, PASSWORD);
+            var signUpDTO = buildSignUpDTO(EMAIL);
 
             when(authenticationService.signUp(signUpDTO)).thenReturn(expectedUser);
 
@@ -69,7 +69,7 @@ class AuthenticationControllerTest {
 
         @Test
         void should_return_bad_request_when_email_is_invalid() throws Exception {
-            var signUpDTO = buildSignUpDTO(USERNAME, "invalid", PASSWORD);
+            var signUpDTO = buildSignUpDTO("invalid");
 
             mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.SIGN_UP)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -77,11 +77,11 @@ class AuthenticationControllerTest {
                     .andExpect(status().isBadRequest());
         }
 
-        private SignUpDTO buildSignUpDTO(String username, String email, String password) {
+        private SignUpDTO buildSignUpDTO(String email) {
             return new SignUpDTO(
-                    username,
+                    USERNAME,
                     email,
-                    password,
+                    PASSWORD,
                     Theme.SYSTEM,
                     Language.AMERICAN_ENGLISH,
                     null
