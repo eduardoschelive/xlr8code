@@ -211,7 +211,7 @@ public class UserService {
     public void updateUserPassword(UUID userId, UpdatePasswordDTO updatePasswordDTO) {
         var user = this.findByUUID(userId);
 
-        this.validatePassword(user, updatePasswordDTO.oldPassword());
+        this.validateOldPassword(user, updatePasswordDTO.oldPassword());
 
         this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
 
@@ -245,11 +245,11 @@ public class UserService {
     /**
      * @param user    User to have the currentPassword validated
      * @param rawPassword  rawPassword to be validated
-     * @throws IncorrectUsernameOrPasswordException if the password is incorrect
+     * @throws IncorrectOldPasswordException if the password is incorrect
      */
-    private void validatePassword(User user, String rawPassword) {
+    private void validateOldPassword(User user, String rawPassword) {
         if (!user.getUserPassword().matches(rawPassword, passwordEncoder)) {
-            throw new IncorrectUsernameOrPasswordException();
+            throw new IncorrectOldPasswordException();
         }
     }
 

@@ -214,7 +214,11 @@ class UserControllerTest {
 
         @Test
         void it_should_update_user_metadata() throws Exception {
-            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
+                    Theme.DARK,
+                    Language.AMERICAN_ENGLISH,
+                    "https://www.test.com"
+            );
 
             when(userService.updateMetadataByUUID(member.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
@@ -227,7 +231,11 @@ class UserControllerTest {
 
         @Test
         void it_should_not_update_user_metadata_of_other_user_without_admin() throws Exception {
-            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
+                    Theme.DARK,
+                    Language.AMERICAN_ENGLISH,
+                    "https://www.test.com"
+            );
 
             when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
@@ -240,7 +248,11 @@ class UserControllerTest {
 
         @Test
         void it_should_update_user_metadata_of_other_user_with_admin() throws Exception {
-            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
+                    Theme.DARK,
+                    Language.AMERICAN_ENGLISH,
+                    "https://www.test.com"
+            );
 
             when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
@@ -253,7 +265,11 @@ class UserControllerTest {
 
         @Test
         void it_should_not_update_user_metadata_of_non_existing_user() throws Exception {
-            var updateUserMetadataDTO = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
+                    Theme.DARK,
+                    Language.AMERICAN_ENGLISH,
+                    "https://www.test.com"
+            );
             var uuid = UUID.randomUUID().toString();
 
 
