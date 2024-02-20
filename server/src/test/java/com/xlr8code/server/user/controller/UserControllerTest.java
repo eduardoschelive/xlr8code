@@ -3,6 +3,7 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
@@ -263,6 +264,39 @@ class UserControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(updateUserMetadataDTO)))
                     .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void it_should_update_user_password() throws Exception {
+            var updatePasswordDTO = new UpdatePasswordDTO("oldPassword", "newPassword", "newPassword");
+
+            mockMvc.perform(patch(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.PASSWORD, member.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updatePasswordDTO)))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        void it_should_not_update_user_password_of_other_user_without_admin() throws Exception {
+            var updatePasswordDTO = new UpdatePasswordDTO("oldPassword", "newPassword", "newPassword");
+
+            mockMvc.perform(patch(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.PASSWORD, admin.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updatePasswordDTO)))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void it_should_update_user_password_of_other_user_with_admin() throws Exception {
+            var updatePasswordDTO = new UpdatePasswordDTO("oldPassword", "newPassword", "newPassword");
+
+            mockMvc.perform(patch(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.PASSWORD, admin.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updatePasswordDTO)))
+                    .andExpect(status().isNoContent());
         }
 
         private UserMetadataDTO expectedUserMetadataDTO() {

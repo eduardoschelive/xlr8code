@@ -6,6 +6,7 @@ import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
 import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
@@ -72,7 +73,6 @@ public class UserService {
     @Transactional
     public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
         this.validatePasswordChange(newPassword, newPasswordConfirmation);
-
         this.changeUserPassword(user, newPassword);
     }
 
@@ -118,7 +118,8 @@ public class UserService {
      */
     @Transactional
     public void deleteByUUID(String uuidString) {
-        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
+        var uuid = UUIDUtils.convertFromString(uuidString)
+                .orElseThrow(UserNotFoundException::new);
         this.deleteByUUID(uuid);
     }
 
@@ -185,9 +186,7 @@ public class UserService {
         var user = this.findByUUID(uuid);
         var metadata = user.getMetadata();
 
-        metadata.setProfilePictureUrl(updateUserMetadataDTO.profilePictureUrl());
-        metadata.setLanguagePreference(updateUserMetadataDTO.languagePreference());
-        metadata.setThemePreference(updateUserMetadataDTO.themePreference());
+        this.updateMetadataFields(metadata, updateUserMetadataDTO);
 
         var updatedUser = this.userRepository.save(user);
 
@@ -231,6 +230,16 @@ public class UserService {
         user.getUserPassword().setEncodedPassword(newPassword, passwordEncoder);
         this.userSessionService.endAllFromUser(user);
         this.userRepository.save(user);
+    }
+
+    /**
+     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} to update the metadata
+     * @param metadata              {@link UserMetadata} to be updated
+     */
+    private void updateMetadataFields(UserMetadata metadata, UpdateUserMetadataDTO updateUserMetadataDTO) {
+        metadata.setProfilePictureUrl(updateUserMetadataDTO.profilePictureUrl());
+        metadata.setLanguagePreference(updateUserMetadataDTO.languagePreference());
+        metadata.setThemePreference(updateUserMetadataDTO.themePreference());
     }
 
     /**
