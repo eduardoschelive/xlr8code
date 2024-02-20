@@ -6,6 +6,8 @@ import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UserMetadataDTO;
+import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.utils.UserTestUtils;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -82,9 +84,8 @@ class AuthenticationControllerTest {
                     USERNAME,
                     email,
                     PASSWORD,
-                    Theme.SYSTEM,
-                    Language.AMERICAN_ENGLISH,
-                    null
+                    new UserPreferencesDTO(Theme.SYSTEM, Language.AMERICAN_ENGLISH),
+                    new UserMetadataDTO(null)
             );
         }
     }

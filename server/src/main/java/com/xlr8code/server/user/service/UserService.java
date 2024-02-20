@@ -41,7 +41,7 @@ public class UserService {
         this.validateUsername(userCreateDTO.username());
         this.validateEmail(userCreateDTO.email());
 
-        var user = userCreateDTO.toUserWithMetadata(passwordEncoder);
+        var user = userCreateDTO.toUser(passwordEncoder);
 
         var newUser = this.userRepository.save(user);
 
@@ -98,7 +98,7 @@ public class UserService {
         var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
         var user = this.findByUUID(uuid);
 
-        return UserDTO.fromUser(user);
+        return UserDTO.from(user);
     }
 
     /**
@@ -160,7 +160,7 @@ public class UserService {
 
         var updatedUser = this.userRepository.save(user);
 
-        return UserDTO.fromUser(updatedUser);
+        return UserDTO.from(updatedUser);
     }
 
     /**
@@ -190,7 +190,7 @@ public class UserService {
 
         var updatedUser = this.userRepository.save(user);
 
-        return UserMetadataDTO.fromUserMetadata(updatedUser.getMetadata());
+        return UserMetadataDTO.from(updatedUser.getMetadata());
     }
 
     /**
@@ -238,8 +238,6 @@ public class UserService {
      */
     private void updateMetadataFields(UserMetadata metadata, UpdateUserMetadataDTO updateUserMetadataDTO) {
         metadata.setProfilePictureUrl(updateUserMetadataDTO.profilePictureUrl());
-        metadata.setLanguagePreference(updateUserMetadataDTO.languagePreference());
-        metadata.setThemePreference(updateUserMetadataDTO.themePreference());
     }
 
     /**

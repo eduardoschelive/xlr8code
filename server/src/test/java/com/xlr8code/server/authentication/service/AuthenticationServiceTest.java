@@ -8,6 +8,8 @@ import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.dto.UserMetadataDTO;
+import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
@@ -55,9 +57,8 @@ class AuthenticationServiceTest {
                 "SIGN_UP_TEST",
                 "SIGN_UP_TEST@test.com",
                 PASSWORD,
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null
+                new UserPreferencesDTO(Theme.LIGHT, Language.AMERICAN_ENGLISH),
+                new UserMetadataDTO(null)
         );
     }
 

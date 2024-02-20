@@ -13,9 +13,16 @@ CREATE TABLE users
 CREATE TABLE user_metadata
 (
     user_id             UUID NOT NULL,
-    language_preference TEXT NOT NULL,
-    theme_preference    TEXT NOT NULL,
     profile_picture_url TEXT,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE user_preferences
+(
+    user_id  UUID NOT NULL,
+    language TEXT NOT NULL,
+    theme    TEXT NOT NULL,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

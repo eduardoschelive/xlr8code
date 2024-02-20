@@ -1,20 +1,22 @@
 package com.xlr8code.server.user.dto;
 
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 
 public record UserMetadataDTO(
-        Theme themePreference,
-        Language languagePreference,
         String profilePictureUrl
 ) {
-    public static UserMetadataDTO fromUserMetadata(UserMetadata userMetadata) {
+    public static UserMetadataDTO from(UserMetadata userMetadata) {
         return new UserMetadataDTO(
-                userMetadata.getThemePreference(),
-                userMetadata.getLanguagePreference(),
                 userMetadata.getProfilePictureUrl()
         );
+    }
+
+    public UserMetadata toUserMetadata(User user) {
+        return UserMetadata.builder()
+                .user(user)
+                .profilePictureUrl(this.profilePictureUrl())
+                .build();
     }
 
 }

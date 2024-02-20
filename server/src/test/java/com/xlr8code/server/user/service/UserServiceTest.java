@@ -237,13 +237,11 @@ class UserServiceTest {
 
         @Test
         void it_should_update_metadata() {
-            var update = new UpdateUserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "new_profile_picture_url");
+            var update = new UpdateUserMetadataDTO( "new_profile_picture_url");
             var uuid = defaultUser.getId().toString();
 
             var updatedMetadata = userService.updateMetadataByUUID(uuid, update);
 
-            assertEquals(updatedMetadata.themePreference(), update.themePreference());
-            assertEquals(updatedMetadata.languagePreference(), update.languagePreference());
             assertEquals(updatedMetadata.profilePictureUrl(), update.profilePictureUrl());
         }
 

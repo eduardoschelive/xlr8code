@@ -14,10 +14,11 @@ public record UserDTO(
         Instant createdAt,
         Instant updatedAt,
         Set<String> roles,
-        UserMetadataDTO metadata
+        UserMetadataDTO metadata,
+        UserPreferencesDTO preferences
 ) {
 
-    public static UserDTO fromUser(User user) {
+    public static UserDTO from(User user) {
         return new UserDTO(
                 user.getId(),
                 user.getUsername(),
@@ -26,10 +27,8 @@ public record UserDTO(
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
                 user.getNamedRoles(),
-                new UserMetadataDTO(
-                        user.getMetadata().getThemePreference(),
-                        user.getMetadata().getLanguagePreference(),
-                        user.getMetadata().getProfilePictureUrl()
+                UserMetadataDTO.from(user.getMetadata()),
+                UserPreferencesDTO.from(user.getPreferences()
                 )
         );
     }

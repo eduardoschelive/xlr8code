@@ -2,9 +2,7 @@ package com.xlr8code.server.utils;
 
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.CreateUserDTO;
-import com.xlr8code.server.user.dto.UpdateUserDTO;
-import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
+import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.Role;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
@@ -27,17 +25,15 @@ public class UserTestUtils {
                 email,
                 password,
                 Set.of(UserRole.DEFAULT.toRole()),
-                Theme.SYSTEM,
-                Language.AMERICAN_ENGLISH,
-                null,
+                new UserMetadataDTO(null),
+                new UserPreferencesDTO(Theme.SYSTEM, Language.AMERICAN_ENGLISH),
                 active
         );
     }
 
     public static User buildUser(String username, String email, String password, PasswordEncoder passwordEncoder) {
         UserMetadata metadata = UserMetadata.builder()
-                .themePreference(Theme.SYSTEM)
-                .languagePreference(Language.AMERICAN_ENGLISH)
+                .profilePictureUrl(null)
                 .build();
 
         return User.builder()
@@ -61,7 +57,7 @@ public class UserTestUtils {
         return new UpdateUserDTO(username, email);
     }
 
-    public static UpdateUserMetadataDTO buildUpdateUserMetadataDTO(Theme theme, Language language, String profilePictureUrl) {
-        return new UpdateUserMetadataDTO(theme, language, profilePictureUrl);
+    public static UpdateUserMetadataDTO buildUpdateUserMetadataDTO(String profilePictureUrl) {
+        return new UpdateUserMetadataDTO(profilePictureUrl);
     }
 }

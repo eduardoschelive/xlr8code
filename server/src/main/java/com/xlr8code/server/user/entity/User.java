@@ -53,6 +53,10 @@ public class User implements UserDetails {
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserMetadata metadata;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserPreferences preferences;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
