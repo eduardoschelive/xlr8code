@@ -4,9 +4,9 @@ import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
-import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
+import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
@@ -60,9 +60,11 @@ class UserControllerTest {
                 Instant.now(),
                 Set.of("ROLE_USER"),
                 new UserMetadataDTO(
-                        Theme.LIGHT,
-                        Language.BRAZILIAN_PORTUGUESE,
                         null
+                ),
+                new UserPreferencesDTO(
+                        Theme.SYSTEM,
+                        Language.AMERICAN_ENGLISH
                 )
         );
     }
@@ -215,8 +217,6 @@ class UserControllerTest {
         @Test
         void it_should_update_user_metadata() throws Exception {
             var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
-                    Theme.DARK,
-                    Language.AMERICAN_ENGLISH,
                     "https://www.test.com"
             );
 
@@ -232,8 +232,6 @@ class UserControllerTest {
         @Test
         void it_should_not_update_user_metadata_of_other_user_without_admin() throws Exception {
             var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
-                    Theme.DARK,
-                    Language.AMERICAN_ENGLISH,
                     "https://www.test.com"
             );
 
@@ -249,8 +247,6 @@ class UserControllerTest {
         @Test
         void it_should_update_user_metadata_of_other_user_with_admin() throws Exception {
             var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
-                    Theme.DARK,
-                    Language.AMERICAN_ENGLISH,
                     "https://www.test.com"
             );
 
@@ -266,8 +262,6 @@ class UserControllerTest {
         @Test
         void it_should_not_update_user_metadata_of_non_existing_user() throws Exception {
             var updateUserMetadataDTO = UserTestUtils.buildUpdateUserMetadataDTO(
-                    Theme.DARK,
-                    Language.AMERICAN_ENGLISH,
                     "https://www.test.com"
             );
             var uuid = UUID.randomUUID().toString();
@@ -316,7 +310,7 @@ class UserControllerTest {
         }
 
         private UserMetadataDTO expectedUserMetadataDTO() {
-            return new UserMetadataDTO(Theme.DARK, Language.AMERICAN_ENGLISH, "https://www.test.com");
+            return new UserMetadataDTO( "https://www.test.com");
         }
 
     }

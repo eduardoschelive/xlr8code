@@ -50,7 +50,6 @@ public class AccessTokenService {
      * @return the validated token or null if the token is invalid or expired or null if the token is invalid or expired
      * @see DecodedJWT
      */
-    @Nullable
     public DecodedJWT decode(String token) {
         try {
             return JWT.require(this.getAlgorithm()).build().verify(token);

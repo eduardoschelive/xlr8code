@@ -3,6 +3,8 @@ package com.xlr8code.server.authentication.dto;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.dto.UserMetadataDTO;
+import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
@@ -19,11 +21,9 @@ public record SignUpDTO(
         @NotBlank
         String password,
         @NotNull
-        Theme themePreference,
+        UserPreferencesDTO preferences,
         @NotNull
-        Language languagePreference,
-        @Nullable
-        String profilePictureUrl
+        UserMetadataDTO metadata
 ) {
     public CreateUserDTO toCreateUserDTO() {
         return new CreateUserDTO(
@@ -31,9 +31,8 @@ public record SignUpDTO(
                 this.email(),
                 this.password(),
                 Set.of(UserRole.MEMBER.toRole()),
-                this.themePreference(),
-                this.languagePreference(),
-                this.profilePictureUrl(),
+                this.metadata(),
+                this.preferences(),
                 false
         );
     }

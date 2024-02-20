@@ -32,7 +32,6 @@ public class AuthenticationController {
     @PostMapping(Endpoint.Authentication.SIGN_IN)
     public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
         var signInResultDTO = this.authenticationService.signIn(signInRequestDTO);
-
         return this.buildAuthResponse(signInResultDTO);
     }
 

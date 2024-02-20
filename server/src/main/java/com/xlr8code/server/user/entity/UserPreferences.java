@@ -8,13 +8,13 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_metadata")
+@Table(name = "user_preferences")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Setter
 @Getter
-public class UserMetadata {
+public class UserPreferences {
 
     @Id
     @Column(name = "user_id", nullable = false, updatable = false)
@@ -25,7 +25,12 @@ public class UserMetadata {
     @MapsId
     private User user;
 
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
+    @Column(name = "language", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Language language;
+
+    @Column(name = "theme", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Theme theme;
 
 }

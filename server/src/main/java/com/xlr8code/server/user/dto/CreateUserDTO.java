@@ -2,10 +2,7 @@ package com.xlr8code.server.user.dto;
 
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.entity.UserPassword;
-import com.xlr8code.server.user.entity.Role;
-import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.entity.UserMetadata;
+import com.xlr8code.server.user.entity.*;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,15 +20,12 @@ public record CreateUserDTO(
         String password,
         @NotNull
         Set<Role> roles,
+        @NotNull UserMetadataDTO metadata,
         @NotNull
-        Theme themePreference,
-        @NotNull
-        Language languagePreference,
-        @Nullable
-        String profilePictureUrl,
+        UserPreferencesDTO preferences,
         Boolean active
 ) {
-    public User toUserWithMetadata(PasswordEncoder passwordEncoder) {
+    public User toUser(PasswordEncoder passwordEncoder) {
         var user = User.builder()
                 .username(this.username())
                 .email(this.email())
@@ -40,13 +34,11 @@ public record CreateUserDTO(
                 .active(this.active())
                 .build();
 
-        var userMetadata = UserMetadata.builder()
-                .languagePreference(this.languagePreference())
-                .themePreference(this.themePreference())
-                .profilePictureUrl(this.profilePictureUrl())
-                .user(user)
-                .build();
+        var userMetadata = this.metadata().toUserMetadata(user);
 
+        var userPreferences = this.preferences().toUserPreferences(user);
+
+        user.setPreferences(userPreferences);
         user.setMetadata(userMetadata);
 
         return user;
