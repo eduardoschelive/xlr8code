@@ -3,13 +3,12 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.common.utils.Theme;
-import com.xlr8code.server.user.dto.UpdatePasswordDTO;
-import com.xlr8code.server.user.dto.UserDTO;
-import com.xlr8code.server.user.dto.UserMetadataDTO;
-import com.xlr8code.server.user.dto.UserPreferencesDTO;
+import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
+import com.xlr8code.server.user.service.UserMetadataService;
+import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.user.utils.UserRole;
 import com.xlr8code.server.utils.JsonTestUtils;
@@ -43,6 +42,12 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private UserMetadataService userMetadataService;
+
+    @MockBean
+    private UserPreferencesService userPreferencesService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -220,7 +225,7 @@ class UserControllerTest {
                     "https://www.test.com"
             );
 
-            when(userService.updateMetadataByUUID(member.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+            when(userMetadataService.updateMetadataByUserUUID(member.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
             mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, member.getId())
                             .with(SecurityMockMvcRequestPostProcessors.user(member))
@@ -235,7 +240,7 @@ class UserControllerTest {
                     "https://www.test.com"
             );
 
-            when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+            when(userMetadataService.updateMetadataByUserUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
             mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, admin.getId())
                             .with(SecurityMockMvcRequestPostProcessors.user(member))
@@ -250,7 +255,7 @@ class UserControllerTest {
                     "https://www.test.com"
             );
 
-            when(userService.updateMetadataByUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
+            when(userMetadataService.updateMetadataByUserUUID(admin.getId(), updateUserMetadataDTO)).thenReturn(expectedUserMetadataDTO());
 
             mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, admin.getId())
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
@@ -267,7 +272,7 @@ class UserControllerTest {
             var uuid = UUID.randomUUID().toString();
 
 
-            when(userService.updateMetadataByUUID(uuid, updateUserMetadataDTO)).thenThrow(UserMetadataNotFoundException.class);
+            when(userMetadataService.updateMetadataByUserUUID(uuid, updateUserMetadataDTO)).thenThrow(UserMetadataNotFoundException.class);
 
             mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.METADATA, uuid)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
@@ -309,8 +314,32 @@ class UserControllerTest {
                     .andExpect(status().isNoContent());
         }
 
+        @Test
+        void it_should_update_user_preferences() throws Exception {
+            var updateUserPreferencesDTO = new UpdateUserPreferencesDTO(
+                    Language.AMERICAN_ENGLISH,
+                    Theme.DARK
+            );
+
+            when(userPreferencesService.updateUserPreferencesByUserUUID(member.getId(), updateUserPreferencesDTO)).thenReturn(expectedUserPreferencesDTO());
+
+            mockMvc.perform(put(Endpoint.User.BASE_PATH + "/{uuid}" + Endpoint.User.PREFERENCES, member.getId())
+                            .with(SecurityMockMvcRequestPostProcessors.user(member))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateUserPreferencesDTO)))
+                    .andExpect(status().isOk());
+        }
+
+        private UserPreferencesDTO expectedUserPreferencesDTO() {
+            return new UserPreferencesDTO(
+                    Theme.DARK,
+                    Language.AMERICAN_ENGLISH
+            );
+        }
+
+
         private UserMetadataDTO expectedUserMetadataDTO() {
-            return new UserMetadataDTO( "https://www.test.com");
+            return new UserMetadataDTO("https://www.test.com");
         }
 
     }

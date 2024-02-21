@@ -2,6 +2,8 @@ package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.dto.*;
+import com.xlr8code.server.user.service.UserMetadataService;
+import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserMetadataService userMetadataService;
+    private final UserPreferencesService userPreferencesService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
@@ -42,7 +46,15 @@ public class UserController {
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}" + Endpoint.User.METADATA)
     public ResponseEntity<UserMetadataDTO> updateUserMetadataById(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
-        var updatedUserDTO = this.userService.updateMetadataByUUID(id, updateUserMetadataDTO);
+        var updatedUserDTO = this.userMetadataService.updateMetadataByUserUUID(id, updateUserMetadataDTO);
+
+        return ResponseEntity.ok(updatedUserDTO);
+    }
+
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
+    public ResponseEntity<UserPreferencesDTO> updateUserPreferencesByUserId(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
+        var updatedUserDTO = this.userPreferencesService.updateUserPreferencesByUserUUID(id, updateUserPreferencesDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
     }

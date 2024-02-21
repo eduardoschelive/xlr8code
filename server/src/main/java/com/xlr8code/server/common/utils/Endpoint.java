@@ -28,6 +28,7 @@ public class Endpoint {
         public static final String BASE_PATH = API_PREFIX + "/users";
 
         public static final String METADATA = "/metadata";
+        public static final String PREFERENCES = "/preferences";
         public static final String PASSWORD = "/password";
     }
 

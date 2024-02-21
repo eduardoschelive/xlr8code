@@ -235,16 +235,6 @@ class UserServiceTest {
             assertThrows(IncorrectOldPasswordException.class, () -> userService.updateUserPassword(uuid, update));
         }
 
-        @Test
-        void it_should_update_metadata() {
-            var update = new UpdateUserMetadataDTO( "new_profile_picture_url");
-            var uuid = defaultUser.getId().toString();
-
-            var updatedMetadata = userService.updateMetadataByUUID(uuid, update);
-
-            assertEquals(updatedMetadata.profilePictureUrl(), update.profilePictureUrl());
-        }
-
     }
 
     @Nested
