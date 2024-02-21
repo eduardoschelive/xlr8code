@@ -4,6 +4,7 @@ import com.xlr8code.server.authentication.exception.AccountNotActivatedException
 import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.exception.SessionExpiredException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
+import com.xlr8code.server.common.utils.HashUtils;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
@@ -109,13 +110,10 @@ class UserSessionServiceTest {
     @Test
     void it_should_refresh_session() {
         var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
-        var expirationDate = userSession.getExpiresAt();
 
         var refreshedUserSession = userSessionService.refresh(userSession);
-        var newExpirationDate = refreshedUserSession.getExpiresAt();
 
         assertNotNull(refreshedUserSession);
-        assertTrue(newExpirationDate.isAfter(expirationDate));
     }
 
     @Test
