@@ -58,7 +58,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private boolean isTokenCandidate(String token) {
-        return token != null && token.startsWith(PREFIX.toLowerCase());
+        return token != null && token.startsWith(PREFIX);
     }
 
     private String removePrefix(String token) {

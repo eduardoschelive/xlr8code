@@ -4,11 +4,16 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.user.dto.*;
+import com.xlr8code.server.user.dto.CreateUserDTO;
+import com.xlr8code.server.user.dto.UpdatePasswordDTO;
+import com.xlr8code.server.user.dto.UpdateUserDTO;
+import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.event.OnCreateUserEvent;
-import com.xlr8code.server.user.exception.*;
+import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
+import com.xlr8code.server.user.exception.UserNotFoundException;
+import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -164,36 +169,6 @@ public class UserService {
     }
 
     /**
-     * @param uuidString            UUID of the user
-     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
-     * @return {@link UserDTO} of the updated user
-     * @throws UserNotFoundException if the user is not found
-     */
-    @Transactional
-    public UserMetadataDTO updateMetadataByUUID(String uuidString, UpdateUserMetadataDTO updateUserMetadataDTO) {
-        var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
-        return this.updateMetadataByUUID(uuid, updateUserMetadataDTO);
-    }
-
-    /**
-     * @param uuid                  UUID of the user
-     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
-     * @return {@link UserDTO} of the updated user
-     * @throws UserNotFoundException if the user is not found
-     */
-    @Transactional
-    public UserMetadataDTO updateMetadataByUUID(UUID uuid, UpdateUserMetadataDTO updateUserMetadataDTO) {
-        var user = this.findByUUID(uuid);
-        var metadata = user.getMetadata();
-
-        this.updateMetadataFields(metadata, updateUserMetadataDTO);
-
-        var updatedUser = this.userRepository.save(user);
-
-        return UserMetadataDTO.from(updatedUser.getMetadata());
-    }
-
-    /**
      * @param userId            UUID of the user
      * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
      */
@@ -219,11 +194,11 @@ public class UserService {
     }
 
     /**
-     * @param user        User to have the currentPassword changed
+     * @param user User to have the currentPassword changed
      * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
-     * <p>
-     *     This will end all user sessions and save the user to the database. The user will need to log in again.a
-     * </p>
+     *                                <p>
+     *                                This will end all user sessions and save the user to the database. The user will need to log in again.a
+     *                                </p>
      */
     @Transactional
     public void changeUserPassword(User user, String newPassword) {
@@ -233,16 +208,8 @@ public class UserService {
     }
 
     /**
-     * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} to update the metadata
-     * @param metadata              {@link UserMetadata} to be updated
-     */
-    private void updateMetadataFields(UserMetadata metadata, UpdateUserMetadataDTO updateUserMetadataDTO) {
-        metadata.setProfilePictureUrl(updateUserMetadataDTO.profilePictureUrl());
-    }
-
-    /**
-     * @param user    User to have the currentPassword validated
-     * @param rawPassword  rawPassword to be validated
+     * @param user        User to have the currentPassword validated
+     * @param rawPassword rawPassword to be validated
      * @throws IncorrectOldPasswordException if the password is incorrect
      */
     private void validateOldPassword(User user, String rawPassword) {
