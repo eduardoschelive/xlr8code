@@ -98,16 +98,18 @@ public class UserSessionService {
      * </p>
      *
      * @param userSession the session to refresh
-     * @return the refreshed {@link UserSession}
+     * @return the new session token
      */
     @Transactional
-    public UserSession refresh(UserSession userSession) {
+    public String refresh(UserSession userSession) {
         var newSessionToken = this.generateSessionToken();
+        var sessionTokenHash = this.hashSessionToken(newSessionToken);
         var newExpiresAt = DateTimeUtils.calculateExpiresAt(this.expirationTime, this.chronoUnit);
 
-        userSession.refresh(newSessionToken, newExpiresAt);
+        userSession.refresh(sessionTokenHash, newExpiresAt);
+        this.userSessionRepository.save(userSession);
 
-        return this.userSessionRepository.save(userSession);
+        return newSessionToken;
     }
 
     /**
