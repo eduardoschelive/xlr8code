@@ -20,8 +20,8 @@ public class Endpoint {
         public static final String ACTIVATE_USER = "/activate";
         public static final String RESEND_ACTIVATION_CODE = "/resend-activation-code";
 
-        public static final String FORGOT_PASSWORD = "/forgot-currentPassword";
-        public static final String RESET_PASSWORD = "/reset-currentPassword";
+        public static final String FORGOT_PASSWORD = "/forgot-password";
+        public static final String RESET_PASSWORD = "/reset-password";
     }
 
     public record User() {
