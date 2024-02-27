@@ -4,7 +4,6 @@ import com.xlr8code.server.authentication.exception.AccountNotActivatedException
 import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.exception.SessionExpiredException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
-import com.xlr8code.server.common.utils.HashUtils;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
@@ -118,7 +117,7 @@ class UserSessionServiceTest {
 
     @Test
     void it_should_end_specific_session() {
-        var userSession = userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
+        userSessionService.create(activeUser, SESSION_TOKEN_EXAMPLE);
 
         userSessionService.end(SESSION_TOKEN_EXAMPLE);
         var userSessionOptional = userSessionRepository.findBySessionToken(SESSION_TOKEN_EXAMPLE);

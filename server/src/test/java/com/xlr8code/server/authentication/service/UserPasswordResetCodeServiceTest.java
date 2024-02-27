@@ -1,8 +1,9 @@
 package com.xlr8code.server.authentication.service;
 
+import com.xlr8code.server.authentication.entity.UserCodeType;
 import com.xlr8code.server.authentication.exception.ExpiredPasswordResetCodeException;
 import com.xlr8code.server.authentication.exception.InvalidPasswordResetCodeException;
-import com.xlr8code.server.authentication.repository.UserPasswordResetCodeRepository;
+import com.xlr8code.server.authentication.repository.UserCodeRepository;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
@@ -30,7 +31,7 @@ class UserPasswordResetCodeServiceTest {
     private UserPasswordResetCodeService userPasswordResetCodeService;
 
     @Autowired
-    private UserPasswordResetCodeRepository userPasswordResetCodeRepository;
+    private UserCodeRepository userCodeRepository;
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
@@ -72,7 +73,7 @@ class UserPasswordResetCodeServiceTest {
 
         userPasswordResetCode.setExpiresAt(expiredDate);
 
-        userPasswordResetCodeRepository.save(userPasswordResetCode);
+        userCodeRepository.save(userPasswordResetCode);
 
         Executable executable = () -> userPasswordResetCodeService.validate(userPasswordResetCode.getCode());
 
@@ -88,7 +89,7 @@ class UserPasswordResetCodeServiceTest {
         }
 
         userPasswordResetCodeService.removeAllFromUser(user);
-        var codes = userPasswordResetCodeRepository.findAllByUser(user);
+        var codes = userCodeRepository.findAllByUserAndCodeType(user, UserCodeType.PASSWORD_RESET);
         assertEquals(0, codes.size());
     }
 }

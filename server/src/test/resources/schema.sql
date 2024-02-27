@@ -51,20 +51,12 @@ CREATE TABLE IF NOT EXISTS user_sessions
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE IF NOT EXISTS user_activation_codes
+CREATE TABLE IF NOT EXISTS user_codes
 (
-    activation_code_id SERIAL PRIMARY KEY NOT NULL,
-    user_id            UUID               NOT NULL,
-    code               TEXT               NOT NULL UNIQUE,
-    expires_at         TIMESTAMP          NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
-
-CREATE TABLE IF NOT EXISTS user_password_reset_codes
-(
-    password_reset_code_id SERIAL PRIMARY KEY NOT NULL,
-    user_id                UUID               NOT NULL,
-    code                   TEXT               NOT NULL UNIQUE,
-    expires_at             TIMESTAMP          NOT NULL,
+    code_id    SERIAL PRIMARY KEY,
+    user_id    UUID      NOT NULL,
+    code       TEXT      NOT NULL,
+    code_type   TEXT      NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

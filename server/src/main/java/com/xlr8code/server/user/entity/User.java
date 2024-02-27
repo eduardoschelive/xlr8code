@@ -1,7 +1,6 @@
 package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.authentication.entity.UserActivationCode;
-import com.xlr8code.server.authentication.entity.UserPasswordResetCode;
+import com.xlr8code.server.authentication.entity.UserCode;
 import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
@@ -69,10 +68,7 @@ public class User implements UserDetails {
     private Set<UserSession> userSessions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserActivationCode> userActivationCodes;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserPasswordResetCode> userPasswordResetCodes;
+    private Set<UserCode> userCodes;
 
     @Column(name = "created_at")
     @CreatedDate

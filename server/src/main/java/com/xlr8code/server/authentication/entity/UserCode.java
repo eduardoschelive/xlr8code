@@ -4,24 +4,26 @@ import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_activation_codes")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "user_codes")
+@Builder
 @Getter
 @Setter
-@Builder
-@EntityListeners(AuditingEntityListener.class)
-public class UserActivationCode {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "activation_code_id", nullable = false, updatable = false, columnDefinition = "SERIAL")
+    @Column(name = "code_id", nullable = false, updatable = false, columnDefinition = "SERIAL")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "code_type", nullable = false, updatable = false)
+    private UserCodeType codeType;
 
     @Column(name = "code", nullable = false, unique = true)
     private String code;
