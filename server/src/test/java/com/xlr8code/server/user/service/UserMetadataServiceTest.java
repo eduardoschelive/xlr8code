@@ -43,7 +43,7 @@ class UserMetadataServiceTest {
 
     @Test
     void it_should_update_metadata() {
-        var update = new UpdateUserMetadataDTO( "new_profile_picture_url");
+        var update = new UpdateUserMetadataDTO("new_profile_picture_url");
         var uuid = defaultUser.getId().toString();
 
         var updatedMetadata = userMetadataService.updateMetadataByUserUUID(uuid, update);

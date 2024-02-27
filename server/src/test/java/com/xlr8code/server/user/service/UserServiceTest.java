@@ -2,12 +2,12 @@ package com.xlr8code.server.user.service;
 
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
-import com.xlr8code.server.user.dto.UpdateUserMetadataDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.*;
+import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
+import com.xlr8code.server.user.exception.UserNotFoundException;
+import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;

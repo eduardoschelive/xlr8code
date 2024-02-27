@@ -1,9 +1,10 @@
 package com.xlr8code.server.authentication.service;
 
+import com.xlr8code.server.authentication.entity.UserCodeType;
 import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
 import com.xlr8code.server.authentication.exception.ExpiredActivationCodeException;
 import com.xlr8code.server.authentication.exception.InvalidActivationCodeException;
-import com.xlr8code.server.authentication.repository.UserActivationCodeRepository;
+import com.xlr8code.server.authentication.repository.UserCodeRepository;
 import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;
@@ -27,7 +28,7 @@ class UserActivationCodeServiceTest {
     @Autowired
     private UserActivationCodeService userActivationCodeService;
     @Autowired
-    private UserActivationCodeRepository userActivationCodeRepository;
+    private UserCodeRepository userCodeRepository;
 
     @BeforeAll
     static void setUp(@Autowired UserService userService) {
@@ -76,7 +77,7 @@ class UserActivationCodeServiceTest {
 
         this.userActivationCodeService.removeAllFromUser(inactiveUser);
 
-        var codes = this.userActivationCodeRepository.findAllByUser(inactiveUser);
+        var codes = this.userCodeRepository.findAllByUserAndCodeType(inactiveUser, UserCodeType.ACTIVATION);
 
         assertEquals(0, codes.size());
     }
@@ -94,7 +95,7 @@ class UserActivationCodeServiceTest {
 
         activationCode.setExpiresAt(DateTimeUtils.calculateExpiresAt(-1, ChronoUnit.DAYS));
 
-        this.userActivationCodeRepository.save(activationCode);
+        this.userCodeRepository.save(activationCode);
 
         Executable execute = () -> this.userActivationCodeService.validate(activationCode.getCode());
 
