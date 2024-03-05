@@ -1,11 +1,11 @@
-package com.xlr8code.server.series.entity;
+package com.xlr8code.server.article.entity;
 
+import com.xlr8code.server.section.entity.Section;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,15 +27,17 @@ public class Article {
     @Column(name = "order_within_section", nullable = false)
     private Short orderWithinSection;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_post_id")
     private Article previousPost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_post_id")
     private Article nextPost;
 
     @OneToMany(mappedBy = "article")
-    private Set<I18nArticle> i18nArticles = new LinkedHashSet<>();
+    private Set<I18nArticle> i18nArticles;
+
+
 
 }

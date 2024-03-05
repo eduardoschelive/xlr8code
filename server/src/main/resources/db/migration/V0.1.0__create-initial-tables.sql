@@ -56,7 +56,60 @@ CREATE TABLE user_codes
     code_id    SERIAL PRIMARY KEY,
     user_id    UUID      NOT NULL,
     code       TEXT      NOT NULL,
-    code_type   TEXT      NOT NULL,
+    code_type  TEXT      NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE series
+(
+    series_id   UUID PRIMARY KEY
+);
+
+CREATE TABLE i18n_series
+(
+    id            UUID PRIMARY KEY,
+    series_id     UUID REFERENCES series (series_id),
+    language TEXT NOT NULL,
+    name          TEXT NOT NULL,
+    slug        TEXT NOT NULL UNIQUE,
+    description   TEXT,
+    CONSTRAINT unique_series_language UNIQUE (series_id, language)
+);
+
+CREATE TABLE sections
+(
+    section_id          UUID PRIMARY KEY,
+    series_id           UUID REFERENCES series (series_id),
+    order_within_series SMALLINT NOT NULL
+);
+
+CREATE TABLE i18n_sections
+(
+    id            UUID PRIMARY KEY,
+    section_id    UUID REFERENCES sections (section_id),
+    language_code TEXT NOT NULL,
+    label         TEXT NOT NULL,
+    slug          TEXT NOT NULL UNIQUE,
+    CONSTRAINT unique_section_language UNIQUE (section_id, language_code)
+);
+
+CREATE TABLE article
+(
+    article_id           UUID PRIMARY KEY,
+    section_id           UUID REFERENCES sections (section_id),
+    order_within_section SMALLINT NOT NULL,
+    previous_post_id     UUID REFERENCES article (article_id),
+    next_post_id         UUID REFERENCES article (article_id)
+);
+
+CREATE TABLE i18n_articles
+(
+    id            UUID PRIMARY KEY,
+    article_id    UUID REFERENCES article (article_id),
+    language_code TEXT NOT NULL,
+    title         TEXT NOT NULL,
+    slug         TEXT NOT NULL UNIQUE,
+    content       TEXT NOT NULL,
+    CONSTRAINT unique_article_language UNIQUE (article_id, language_code)
 );

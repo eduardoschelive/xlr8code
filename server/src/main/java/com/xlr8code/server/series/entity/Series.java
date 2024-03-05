@@ -1,10 +1,10 @@
 package com.xlr8code.server.series.entity;
 
+import com.xlr8code.server.section.entity.Section;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,9 +19,9 @@ public class Series {
     private UUID id;
 
     @OneToMany(mappedBy = "series")
-    private Set<I18nSery> i18nSeries = new LinkedHashSet<>();
+    private Set<I18nSeries> i18nSeries;
 
     @OneToMany(mappedBy = "series")
-    private Set<Section> sections = new LinkedHashSet<>();
+    private Set<Section> sections;
 
 }

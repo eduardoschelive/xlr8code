@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "i18n_series")
-public class I18nSery {
+public class I18nSeries {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -22,18 +22,18 @@ public class I18nSery {
     private Series series;
 
     @NotNull
-    @Column(name = "language", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "language", nullable = false)
     private String language;
 
     @NotNull
-    @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
-    @Column(name = "slug", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "slug", nullable = false)
     private String slug;
 
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @Column(name = "description")
     private String description;
 
 }
