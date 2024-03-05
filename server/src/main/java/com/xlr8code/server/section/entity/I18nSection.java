@@ -1,4 +1,4 @@
-package com.xlr8code.server.series.entity;
+package com.xlr8code.server.section.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -22,15 +22,15 @@ public class I18nSection {
     private Section section;
 
     @NotNull
-    @Column(name = "language_code", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "language_code", nullable = false)
     private String languageCode;
 
     @NotNull
-    @Column(name = "label", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "label", nullable = false)
     private String label;
 
     @NotNull
-    @Column(name = "slug", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "slug", nullable = false)
     private String slug;
 
 }

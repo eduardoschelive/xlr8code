@@ -1,4 +1,4 @@
-package com.xlr8code.server.series.entity;
+package com.xlr8code.server.article.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -22,19 +22,19 @@ public class I18nArticle {
     private Article article;
 
     @NotNull
-    @Column(name = "language_code", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "language_code", nullable = false)
     private String languageCode;
 
     @NotNull
-    @Column(name = "title", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @NotNull
-    @Column(name = "slug", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "slug", nullable = false)
     private String slug;
 
     @NotNull
-    @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "content", nullable = false)
     private String content;
 
 }
