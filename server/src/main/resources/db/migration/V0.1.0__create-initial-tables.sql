@@ -71,7 +71,7 @@ CREATE TABLE i18n_series
     id            UUID PRIMARY KEY,
     series_id     UUID REFERENCES series (series_id),
     language TEXT NOT NULL,
-    name          TEXT NOT NULL,
+    title          TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
     description   TEXT,
     CONSTRAINT unique_series_language UNIQUE (series_id, language)
@@ -88,10 +88,10 @@ CREATE TABLE i18n_sections
 (
     id            UUID PRIMARY KEY,
     section_id    UUID REFERENCES sections (section_id),
-    language_code TEXT NOT NULL,
+    language TEXT NOT NULL,
     label         TEXT NOT NULL,
     slug          TEXT NOT NULL UNIQUE,
-    CONSTRAINT unique_section_language UNIQUE (section_id, language_code)
+    CONSTRAINT unique_section_language UNIQUE (section_id, language)
 );
 
 CREATE TABLE article
@@ -107,9 +107,9 @@ CREATE TABLE i18n_articles
 (
     id            UUID PRIMARY KEY,
     article_id    UUID REFERENCES article (article_id),
-    language_code TEXT NOT NULL,
+    language TEXT NOT NULL,
     title         TEXT NOT NULL,
     slug         TEXT NOT NULL UNIQUE,
     content       TEXT NOT NULL,
-    CONSTRAINT unique_article_language UNIQUE (article_id, language_code)
+    CONSTRAINT unique_article_language UNIQUE (article_id, language)
 );

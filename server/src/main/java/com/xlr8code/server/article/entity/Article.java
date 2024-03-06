@@ -39,5 +39,4 @@ public class Article {
     private Set<I18nArticle> i18nArticles;
 
 
-
 }
