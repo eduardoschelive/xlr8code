@@ -8,6 +8,7 @@ import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.entity.UserPassword;
 import com.xlr8code.server.user.utils.UserRole;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
@@ -49,6 +50,15 @@ public class UserTestUtils {
                 .id(id)
                 .roles(roles)
                 .userPassword(new UserPassword("password", passwordEncoder))
+                .active(true)
+                .build();
+    }
+
+    public static User buildUserDetails(UUID id, Set<Role> roles) {
+        return User.builder()
+                .id(id)
+                .roles(roles)
+                .userPassword(new UserPassword("password", new BCryptPasswordEncoder()))
                 .active(true)
                 .build();
     }
