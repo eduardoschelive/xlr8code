@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
-public class LanguageAlreadyExistsForResource extends ApplicationException {
+public class LanguageAlreadyExistsForResourceException extends ApplicationException {
 
-    public LanguageAlreadyExistsForResource(Language language, UUID resourceId) {
+    public LanguageAlreadyExistsForResourceException(Language language, UUID resourceId) {
         super("LANGUAGE_ALREADY_EXISTS_FOR_RESOURCE", language, resourceId);
     }
 

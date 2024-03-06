@@ -1,7 +1,7 @@
 package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
-import com.xlr8code.server.common.exception.LanguageAlreadyExistsForResource;
+import com.xlr8code.server.common.exception.LanguageAlreadyExistsForResourceException;
 import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
 import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.repository.I18nSeriesRepository;
@@ -37,17 +37,24 @@ public class I18nSeriesService {
      */
     @Transactional
     public List<I18nSeries> create(List<I18nSeries> i18nSeries) {
-        i18nSeries.forEach(this::validateLanguageForSeries);
+        this.validateLanguageForSeriesList(i18nSeries);
         this.validateSlugInList(i18nSeries);
         return i18nSeriesRepository.saveAll(i18nSeries);
+    }
+
+    /**
+     * @param i18nSeries the list of series to be validated
+     * @throws LanguageAlreadyExistsForResourceException if some of the languages already exists for the series
+     */
+    private void validateLanguageForSeriesList(List<I18nSeries> i18nSeries) {
+        i18nSeries.forEach(this::validateLanguageForSeries);
     }
 
     /**
      * @param slug the slug to be validated
      * @throws SlugAlreadyExistsException if the slug already exists
      */
-    @Transactional
-    public void validateSlug(String slug) {
+    private void validateSlug(String slug) {
         if (i18nSeriesRepository.existsBySlug(slug)) {
             throw new SlugAlreadyExistsException(slug);
         }
@@ -58,8 +65,7 @@ public class I18nSeriesService {
      * @throws DuplicateSlugInLanguagesException if the slug already exists
      * @throws SlugAlreadyExistsException        if the slug already exists in the database
      */
-    @Transactional
-    public void validateSlugInList(List<I18nSeries> i18nSeries) {
+    private void validateSlugInList(List<I18nSeries> i18nSeries) {
         Set<String> slugSet = new HashSet<>();
         for (I18nSeries series : i18nSeries) {
             var slug = series.getSlug();
@@ -72,12 +78,11 @@ public class I18nSeriesService {
 
     /**
      * @param i18nSeries the series to be validated
-     * @throws LanguageAlreadyExistsForResource if the language already exists for the series
+     * @throws LanguageAlreadyExistsForResourceException if the language already exists for the series
      */
-    @Transactional
-    public void validateLanguageForSeries(I18nSeries i18nSeries) {
+    private void validateLanguageForSeries(I18nSeries i18nSeries) {
         if (i18nSeriesRepository.existsBySeriesAndLanguage(i18nSeries.getSeries(), i18nSeries.getLanguage())) {
-            throw new LanguageAlreadyExistsForResource(i18nSeries.getLanguage(), i18nSeries.getSeries().getId());
+            throw new LanguageAlreadyExistsForResourceException(i18nSeries.getLanguage(), i18nSeries.getSeries().getId());
         }
     }
 
