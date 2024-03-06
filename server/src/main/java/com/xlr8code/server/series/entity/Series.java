@@ -2,8 +2,7 @@ package com.xlr8code.server.series.entity;
 
 import com.xlr8code.server.section.entity.Section;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +11,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "series")
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Series {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

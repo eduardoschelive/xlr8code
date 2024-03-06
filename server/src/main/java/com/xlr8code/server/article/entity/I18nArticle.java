@@ -1,7 +1,7 @@
 package com.xlr8code.server.article.entity;
 
+import com.xlr8code.server.common.utils.Language;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,19 +21,16 @@ public class I18nArticle {
     @JoinColumn(name = "article_id")
     private Article article;
 
-    @NotNull
-    @Column(name = "language_code", nullable = false)
-    private String languageCode;
+    @Column(name = "language", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
-    @NotNull
     @Column(name = "title", nullable = false)
     private String title;
 
-    @NotNull
     @Column(name = "slug", nullable = false)
     private String slug;
 
-    @NotNull
     @Column(name = "content", nullable = false)
     private String content;
 

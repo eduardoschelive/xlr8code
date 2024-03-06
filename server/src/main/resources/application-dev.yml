@@ -14,7 +14,7 @@ jwt:
   access-token:
     secret-key: secret
     expiration-time: 10
-    unit: MINUTES
+    unit: HOURS
 
 user:
   session:

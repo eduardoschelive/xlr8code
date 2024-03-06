@@ -1,9 +1,8 @@
 package com.xlr8code.server.series.entity;
 
+import com.xlr8code.server.common.utils.Language;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,6 +10,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "i18n_series")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class I18nSeries {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,15 +23,13 @@ public class I18nSeries {
     @JoinColumn(name = "series_id")
     private Series series;
 
-    @NotNull
     @Column(name = "language", nullable = false)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-    @NotNull
     @Column(name = "slug", nullable = false)
     private String slug;
 

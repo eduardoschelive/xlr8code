@@ -32,4 +32,8 @@ public class Endpoint {
         public static final String PASSWORD = "/password";
     }
 
+    public record Series() {
+        public static final String BASE_PATH = API_PREFIX + "/series";
+    }
+
 }

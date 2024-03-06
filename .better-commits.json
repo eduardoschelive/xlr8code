@@ -73,6 +73,10 @@
                 "label": "user"
             },
 	    {
+                "value": "series",
+                "label": "series"
+	    },
+	    {
 	        "value": "common",
 		"label": "common"
 	    },

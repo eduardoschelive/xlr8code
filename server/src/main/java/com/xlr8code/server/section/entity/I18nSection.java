@@ -1,7 +1,7 @@
 package com.xlr8code.server.section.entity;
 
+import com.xlr8code.server.common.utils.Language;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,15 +21,13 @@ public class I18nSection {
     @JoinColumn(name = "section_id")
     private Section section;
 
-    @NotNull
-    @Column(name = "language_code", nullable = false)
-    private String languageCode;
+    @Column(name = "language", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
-    @NotNull
     @Column(name = "label", nullable = false)
     private String label;
 
-    @NotNull
     @Column(name = "slug", nullable = false)
     private String slug;
 
