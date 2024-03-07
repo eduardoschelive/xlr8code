@@ -5,6 +5,7 @@ import com.xlr8code.server.common.utils.Language;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,5 +63,16 @@ class LocaleServiceTest {
         assertEquals(expectedMessage, message);
     }
 
+    @Test
+    void it_should_return_all_accepted_languages() {
+        var acceptedLanguages = Set.of(Locale.of("en_US"), Locale.of("pt_BR"));
+        var expectedLanguages = Set.of(Language.AMERICAN_ENGLISH, Language.BRAZILIAN_PORTUGUESE);
 
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        when(localeResolver.getAllAcceptedLocales(request)).thenReturn(acceptedLanguages);
+
+        var languages = localeService.getAllAcceptedLanguages(request);
+
+        assertEquals(expectedLanguages, languages);
+    }
 }

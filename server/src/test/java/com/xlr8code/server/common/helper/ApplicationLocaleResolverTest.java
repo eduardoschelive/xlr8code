@@ -4,11 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ApplicationLocaleResolverTest {
@@ -19,34 +24,34 @@ class ApplicationLocaleResolverTest {
     void setUp() {
         localeResolver = new ApplicationLocaleResolver();
     }
+    private static Stream<Arguments> provideTestData() {
+        return Stream.of(
+                arguments(null, Locale.ENGLISH), // Test case for resolving locale without header
+                arguments("invalid_locale_format", Locale.ENGLISH), // Test case for invalid locale format
+                arguments("pt_BR", Locale.of("pt_BR")), // Test case for resolving locale with header
+                arguments("en_US;q=0.8,pt_BR;q=0.9", Locale.of("pt_BR")), // Test case for resolving locale with quality score
+                arguments("en_US;q=0.8,pt_BR", Locale.of("pt_BR")) // Test case for resolving locale with quality score and default
+        );
+    }
 
-    @Test
-    void it_should_return_default_if_invalid_locale_format() {
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void it_should_resolve_locale(String acceptLanguageHeader, Locale expectedLocale) {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Accept-Language", "invalid_locale_format");
+        if (acceptLanguageHeader != null) {
+            request.addHeader("Accept-Language", acceptLanguageHeader);
+        }
 
         Locale resolvedLocale = localeResolver.resolveLocale(request);
 
-        assertEquals(Locale.ENGLISH, resolvedLocale);
+        assertEquals(expectedLocale, resolvedLocale);
     }
 
     @Test
-    void it_should_resolve_locale_with_header() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Accept-Language", "pt_BR");
-
-        Locale resolvedLocale = localeResolver.resolveLocale(request);
-
-        assertEquals(Locale.of("pt_BR"), resolvedLocale);
+    void resolveLocale() {
     }
 
     @Test
-    void it_should_resolve_locale_without_header() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-
-        Locale resolvedLocale = localeResolver.resolveLocale(request);
-
-        assertEquals(Locale.ENGLISH, resolvedLocale);
+    void getAllAcceptedLanguages() {
     }
-
 }
