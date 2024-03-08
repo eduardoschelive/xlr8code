@@ -1,5 +1,6 @@
 package com.xlr8code.server.series.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xlr8code.server.common.utils.Language;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +22,7 @@ public class I18nSeries {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "series_id")
+    @JsonIgnore
     private Series series;
 
     @Column(name = "language", nullable = false)
