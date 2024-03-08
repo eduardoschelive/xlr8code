@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +27,8 @@ class ApplicationLocaleResolverTest {
     }
     private static Stream<Arguments> provideTestData() {
         return Stream.of(
-                arguments(null, Locale.ENGLISH), // Test case for resolving locale without header
-                arguments("invalid_locale_format", Locale.ENGLISH), // Test case for invalid locale format
+                arguments(null, Locale.of("en_US")), // Test case for resolving locale without header
+                arguments("invalid_locale_format", Locale.of("en_US")), // Test case for invalid locale format
                 arguments("pt_BR", Locale.of("pt_BR")), // Test case for resolving locale with header
                 arguments("en_US;q=0.8,pt_BR;q=0.9", Locale.of("pt_BR")), // Test case for resolving locale with quality score
                 arguments("en_US;q=0.8,pt_BR", Locale.of("pt_BR")) // Test case for resolving locale with quality score and default
@@ -48,10 +49,13 @@ class ApplicationLocaleResolverTest {
     }
 
     @Test
-    void resolveLocale() {
+    void it_should_resolve_all_accepted_locales() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Accept-Language", "en_US;q=0.8,pt_BR;q=0.9");
+
+        Set<Locale> resolvedLocales = localeResolver.getAllAcceptedLocales(request);
+
+        assertEquals(Set.of(Locale.of("en_US"), Locale.of("pt_BR")), resolvedLocales);
     }
 
-    @Test
-    void getAllAcceptedLanguages() {
-    }
 }
