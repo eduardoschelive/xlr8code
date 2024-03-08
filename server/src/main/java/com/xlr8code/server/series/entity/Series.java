@@ -20,7 +20,7 @@ public class Series {
     @Column(name = "series_id", nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<I18nSeries> i18nSeries;
 
     @OneToMany(mappedBy = "series")
