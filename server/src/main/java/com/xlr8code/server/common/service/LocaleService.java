@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,10 @@ public class LocaleService {
      */
     public String getMessage(String code, HttpServletRequest request) {
         return this.messageSource.getMessage(code, null, this.localeResolver.resolveLocale(request));
+    }
+
+    public Language resolveLanguage(HttpServletRequest request) {
+        return Language.fromCode(this.localeResolver.resolveLocale(request).getLanguage());
     }
 
     public Set<Language> getAllAcceptedLanguages(HttpServletRequest request) {

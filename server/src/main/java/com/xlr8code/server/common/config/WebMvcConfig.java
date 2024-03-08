@@ -1,6 +1,9 @@
 package com.xlr8code.server.common.config;
 
 import com.xlr8code.server.common.helper.ApplicationLocaleResolver;
+import com.xlr8code.server.common.interceptor.ContentLanguageInterceptor;
+import com.xlr8code.server.common.service.LocaleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -9,7 +12,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
-public class InternationalizationConfig implements WebMvcConfigurer {
+@RequiredArgsConstructor
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final LocaleService localeService;
+
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -21,9 +28,15 @@ public class InternationalizationConfig implements WebMvcConfigurer {
         return new LocaleChangeInterceptor();
     }
 
+    @Bean
+    public ContentLanguageInterceptor contentLanguageInterceptor() {
+        return new ContentLanguageInterceptor(localeService);
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(localeChangeInterceptor());
+        interceptorRegistry.addInterceptor(contentLanguageInterceptor());
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.*;
 public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
 
     private static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    private static final Locale DEFAULT_LOCALE = Locale.of("en_US");
     private static final Language[] SUPPORTED_LANGUAGES = Language.values();
     private static final String LOCALE_QUALITY_SEPARATOR = ";";
     private static final String QUALITY_PARAMETER = "q=";
@@ -49,10 +49,15 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
         var acceptLanguageHeader = request.getHeader(ACCEPT_LANGUAGE_HEADER);
         var acceptedLanguages = parseAcceptLanguageHeader(acceptLanguageHeader);
 
-        allAcceptedLanguages.add(DEFAULT_LOCALE);
-
         for (var localeWithQualityScore : acceptedLanguages) {
-            allAcceptedLanguages.add(localeWithQualityScore.locale);
+             var locale = localeWithQualityScore.locale;
+             if (isSupported(locale.getLanguage())) {
+                 allAcceptedLanguages.add(locale);
+             }
+        }
+
+        if (allAcceptedLanguages.isEmpty()) {
+            allAcceptedLanguages.add(DEFAULT_LOCALE);
         }
 
         return allAcceptedLanguages;
