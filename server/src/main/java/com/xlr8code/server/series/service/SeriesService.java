@@ -1,15 +1,17 @@
 package com.xlr8code.server.series.service;
 
+import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.SeriesDTO;
 import com.xlr8code.server.series.dto.SeriesLanguagesDTO;
 import com.xlr8code.server.series.entity.Series;
+import com.xlr8code.server.series.helper.SeriesHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class SeriesService {
 
     private final SeriesRepository seriesRepository;
     private final I18nSeriesService i18nSeriesService;
+    private final SeriesHelper seriesHelper;
 
     /**
      * @param createSeriesDTO the series to be created
@@ -40,38 +43,20 @@ public class SeriesService {
         return series;
     }
 
+    /**
+     * @param languages the languages to filter
+     * @param pageable the page to be returned
+     * @return the series with the specified languages
+     */
     @Transactional
     public Page<SeriesLanguagesDTO> findAll(Set<Language> languages, Pageable pageable) {
-        Page<Series> seriesPage = seriesRepository.findAll(pageable);
-        List<SeriesLanguagesDTO> seriesLanguagesDTOList = this.getSeriesDTOLanguages(languages, seriesPage.getContent());
-
-        return new PageImpl<>(seriesLanguagesDTOList, pageable, seriesPage.getTotalElements());
-    }
-
-    private List<SeriesLanguagesDTO>  getSeriesDTOLanguages(Set<Language> languages, List<Series> series) {
-        var seriesLanguagesDTOList = new ArrayList<SeriesLanguagesDTO>();
-
-        series.forEach(currentSeries -> {
-            var  seriesDTOLanguages = this.getSeriesDTOLanguages(languages, currentSeries);
-            if (!seriesDTOLanguages.languages().isEmpty()) {
-                seriesLanguagesDTOList.add(seriesDTOLanguages);
-            }
-        });
-
-        return seriesLanguagesDTOList;
-    }
-
-    private SeriesLanguagesDTO getSeriesDTOLanguages(Set<Language> languages, Series currentSeries) {
-        Map<Language, SeriesDTO> seriesLanguages = new EnumMap<>(Language.class);
-
-        for (var i18nSeries : currentSeries.getI18nSeries()) {
-            var language = i18nSeries.getLanguage();
-            if (languages.contains(language)) {
-                seriesLanguages.put(language, SeriesDTO.fromEntity(i18nSeries));
-            }
+        try {
+            Page<Series> seriesPage = seriesRepository.findAll(pageable);
+            List<SeriesLanguagesDTO> seriesLanguagesDTOList = this.seriesHelper.buildSeriesLanguagesDTO(languages, seriesPage.getContent());
+            return new PageImpl<>(seriesLanguagesDTOList, pageable, seriesPage.getTotalElements());
+        } catch (PropertyReferenceException e) {
+            throw new PropertyDoesNotExistsException(e.getPropertyName());
         }
-
-        return SeriesLanguagesDTO.fromEntity(currentSeries.getId(), seriesLanguages);
     }
 
 }
