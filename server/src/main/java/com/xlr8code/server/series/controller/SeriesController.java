@@ -3,7 +3,7 @@ package com.xlr8code.server.series.controller;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.SeriesLanguagesDTO;
+import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.service.SeriesService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Set;
 
 @RestController
 @RequestMapping(Endpoint.Series.BASE_PATH)
@@ -31,7 +30,7 @@ public class SeriesController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SeriesLanguagesDTO>> findAll(Pageable pageable, HttpServletRequest request) {
+    public ResponseEntity<Page<TranslatedSeriesDTO>> findAll(Pageable pageable, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
         var result = seriesService.findAll(languages, pageable);
         return ResponseEntity.ok(result);
