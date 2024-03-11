@@ -3,7 +3,7 @@ package com.xlr8code.server.series.service;
 import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.Language;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.SeriesLanguagesDTO;
+import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.helper.SeriesHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
@@ -49,10 +49,10 @@ public class SeriesService {
      * @return the series with the specified languages
      */
     @Transactional
-    public Page<SeriesLanguagesDTO> findAll(Set<Language> languages, Pageable pageable) {
+    public Page<TranslatedSeriesDTO> findAll(Set<Language> languages, Pageable pageable) {
         try {
             Page<Series> seriesPage = seriesRepository.findAll(pageable);
-            List<SeriesLanguagesDTO> seriesLanguagesDTOList = this.seriesHelper.buildSeriesLanguagesDTO(languages, seriesPage.getContent());
+            List<TranslatedSeriesDTO> seriesLanguagesDTOList = this.seriesHelper.buildSeriesLanguagesDTO(languages, seriesPage.getContent());
             return new PageImpl<>(seriesLanguagesDTOList, pageable, seriesPage.getTotalElements());
         } catch (PropertyReferenceException e) {
             throw new PropertyDoesNotExistsException(e.getPropertyName());
