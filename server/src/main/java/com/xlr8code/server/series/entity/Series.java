@@ -21,7 +21,7 @@ public class Series {
     private UUID id;
 
     @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<I18nSeries> i18nSeries;
+    private Set<I18nSeries> internationalization;
 
     @OneToMany(mappedBy = "series")
     private Set<Section> sections;

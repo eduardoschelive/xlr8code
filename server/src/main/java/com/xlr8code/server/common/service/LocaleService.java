@@ -27,10 +27,18 @@ public class LocaleService {
         return this.messageSource.getMessage(code, null, this.localeResolver.resolveLocale(request));
     }
 
+    /**
+     * @param request the request from which the locale will be resolved
+     * @return the language corresponding to the given request
+     */
     public Language resolveLanguage(HttpServletRequest request) {
         return Language.fromCode(this.localeResolver.resolveLocale(request).getLanguage());
     }
 
+    /**
+     * @param request the request from which the locale will be resolved
+     * @return the set of all accepted languages in the given request
+     */
     public Set<Language> getAllAcceptedLanguages(HttpServletRequest request) {
         var allAcceptedLanguages = this.localeResolver.getAllAcceptedLocales(request);
         return allAcceptedLanguages.stream()

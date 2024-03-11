@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.xlr8code.server.common.serialization.deserializer.LanguageDeserializer;
 import com.xlr8code.server.common.serialization.deserializer.ThemeDeserializer;
+import com.xlr8code.server.common.serialization.serializer.LanguageKeySerializer;
 import com.xlr8code.server.common.serialization.serializer.LanguageSerializer;
 import com.xlr8code.server.common.serialization.serializer.ThemeSerializer;
 import com.xlr8code.server.common.utils.Language;
@@ -23,6 +24,12 @@ public class JacksonConfig {
         return module;
     }
 
+    private <T> Module createSimpleKeyModule(Class<T> clazz, JsonSerializer<T> keySerializer) {
+        var module = new SimpleModule();
+        module.addKeySerializer(clazz, keySerializer);
+        return module;
+    }
+
     @Bean
     public Module themeModule() {
         return this.createSimpleModule(Theme.class, new ThemeSerializer(), new ThemeDeserializer());
@@ -32,4 +39,10 @@ public class JacksonConfig {
     public Module languageModule() {
         return this.createSimpleModule(Language.class, new LanguageSerializer(), new LanguageDeserializer());
     }
+
+    @Bean
+    public Module languageKeyModule() {
+        return this.createSimpleKeyModule(Language.class, new LanguageKeySerializer());
+    }
+
 }
