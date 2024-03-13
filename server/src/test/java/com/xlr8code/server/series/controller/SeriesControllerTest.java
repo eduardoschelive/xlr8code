@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,6 +70,18 @@ class SeriesControllerTest {
             );
 
             return new CreateSeriesDTO(languages);
+        }
+
+    }
+
+    @Nested
+    class FindTest {
+
+        @Test
+        void it_should_return_page_of_series() throws Exception {
+            mockMvc.perform(get(Endpoint.Series.BASE_PATH)
+                            .header("Accept-Language", "en_US, pt_BR"))
+                    .andExpect(status().isOk());
         }
 
     }
