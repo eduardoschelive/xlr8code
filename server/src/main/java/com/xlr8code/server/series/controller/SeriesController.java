@@ -1,5 +1,6 @@
 package com.xlr8code.server.series.controller;
 
+import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
@@ -30,6 +31,7 @@ public class SeriesController {
     }
 
     @GetMapping
+    @MultiLanguageContent
     public ResponseEntity<Page<TranslatedSeriesDTO>> findAll(Pageable pageable, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
         var result = seriesService.findAll(languages, pageable);

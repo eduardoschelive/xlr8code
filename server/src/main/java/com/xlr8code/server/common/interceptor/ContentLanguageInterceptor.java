@@ -1,6 +1,6 @@
 package com.xlr8code.server.common.interceptor;
 
-import com.xlr8code.server.common.annotation.MultiLanguage;
+import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.enums.Language;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ public class ContentLanguageInterceptor implements HandlerInterceptor {
         var handlerMethod = (HandlerMethod) handler;
         var method = handlerMethod.getMethod();
 
-        if (method.isAnnotationPresent(MultiLanguage.class)) {
+        if (method.isAnnotationPresent(MultiLanguageContent.class)) {
             var headerValue = this.getHeaderValue(method, request);
             response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
         }
@@ -34,7 +34,7 @@ public class ContentLanguageInterceptor implements HandlerInterceptor {
 
 
     private String getHeaderValue(Method method, HttpServletRequest request) {
-        var isMultiLanguage = method.isAnnotationPresent(MultiLanguage.class);
+        var isMultiLanguage = method.isAnnotationPresent(MultiLanguageContent.class);
         if (!isMultiLanguage) {
             var resolvedLanguage = this.localeService.resolveLanguage(request);
             return resolvedLanguage.getCode();
