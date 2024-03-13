@@ -1,4 +1,4 @@
-package com.xlr8code.server.common.utils;
+package com.xlr8code.server.common.enums;
 
 import com.xlr8code.server.user.exception.LanguageNotFoundException;
 import lombok.Getter;

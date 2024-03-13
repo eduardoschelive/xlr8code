@@ -6,8 +6,8 @@ import com.xlr8code.server.authentication.exception.AccountNotActivatedException
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
 import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.user.entity.User;

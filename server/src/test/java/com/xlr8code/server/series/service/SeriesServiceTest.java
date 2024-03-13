@@ -1,6 +1,6 @@
 package com.xlr8code.server.series.service;
 
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
 import org.junit.jupiter.api.DisplayNameGeneration;

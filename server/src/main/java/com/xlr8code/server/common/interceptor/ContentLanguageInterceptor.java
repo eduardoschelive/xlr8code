@@ -2,7 +2,7 @@ package com.xlr8code.server.common.interceptor;
 
 import com.xlr8code.server.common.annotation.MultiLanguage;
 import com.xlr8code.server.common.service.LocaleService;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.xlr8code.server.series.service;
 import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
 import com.xlr8code.server.common.exception.LanguageAlreadyExistsForResourceException;
 import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.repository.SeriesRepository;

@@ -1,7 +1,7 @@
 package com.xlr8code.server.series.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import jakarta.persistence.*;
 import lombok.*;
 

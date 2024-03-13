@@ -1,6 +1,6 @@
 package com.xlr8code.server.common.exception;
 
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import org.springframework.http.HttpStatus;
 
 import java.util.UUID;

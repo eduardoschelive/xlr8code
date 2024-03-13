@@ -1,8 +1,8 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
