@@ -3,7 +3,7 @@ package com.xlr8code.server.common.serialization.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 
 import java.io.IOException;
 

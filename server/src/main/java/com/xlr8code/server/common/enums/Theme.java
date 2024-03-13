@@ -1,4 +1,4 @@
-package com.xlr8code.server.common.utils;
+package com.xlr8code.server.common.enums;
 
 import com.xlr8code.server.user.exception.ThemeNotFoundException;
 import lombok.Getter;

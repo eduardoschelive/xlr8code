@@ -1,13 +1,12 @@
 package com.xlr8code.server.common.service;
 
 import com.xlr8code.server.common.helper.ApplicationLocaleResolver;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 

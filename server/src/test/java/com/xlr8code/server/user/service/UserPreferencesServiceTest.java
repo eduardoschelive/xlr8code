@@ -1,7 +1,7 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.user.dto.UpdateUserPreferencesDTO;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;

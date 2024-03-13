@@ -1,7 +1,7 @@
 package com.xlr8code.server.common.helper;
 
 import com.xlr8code.server.common.utils.DoubleUtils;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;

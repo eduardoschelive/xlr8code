@@ -1,6 +1,6 @@
 package com.xlr8code.server.series.dto;
 
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import jakarta.validation.constraints.NotBlank;

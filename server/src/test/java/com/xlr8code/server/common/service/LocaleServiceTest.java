@@ -1,7 +1,7 @@
 package com.xlr8code.server.common.service;
 
 import com.xlr8code.server.common.helper.ApplicationLocaleResolver;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -75,4 +75,17 @@ class LocaleServiceTest {
 
         assertEquals(expectedLanguages, languages);
     }
+
+    @Test
+    void it_should_return_language_according_to_locale() {
+        var locale = Locale.of(Language.BRAZILIAN_PORTUGUESE.getCode());
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        when(localeResolver.resolveLocale(request)).thenReturn(locale);
+
+        var language = localeService.resolveLanguage(request);
+
+        assertEquals(Language.BRAZILIAN_PORTUGUESE, language);
+    }
+
 }

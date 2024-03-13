@@ -9,8 +9,8 @@ import com.xlr8code.server.common.serialization.deserializer.ThemeDeserializer;
 import com.xlr8code.server.common.serialization.serializer.LanguageKeySerializer;
 import com.xlr8code.server.common.serialization.serializer.LanguageSerializer;
 import com.xlr8code.server.common.serialization.serializer.ThemeSerializer;
-import com.xlr8code.server.common.utils.Language;
-import com.xlr8code.server.common.utils.Theme;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.enums.Theme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

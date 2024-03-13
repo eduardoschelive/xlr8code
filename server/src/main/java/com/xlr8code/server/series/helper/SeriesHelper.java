@@ -1,6 +1,6 @@
 package com.xlr8code.server.series.helper;
 
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.dto.SeriesTranslationDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.entity.I18nSeries;
@@ -18,9 +18,9 @@ public class SeriesHelper {
      * @param series the series to be filtered
      * @return the series with the specified languages
      */
-    public List<TranslatedSeriesDTO> buildSeriesLanguagesDTO(Set<Language> languages, List<Series> series) {
+    public List<TranslatedSeriesDTO> mapSeriesToTranslatedDTO(Set<Language> languages, List<Series> series) {
         return series.stream()
-                .map(s -> buildSeriesLanguagesDTO(languages, s))
+                .map(s -> buildTranslatedSeriesDTO(languages, s))
                 .filter(dto -> !dto.languages().isEmpty())
                 .toList();
     }
@@ -30,7 +30,7 @@ public class SeriesHelper {
      * @param currentSeries the series to be filtered
      * @return the series with the specified languages
      */
-    private TranslatedSeriesDTO buildSeriesLanguagesDTO(Set<Language> languages, Series currentSeries) {
+    private TranslatedSeriesDTO buildTranslatedSeriesDTO(Set<Language> languages, Series currentSeries) {
         Map<Language, SeriesTranslationDTO> seriesLanguages = currentSeries.getInternationalization().stream()
                 .filter(i18n -> languages.contains(i18n.getLanguage()))
                 .collect(Collectors.toMap(

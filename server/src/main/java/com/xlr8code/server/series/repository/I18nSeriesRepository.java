@@ -1,6 +1,6 @@
 package com.xlr8code.server.series.repository;
 
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import org.springframework.data.jpa.repository.JpaRepository;

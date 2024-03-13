@@ -1,7 +1,7 @@
 package com.xlr8code.server.series.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.common.utils.Language;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
 import com.xlr8code.server.series.entity.Series;
@@ -55,6 +55,7 @@ class SeriesControllerTest {
             // then
             mockMvc.perform(post(Endpoint.Series.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .header("Accept-Language", "en_US, pt_BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(createSeriesDTO)))
                     .andExpect(status().isCreated())
