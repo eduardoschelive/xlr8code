@@ -11,6 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -104,4 +105,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorMessage);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                headers,
+                "error.missing_request_parameter",
+                "INVALID_REQUEST_CONTENT",
+                ex.getParameterName()
+        );
+    }
 }
