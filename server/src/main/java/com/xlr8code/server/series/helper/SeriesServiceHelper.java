@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class SeriesHelper {
+public class SeriesServiceHelper {
 
     /**
      * @param languages the languages to filter

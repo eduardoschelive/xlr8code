@@ -2,10 +2,12 @@ package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.entity.Series;
-import com.xlr8code.server.series.helper.SeriesHelper;
+import com.xlr8code.server.series.exception.SeriesNotFoundException;
+import com.xlr8code.server.series.helper.SeriesServiceHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,7 @@ public class SeriesService {
 
     private final SeriesRepository seriesRepository;
     private final I18nSeriesService i18nSeriesService;
-    private final SeriesHelper seriesHelper;
+    private final SeriesServiceHelper seriesHelper;
 
     /**
      * @param createSeriesDTO the series to be created
@@ -47,8 +49,9 @@ public class SeriesService {
      * @param languages the languages to filter
      * @param pageable the page to be returned
      * @return the series with the specified languages
+     * @throws PropertyDoesNotExistsException if specified to sort in pageable does not exist
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<TranslatedSeriesDTO> findAll(Set<Language> languages, Pageable pageable) {
         try {
             Page<Series> seriesPage = seriesRepository.findAll(pageable);
@@ -59,4 +62,39 @@ public class SeriesService {
         }
     }
 
+    /**
+     * @param uuid the series id
+     * @return the series with the specified id
+     * @throws SeriesNotFoundException if the series does not exist
+     */
+    @Transactional
+    public Series findById(UUID uuid) {
+        return seriesRepository.findById(uuid)
+                .orElseThrow(() -> new SeriesNotFoundException(uuid.toString()));
+    }
+
+    /**
+     * @param uuidString the series id
+     * @return the series with the specified id
+     * @throws SeriesNotFoundException if the series does not exist
+     */
+    @Transactional
+    public Series findById(String uuidString) {
+        var uuid = UUIDUtils.convertFromString(uuidString)
+                .orElseThrow(() -> new SeriesNotFoundException(uuidString));
+
+        return this.findById(uuid);
+    }
+
+    /**
+     * @param uuidString the series id
+     * Deletes the series with the specified id
+     * @throws SeriesNotFoundException if the series does not exist
+     */
+    @Transactional
+    public void delete(String uuidString) {
+        var entity = this.findById(uuidString);
+
+        seriesRepository.delete(entity);
+    }
 }

@@ -3,6 +3,7 @@ package com.xlr8code.server.series.service;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
+import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -66,6 +66,41 @@ class SeriesServiceTest {
                     .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
 
             assertTrue(hasBrazilianPortuguese);
+        }
+
+    }
+
+    @Nested
+    class DeleteTests {
+
+        @BeforeEach
+        void setUp() {
+            seriesService.create(buildCreateSeriesDTO());
+        }
+
+        @Test
+        void it_should_delete_series() {
+            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+
+            seriesService.delete(series.getId().toString());
+            var result = seriesRepository.findById(series.getId());
+
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        void it_should_delete_series_with_string_id() {
+            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+
+            seriesService.delete(series.getId().toString());
+            var result = seriesRepository.findById(series.getId());
+
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        void it_should_throw_exception_when_deleting_non_existing_series() {
+            assertThrows(SeriesNotFoundException.class, () -> seriesService.delete("non-existing-id"));
         }
 
     }
