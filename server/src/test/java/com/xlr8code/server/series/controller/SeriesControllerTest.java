@@ -93,6 +93,13 @@ class SeriesControllerTest {
                     .andExpect(status().isOk());
         }
 
+        @Test
+        void it_should_return_page_of_series_when_searching() throws Exception {
+            mockMvc.perform(get(Endpoint.Series.BASE_PATH + "/search?query=test")
+                            .header("Accept-Language", "en_US, pt_BR"))
+                    .andExpect(status().isOk());
+        }
+
     }
 
     @Nested

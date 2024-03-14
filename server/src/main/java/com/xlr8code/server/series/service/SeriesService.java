@@ -1,7 +1,7 @@
 package com.xlr8code.server.series.service;
 
-import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
@@ -10,14 +10,14 @@ import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.helper.SeriesServiceHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class SeriesService {
 
     /**
      * @param languages the languages to filter
-     * @param pageable the page to be returned
+     * @param pageable  the page to be returned
      * @return the series with the specified languages
      * @throws PropertyDoesNotExistsException if specified to sort in pageable does not exist
      */
@@ -60,6 +60,22 @@ public class SeriesService {
         } catch (PropertyReferenceException e) {
             throw new PropertyDoesNotExistsException(e.getPropertyName());
         }
+    }
+
+    /**
+     * @param query    the query to be searched
+     * @param languages the languages to filter
+     * @param pageable the page to be returned
+     * @return the series with the specified languages
+     * @apiNote this ignores the sorting and return with descending order
+     */
+    @Transactional(readOnly = true)
+    public Page<TranslatedSeriesDTO> search(String query, Set<Language> languages, Pageable pageable) {
+        var seriesPage = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.unsorted());
+
+        Page<Series> page = seriesRepository.search(query,  languages, seriesPage);
+        List<TranslatedSeriesDTO> seriesLanguagesDTOList = this.seriesHelper.mapSeriesToTranslatedDTO(languages, page.getContent());
+        return new PageImpl<>(seriesLanguagesDTOList, pageable, page.getTotalElements());
     }
 
     /**
@@ -88,7 +104,7 @@ public class SeriesService {
 
     /**
      * @param uuidString the series id
-     * @param languages the languages to filter
+     * @param languages  the languages to filter
      * @return the series with the specified id and languages
      */
     @Transactional
@@ -99,7 +115,7 @@ public class SeriesService {
 
     /**
      * @param uuidString the series id
-     * Deletes the series with the specified id
+     *                   Deletes the series with the specified id
      * @throws SeriesNotFoundException if the series does not exist
      */
     @Transactional
