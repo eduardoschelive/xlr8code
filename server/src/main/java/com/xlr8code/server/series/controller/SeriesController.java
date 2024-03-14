@@ -46,6 +46,15 @@ public class SeriesController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/search")
+    @MultiLanguageContent
+    // TODO: change response when no search is passed
+    public ResponseEntity<Page<TranslatedSeriesDTO>> search(@RequestParam String query, Pageable pageable, HttpServletRequest request) {
+        var languages = localeService.getAllAcceptedLanguages(request);
+        var result = seriesService.search(query, languages, pageable);
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         seriesService.delete(id);

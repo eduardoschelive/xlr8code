@@ -89,6 +89,23 @@ class SeriesServiceTest {
             assertThrows(SeriesNotFoundException.class, () -> seriesService.findById("non-existing-id", languageSet));
         }
 
+        @Test
+        void it_should_find_series_by_search() {
+            var result = seriesService.search("title", Set.of(Language.AMERICAN_ENGLISH), Pageable.ofSize(5));
+
+            assertNotNull(result);
+        }
+
+        @Test
+        void it_should_find_series_by_search_with_specific_language() {
+            var result = seriesService.search("titulo", Set.of(Language.BRAZILIAN_PORTUGUESE), Pageable.ofSize(5));
+
+            var hasBrazilianPortuguese = result.stream()
+                    .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
+
+            assertTrue(hasBrazilianPortuguese);
+        }
+
     }
 
     @Nested
