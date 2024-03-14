@@ -88,6 +88,17 @@ public class SeriesService {
 
     /**
      * @param uuidString the series id
+     * @param languages the languages to filter
+     * @return the series with the specified id and languages
+     */
+    @Transactional
+    public TranslatedSeriesDTO findById(String uuidString, Set<Language> languages) {
+        var entity = this.findById(uuidString);
+        return this.seriesHelper.mapSeriesToTranslatedDTO(languages, entity);
+    }
+
+    /**
+     * @param uuidString the series id
      * Deletes the series with the specified id
      * @throws SeriesNotFoundException if the series does not exist
      */

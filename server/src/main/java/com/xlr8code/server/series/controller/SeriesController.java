@@ -38,6 +38,14 @@ public class SeriesController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/{id}")
+    @MultiLanguageContent
+    public ResponseEntity<TranslatedSeriesDTO> findById(@PathVariable String id, HttpServletRequest request) {
+        var languages = localeService.getAllAcceptedLanguages(request);
+        var result = seriesService.findById(id, languages);
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         seriesService.delete(id);

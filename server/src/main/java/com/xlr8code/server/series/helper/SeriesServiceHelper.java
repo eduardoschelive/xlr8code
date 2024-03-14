@@ -20,9 +20,13 @@ public class SeriesServiceHelper {
      */
     public List<TranslatedSeriesDTO> mapSeriesToTranslatedDTO(Set<Language> languages, List<Series> series) {
         return series.stream()
-                .map(s -> buildTranslatedSeriesDTO(languages, s))
+                .map(s -> mapSeriesToTranslatedDTO(languages, s))
                 .filter(dto -> !dto.languages().isEmpty())
                 .toList();
+    }
+
+    public TranslatedSeriesDTO mapSeriesToTranslatedDTO(Set<Language> languages, Series series) {
+        return buildTranslatedSeriesDTO(languages, series);
     }
 
     /**

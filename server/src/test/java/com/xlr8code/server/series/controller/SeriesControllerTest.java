@@ -1,7 +1,7 @@
 package com.xlr8code.server.series.controller;
 
-import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.series.dto.CreateSeriesDTO;
 import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
 import com.xlr8code.server.series.entity.Series;
@@ -74,11 +74,21 @@ class SeriesControllerTest {
     }
 
     @Nested
-    class FindTest {
+    class FindTests {
 
         @Test
         void it_should_return_page_of_series() throws Exception {
             mockMvc.perform(get(Endpoint.Series.BASE_PATH)
+                            .header("Accept-Language", "en_US, pt_BR"))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void it_should_return_series() throws Exception {
+            String uuid = "123e4567-e89b-12d3-a456-426614174000";
+            when(seriesService.findById(UUID.fromString(uuid))).thenReturn(Series.builder().id(UUID.fromString(uuid)).build());
+
+            mockMvc.perform(get(Endpoint.Series.BASE_PATH + "/uuid")
                             .header("Accept-Language", "en_US, pt_BR"))
                     .andExpect(status().isOk());
         }
