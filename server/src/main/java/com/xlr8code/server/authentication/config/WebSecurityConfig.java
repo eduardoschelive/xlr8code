@@ -37,6 +37,7 @@ public class WebSecurityConfig {
 
         // SERIES
         authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
 
         authorizeRequests.anyRequest().permitAll();
     }

@@ -27,8 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,6 +81,21 @@ class SeriesControllerTest {
             mockMvc.perform(get(Endpoint.Series.BASE_PATH)
                             .header("Accept-Language", "en_US, pt_BR"))
                     .andExpect(status().isOk());
+        }
+
+    }
+
+    @Nested
+    class DeleteTests {
+
+        @Test
+        void it_should_return_204_no_content() throws Exception {
+            String uuid = "123e4567-e89b-12d3-a456-426614174000";
+            when(seriesService.findById(UUID.fromString(uuid))).thenReturn(Series.builder().id(UUID.fromString(uuid)).build());
+
+            mockMvc.perform(delete(Endpoint.Series.BASE_PATH + "/uuid")
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin)))
+                    .andExpect(status().isNoContent());
         }
 
     }

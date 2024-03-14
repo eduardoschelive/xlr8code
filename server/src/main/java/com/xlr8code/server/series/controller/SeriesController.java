@@ -38,4 +38,10 @@ public class SeriesController {
         return ResponseEntity.ok(result);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        seriesService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

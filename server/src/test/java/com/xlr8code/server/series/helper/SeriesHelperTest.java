@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SeriesHelperTest {
 
     @Autowired
-    private SeriesHelper seriesHelper;
+    private SeriesServiceHelper seriesHelper;
 
     @Test
     void it_should_map_series_to_TranslatedDTO() {
