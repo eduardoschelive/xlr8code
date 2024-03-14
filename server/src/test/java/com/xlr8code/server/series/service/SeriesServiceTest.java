@@ -27,6 +27,12 @@ class SeriesServiceTest {
 
     @Nested
     class CreateTests {
+
+        @AfterEach
+        void tearDown() {
+            seriesRepository.deleteAll();
+        }
+
         @Test
         void it_should_create_series() {
             var createSeriesDTO = buildCreateSeriesDTO();
@@ -39,7 +45,7 @@ class SeriesServiceTest {
     }
 
     @Nested
-    class FindAllTests {
+    class FindTests {
 
         @BeforeEach
         void setUp() {
@@ -68,6 +74,21 @@ class SeriesServiceTest {
             assertTrue(hasBrazilianPortuguese);
         }
 
+        @Test
+        void it_should_find_series_by_id() {
+            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+
+            var result = seriesService.findById(series.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
+
+            assertNotNull(result);
+        }
+
+        @Test
+        void it_should_throw_exception_when_finding_non_existing_series() {
+            var languageSet = Set.of(Language.AMERICAN_ENGLISH);
+            assertThrows(SeriesNotFoundException.class, () -> seriesService.findById("non-existing-id", languageSet));
+        }
+
     }
 
     @Nested
@@ -76,6 +97,11 @@ class SeriesServiceTest {
         @BeforeEach
         void setUp() {
             seriesService.create(buildCreateSeriesDTO());
+        }
+
+        @AfterEach
+        void tearDown() {
+            seriesRepository.deleteAll();
         }
 
         @Test

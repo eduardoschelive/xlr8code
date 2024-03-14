@@ -24,10 +24,8 @@ public class ContentLanguageInterceptor implements HandlerInterceptor {
         var handlerMethod = (HandlerMethod) handler;
         var method = handlerMethod.getMethod();
 
-        if (method.isAnnotationPresent(MultiLanguageContent.class)) {
-            var headerValue = this.getHeaderValue(method, request);
-            response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
-        }
+        var headerValue = this.getHeaderValue(method, request);
+        response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
 
         return true;
     }
