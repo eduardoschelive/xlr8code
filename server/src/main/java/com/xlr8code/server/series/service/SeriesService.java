@@ -9,7 +9,10 @@ import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.helper.SeriesServiceHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
@@ -26,15 +29,19 @@ public class SeriesService {
     private final I18nSeriesService i18nSeriesService;
     private final SeriesServiceHelper seriesHelper;
 
+    @Lazy
+    @Resource
+    private SeriesService self;
+
     /**
      * @param seriesDTO the series to be created
      * @return the created series
      */
     @Transactional
     public Series create(SeriesDTO seriesDTO) {
-        var series = this.seriesHelper.mapSeriesDTOToEntity(seriesDTO);
+        this.i18nSeriesService.validateSlugInList(seriesDTO.languages().values());
 
-        this.i18nSeriesService.validateSlugInList(series.getInternationalization());
+        var series = this.seriesHelper.mapSeriesDTOToEntity(seriesDTO);
 
         return this.seriesRepository.save(series);
     }
@@ -93,7 +100,7 @@ public class SeriesService {
         var uuid = UUIDUtils.convertFromString(uuidString)
                 .orElseThrow(() -> new SeriesNotFoundException(uuidString));
 
-        return this.findById(uuid);
+        return self.findById(uuid);
     }
 
     /**
@@ -103,7 +110,7 @@ public class SeriesService {
      */
     @Transactional
     public TranslatedSeriesDTO findById(String uuidString, Set<Language> languages) {
-        var entity = this.findById(uuidString);
+        var entity = self.findById(uuidString);
         return this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, entity);
     }
 
@@ -114,7 +121,7 @@ public class SeriesService {
      */
     @Transactional
     public void delete(String uuidString) {
-        var entity = this.findById(uuidString);
+        var entity = self.findById(uuidString);
 
         seriesRepository.delete(entity);
     }
@@ -126,16 +133,18 @@ public class SeriesService {
      */
     @Transactional
     public TranslatedSeriesDTO update(String uuidString, SeriesDTO seriesDTO) {
-        var existingSeries = this.findById(uuidString);
+        var existingSeries = self.findById(uuidString);
 
         var languages = seriesDTO.languages().keySet();
         var seriesLanguagesDTOs = seriesDTO.languages().values();
 
-        this.i18nSeriesService.validateDuplicateSlugInCollection(seriesLanguagesDTOs, existingSeries.getId());
+        this.i18nSeriesService.validateSlugInListWithOwner(seriesLanguagesDTOs, existingSeries.getId());
 
         var updatedInternationalization = this.seriesHelper.updateI18nSeriesForSeries(existingSeries, seriesDTO, languages);
 
-        existingSeries.setInternationalization(updatedInternationalization);
+        existingSeries.getInternationalization().clear();
+        existingSeries.getInternationalization().addAll(updatedInternationalization);
+
         var savedEntity = seriesRepository.save(existingSeries);
 
         return this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, savedEntity);

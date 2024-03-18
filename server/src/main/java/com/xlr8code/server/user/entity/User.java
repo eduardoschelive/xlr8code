@@ -59,8 +59,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false, updatable = false)
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     )
     private Set<Role> roles;
 
