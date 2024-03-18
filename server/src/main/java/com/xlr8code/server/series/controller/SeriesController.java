@@ -60,4 +60,10 @@ public class SeriesController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable String id, @Valid @RequestBody CreateSeriesDTO createSeriesDTO) {
+        seriesService.update(id, createSeriesDTO);
+        return ResponseEntity.noContent().build();
+    }
+
 }

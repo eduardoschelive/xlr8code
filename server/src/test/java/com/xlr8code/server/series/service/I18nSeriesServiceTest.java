@@ -41,60 +41,6 @@ class I18nSeriesServiceTest {
             seriesRepository.deleteAll();
         }
 
-        @Test
-        void it_should_create_i18n_series() {
-            var createI18nSeries = buildCreateI18nSeries("slug", "title", "description", Language.AMERICAN_ENGLISH);
-
-            var createdI18nSeries = i18nSeriesService.create(createI18nSeries);
-
-            assertNotNull(createdI18nSeries);
-        }
-
-        @Test
-        void it_should_not_create_i18n_series_with_same_slug() {
-            var slug = "slug";
-            var createI18nSeries = buildCreateI18nSeries(slug, "title", "description", Language.AMERICAN_ENGLISH);
-            i18nSeriesService.create(createI18nSeries);
-
-            var createI18nSeriesWithSameSlug = buildCreateI18nSeries(slug, "title", "description", Language.BRAZILIAN_PORTUGUESE);
-
-            assertThrows(SlugAlreadyExistsException.class, () -> i18nSeriesService.create(createI18nSeriesWithSameSlug));
-        }
-
-        @Test
-        void it_should_not_create_i18n_series_with_same_language() {
-            var language = Language.AMERICAN_ENGLISH;
-            var createI18nSeries = buildCreateI18nSeries("slug", "title", "description", language);
-            i18nSeriesService.create(createI18nSeries);
-
-            var createI18nSeriesWithSameLanguage = buildCreateI18nSeries("slug", "title", "description", language);
-
-            assertThrows(LanguageAlreadyExistsForResourceException.class, () -> i18nSeriesService.create(createI18nSeriesWithSameLanguage));
-        }
-
-        @Test
-        void it_should_create_i18n_series_in_list() {
-            var createI18nSeries = buildCreateI18nSeries("slug", "title", "description", Language.AMERICAN_ENGLISH);
-            var createI18nSeries2 = buildCreateI18nSeries("slug2", "title2", "description2", Language.BRAZILIAN_PORTUGUESE);
-
-            List<I18nSeries> listToCreate = List.of(createI18nSeries, createI18nSeries2);
-
-            var createdI18nSeries = i18nSeriesService.create(listToCreate);
-
-            assertNotNull(createdI18nSeries);
-        }
-
-        @Test
-        void it_should_not_create_i18n_series_in_list_with_same_slug() {
-            var slug = "slug";
-            var createI18nSeries = buildCreateI18nSeries(slug, "title", "description", Language.AMERICAN_ENGLISH);
-            var createI18nSeries2 = buildCreateI18nSeries(slug, "title2", "description2", Language.BRAZILIAN_PORTUGUESE);
-
-            List<I18nSeries> listToCreate = List.of(createI18nSeries, createI18nSeries2);
-
-            assertThrows(DuplicateSlugInLanguagesException.class, () -> i18nSeriesService.create(listToCreate));
-        }
-
         private I18nSeries buildCreateI18nSeries(
                 String slug,
                 String title,

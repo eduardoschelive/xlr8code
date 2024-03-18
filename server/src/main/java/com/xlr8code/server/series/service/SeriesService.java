@@ -33,16 +33,11 @@ public class SeriesService {
      */
     @Transactional
     public Series create(CreateSeriesDTO createSeriesDTO) {
-        var series = new Series();
-        var newSeries = seriesRepository.save(series);
+        var series = createSeriesDTO.toEntity();
 
-        var languagesSeries = createSeriesDTO.languages().entrySet().stream()
-                .map(entry -> entry.getValue().toEntity(newSeries, entry.getKey()))
-                .toList();
+        this.i18nSeriesService.validateSlugInList(series.getInternationalization());
 
-        i18nSeriesService.create(languagesSeries);
-
-        return series;
+       return  this.seriesRepository.save(series);
     }
 
     /**
@@ -124,4 +119,28 @@ public class SeriesService {
 
         seriesRepository.delete(entity);
     }
+
+    @Transactional
+    public TranslatedSeriesDTO update(String uuidString, CreateSeriesDTO updateSeriesDTO) {
+        var entity = this.findById(uuidString);
+
+        var languages = updateSeriesDTO.languages().keySet();
+
+
+        languages.forEach(language -> {
+            var i18n = entity.getInternationalization().stream()
+                    .filter(i -> i.getLanguage().equals(language))
+                    .findFirst()
+                    .orElseThrow(() -> new SeriesNotFoundException(uuidString));
+
+            i18n.setTitle(updateSeriesDTO.languages().get(language).title());
+            i18n.setDescription(updateSeriesDTO.languages().get(language).description());
+            i18n.setSlug(updateSeriesDTO.languages().get(language).slug());
+        });
+
+        var savedEntity = seriesRepository.save(entity);
+
+        return this.seriesHelper.mapSeriesToTranslatedDTO(Set.of(), savedEntity);
+    }
+
 }
