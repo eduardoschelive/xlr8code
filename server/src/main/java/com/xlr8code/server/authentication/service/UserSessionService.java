@@ -10,8 +10,10 @@ import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.common.utils.HashUtils;
 import com.xlr8code.server.common.utils.RandomUtils;
 import com.xlr8code.server.user.entity.User;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,10 @@ public class UserSessionService {
 
     @Value("${user.session.key}")
     private String key;
+
+    @Lazy
+    @Resource
+    private UserSessionService self;
 
     /**
      * <p>
@@ -63,7 +69,7 @@ public class UserSessionService {
     public String generate(User user) {
         var sessionToken = this.generateSessionToken();
 
-        this.create(user, sessionToken);
+        self.create(user, sessionToken);
 
         return sessionToken;
     }

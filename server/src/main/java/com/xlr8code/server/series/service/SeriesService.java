@@ -11,7 +11,6 @@ import com.xlr8code.server.series.helper.SeriesServiceHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -29,8 +28,8 @@ public class SeriesService {
     private final I18nSeriesService i18nSeriesService;
     private final SeriesServiceHelper seriesHelper;
 
-    @Lazy
     @Resource
+    @Lazy
     private SeriesService self;
 
     /**
@@ -116,13 +115,11 @@ public class SeriesService {
 
     /**
      * @param uuidString the series id
-     *                   Deletes the series with the specified id
      * @throws SeriesNotFoundException if the series does not exist
      */
     @Transactional
     public void delete(String uuidString) {
         var entity = self.findById(uuidString);
-
         seriesRepository.delete(entity);
     }
 
