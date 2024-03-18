@@ -22,7 +22,6 @@ public class I18nSeries {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "series_id")
-    @JsonIgnore
     private Series series;
 
     @Column(name = "language", nullable = false)
