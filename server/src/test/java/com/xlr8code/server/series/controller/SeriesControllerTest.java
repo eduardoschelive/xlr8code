@@ -2,8 +2,8 @@ package com.xlr8code.server.series.controller;
 
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
+import com.xlr8code.server.series.dto.SeriesDTO;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.service.SeriesService;
 import com.xlr8code.server.user.entity.User;
@@ -62,13 +62,13 @@ class SeriesControllerTest {
                     .andExpect(header().string("Location", Endpoint.Series.BASE_PATH + "/" + uuidToReturn));
         }
 
-        private CreateSeriesDTO buildCreateSeriesDTO() {
-            Map<Language, CreateSeriesLanguageDTO> languages = Map.of(
-                    Language.AMERICAN_ENGLISH, new CreateSeriesLanguageDTO("Test Series", "test-series", "Test Series Description"),
-                    Language.BRAZILIAN_PORTUGUESE, new CreateSeriesLanguageDTO("Série de Teste", "serie-de-teste", "Descrição da Série de Teste")
+        private SeriesDTO buildCreateSeriesDTO() {
+            Map<Language, SeriesLanguageDTO> languages = Map.of(
+                    Language.AMERICAN_ENGLISH, new SeriesLanguageDTO("Test Series", "test-series", "Test Series Description"),
+                    Language.BRAZILIAN_PORTUGUESE, new SeriesLanguageDTO("Série de Teste", "serie-de-teste", "Descrição da Série de Teste")
             );
 
-            return new CreateSeriesDTO(languages);
+            return new SeriesDTO(languages);
         }
 
     }

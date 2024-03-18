@@ -1,8 +1,8 @@
 package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
+import com.xlr8code.server.series.dto.SeriesDTO;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import org.junit.jupiter.api.*;
@@ -148,13 +148,13 @@ class SeriesServiceTest {
 
     }
 
-    private CreateSeriesDTO buildCreateSeriesDTO() {
-        Map<Language, CreateSeriesLanguageDTO> languages = Map.of(
-                Language.AMERICAN_ENGLISH, new CreateSeriesLanguageDTO("title", "description", "slug"),
-                Language.BRAZILIAN_PORTUGUESE, new CreateSeriesLanguageDTO("titulo", "descrição", "slug")
+    private SeriesDTO buildCreateSeriesDTO() {
+        Map<Language, SeriesLanguageDTO> languages = Map.of(
+                Language.AMERICAN_ENGLISH, new SeriesLanguageDTO("title", "description", "slug"),
+                Language.BRAZILIAN_PORTUGUESE, new SeriesLanguageDTO("titulo", "descrição", "slug")
         );
 
-        return new CreateSeriesDTO(languages);
+        return new SeriesDTO(languages);
     }
 
 }

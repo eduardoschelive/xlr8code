@@ -26,7 +26,7 @@ class SeriesHelperTest {
     void it_should_map_series_to_TranslatedDTO() {
         var series = buildSeries();
 
-        var result = seriesHelper.mapSeriesToTranslatedDTO(Set.of(Language.BRAZILIAN_PORTUGUESE, Language.AMERICAN_ENGLISH), series);
+        var result = seriesHelper.mapSeriesToTranslatedSeriesDTO(Set.of(Language.BRAZILIAN_PORTUGUESE, Language.AMERICAN_ENGLISH), series);
 
         assertNotNull(result);
     }
