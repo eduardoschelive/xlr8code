@@ -2,16 +2,14 @@ package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
 import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
-import com.xlr8code.server.common.utils.UUIDUtils;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.repository.I18nSeriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,13 +54,26 @@ public class I18nSeriesService {
      */
     @Transactional(readOnly = true)
     public void validateSlugInList(Set<I18nSeries> i18nSeries) {
-        validateDuplicateSlugs(i18nSeries);
-        validateSlugsInDatabase(i18nSeries);
+        this.validateDuplicateSlugs(i18nSeries);
+        this.validateSlugsInDatabase(i18nSeries);
     }
 
-    @Transactional
-    public void deleteAllBySeriesId(UUID seriesId) {
-        i18nSeriesRepository.deleteAllBySeriesId(seriesId);
+    public void validateDuplicateSlugInCollection(Collection<SeriesLanguageDTO> languages, UUID seriesId) {
+        Set<String> slugSet = new HashSet<>();
+        for (var language : languages) {
+            var slug = language.slug();
+            if (!slugSet.add(slug)) {
+                throw new DuplicateSlugInLanguagesException(slug);
+            }
+            this.validateDuplicateSlugWithOwner(slug, seriesId);
+        }
+    }
+
+    public void validateDuplicateSlugWithOwner(String slug, UUID seriesId) {
+        boolean existsBySlugAndSeriesIdNot = i18nSeriesRepository.existsBySlugAndSeriesIdNot(slug, seriesId);
+        if (existsBySlugAndSeriesIdNot){
+            throw new SlugAlreadyExistsException(slug);
+        }
     }
 
 }
