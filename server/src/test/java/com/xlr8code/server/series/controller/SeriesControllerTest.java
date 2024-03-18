@@ -2,8 +2,9 @@ package com.xlr8code.server.series.controller;
 
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.dto.CreateSeriesDTO;
-import com.xlr8code.server.series.dto.CreateSeriesLanguageDTO;
+import com.xlr8code.server.series.dto.SeriesDTO;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
+import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.service.SeriesService;
 import com.xlr8code.server.user.entity.User;
@@ -62,13 +63,13 @@ class SeriesControllerTest {
                     .andExpect(header().string("Location", Endpoint.Series.BASE_PATH + "/" + uuidToReturn));
         }
 
-        private CreateSeriesDTO buildCreateSeriesDTO() {
-            Map<Language, CreateSeriesLanguageDTO> languages = Map.of(
-                    Language.AMERICAN_ENGLISH, new CreateSeriesLanguageDTO("Test Series", "test-series", "Test Series Description"),
-                    Language.BRAZILIAN_PORTUGUESE, new CreateSeriesLanguageDTO("Série de Teste", "serie-de-teste", "Descrição da Série de Teste")
+        private SeriesDTO buildCreateSeriesDTO() {
+            Map<Language, SeriesLanguageDTO> languages = Map.of(
+                    Language.AMERICAN_ENGLISH, new SeriesLanguageDTO("Test Series", "test-series", "Test Series Description"),
+                    Language.BRAZILIAN_PORTUGUESE, new SeriesLanguageDTO("Série de Teste", "serie-de-teste", "Descrição da Série de Teste")
             );
 
-            return new CreateSeriesDTO(languages);
+            return new SeriesDTO(languages);
         }
 
     }
@@ -113,6 +114,34 @@ class SeriesControllerTest {
             mockMvc.perform(delete(Endpoint.Series.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin)))
                     .andExpect(status().isNoContent());
+        }
+
+    }
+
+    @Nested
+    class UpdateTests {
+
+        @Test
+        void it_should_return_200_ok() throws Exception {
+            String uuid = "123e4567-e89b-12d3-a456-426614174000";
+            var updateSeriesDTO = buildCreateSeriesDTO();
+            when(seriesService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedSeriesDTO(null, null));
+
+            mockMvc.perform(put(Endpoint.Series.BASE_PATH + "/uuid")
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .header("Accept-Language", "en_US, pt_BR")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(updateSeriesDTO)))
+                    .andExpect(status().isOk());
+        }
+
+        private SeriesDTO buildCreateSeriesDTO() {
+            Map<Language, SeriesLanguageDTO> languages = Map.of(
+                    Language.AMERICAN_ENGLISH, new SeriesLanguageDTO("Test Series", "test-series", "Test Series Description"),
+                    Language.BRAZILIAN_PORTUGUESE, new SeriesLanguageDTO("Série de Teste", "serie-de-teste", "Descrição da Série de Teste")
+            );
+
+            return new SeriesDTO(languages);
         }
 
     }

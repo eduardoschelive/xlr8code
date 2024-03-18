@@ -15,8 +15,6 @@ import java.util.UUID;
 @Repository
 public interface SeriesRepository extends JpaRepository<Series, UUID> {
 
-    Page<Series> findAll(Pageable pageable);
-
     @Query("SELECT s FROM Series s " +
             "LEFT JOIN s.internationalization i18n " +
             "WHERE i18n.language IN :languages " +
@@ -24,5 +22,5 @@ public interface SeriesRepository extends JpaRepository<Series, UUID> {
             "     OR LOWER(i18n.description) LIKE LOWER(CONCAT('%', :query, '%'))) " +
             "ORDER BY i18n.title DESC")
     Page<Series> search(String query, Set<Language> languages, Pageable seriesPage);
-    
+
 }

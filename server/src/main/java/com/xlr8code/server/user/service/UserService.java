@@ -15,8 +15,10 @@ import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,10 @@ public class UserService {
     private final UserSessionService userSessionService;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    @Lazy
+    @Resource
+    private UserService self;
 
     /**
      * @param userCreateDTO User to be created
@@ -78,7 +84,7 @@ public class UserService {
     @Transactional
     public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
         this.validatePasswordChange(newPassword, newPasswordConfirmation);
-        this.changeUserPassword(user, newPassword);
+        self.changeUserPassword(user, newPassword);
     }
 
     /**
@@ -101,7 +107,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDTO findByUUID(String uuidString) {
         var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
-        var user = this.findByUUID(uuid);
+        var user = self.findByUUID(uuid);
 
         return UserDTO.from(user);
     }
@@ -125,7 +131,7 @@ public class UserService {
     public void deleteByUUID(String uuidString) {
         var uuid = UUIDUtils.convertFromString(uuidString)
                 .orElseThrow(UserNotFoundException::new);
-        this.deleteByUUID(uuid);
+        self.deleteByUUID(uuid);
     }
 
     /**
@@ -148,7 +154,7 @@ public class UserService {
     @Transactional
     public UserDTO updateByUUID(String uuidString, UpdateUserDTO updateUserDTO) {
         var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
-        return this.updateByUUID(uuid, updateUserDTO);
+        return self.updateByUUID(uuid, updateUserDTO);
     }
 
     /**
@@ -158,7 +164,7 @@ public class UserService {
      */
     @Transactional
     public UserDTO updateByUUID(UUID uuid, UpdateUserDTO updateUserDTO) {
-        var user = this.findByUUID(uuid);
+        var user = self.findByUUID(uuid);
 
         this.changeUsername(user, updateUserDTO.username());
         this.changeEmail(user, updateUserDTO.email());
@@ -175,7 +181,7 @@ public class UserService {
     @Transactional
     public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
         var uuid = UUIDUtils.convertFromString(userId).orElseThrow(UserNotFoundException::new);
-        this.updateUserPassword(uuid, updatePasswordDTO);
+        self.updateUserPassword(uuid, updatePasswordDTO);
     }
 
     /**
@@ -184,13 +190,13 @@ public class UserService {
      */
     @Transactional
     public void updateUserPassword(UUID userId, UpdatePasswordDTO updatePasswordDTO) {
-        var user = this.findByUUID(userId);
+        var user = self.findByUUID(userId);
 
         this.validateOldPassword(user, updatePasswordDTO.oldPassword());
 
         this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
 
-        this.changeUserPassword(user, updatePasswordDTO.newPassword());
+        self.changeUserPassword(user, updatePasswordDTO.newPassword());
     }
 
     /**
