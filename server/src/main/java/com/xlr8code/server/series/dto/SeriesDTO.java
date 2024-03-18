@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Map;
 
-public record CreateSeriesDTO(
+public record SeriesDTO(
         @NotEmpty
-        Map<Language, @Valid CreateSeriesLanguageDTO> languages
+        Map<Language, @Valid SeriesLanguageDTO> languages
 ) {
 }

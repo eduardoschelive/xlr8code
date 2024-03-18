@@ -1,17 +1,14 @@
 package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
-import com.xlr8code.server.common.exception.LanguageAlreadyExistsForResourceException;
 import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
-import com.xlr8code.server.series.entity.I18nSeries;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.repository.I18nSeriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,39 +17,36 @@ public class I18nSeriesService {
     private final I18nSeriesRepository i18nSeriesRepository;
 
     /**
-     * @param i18nSeries the series to which the I18nSeries will be associated
-     * @return the created I18nSeries
+     * @param seriesLanguageDTOS the i18n series to be validated
+     * @throws SlugAlreadyExistsException if the slug already exists
+     *  @throws DuplicateSlugInLanguagesException if the slugs are duplicated
      */
-    @Transactional
-    public I18nSeries create(I18nSeries i18nSeries) {
-        this.validateLanguageForSeries(i18nSeries);
-        this.validateSlug(i18nSeries.getSlug());
-
-        return i18nSeriesRepository.save(i18nSeries);
+    @Transactional(readOnly = true)
+    public void validateSlugInList(Collection<SeriesLanguageDTO> seriesLanguageDTOS) {
+        this.validateDuplicateSlugs(seriesLanguageDTOS);
+        List<String> slugs = seriesLanguageDTOS.stream()
+                .map(SeriesLanguageDTO::slug)
+                .toList();
+        validateSlugInCollection(slugs);
     }
 
     /**
-     * @param i18nSeries the series to which the I18nSeries will be associated
-     * @return the created I18nSeries
+     * @param seriesLanguageDTOS the i18n series to be validated
+     * @param seriesId  the series id to be validated
+     * @throws DuplicateSlugInLanguagesException if the slugs are duplicated
+     * @throws SlugAlreadyExistsException if the slug already exists and does not belong to the series id provided
      */
-    @Transactional
-    public List<I18nSeries> create(List<I18nSeries> i18nSeries) {
-        this.validateLanguageForSeriesList(i18nSeries);
-        this.validateSlugInList(i18nSeries);
-        return i18nSeriesRepository.saveAll(i18nSeries);
-    }
-
-    /**
-     * @param i18nSeries the list of series to be validated
-     * @throws LanguageAlreadyExistsForResourceException if some of the languages already exists for the series
-     */
-    private void validateLanguageForSeriesList(List<I18nSeries> i18nSeries) {
-        i18nSeries.forEach(this::validateLanguageForSeries);
+    @Transactional(readOnly = true)
+    public void validateSlugInListWithOwner(Collection<SeriesLanguageDTO> seriesLanguageDTOS, UUID seriesId) {
+        this.validateDuplicateSlugs(seriesLanguageDTOS);
+        List<String> slugs = seriesLanguageDTOS.stream()
+                .map(SeriesLanguageDTO::slug)
+                .toList();
+        validateSlugWithOwnerInCollection(slugs, seriesId);
     }
 
     /**
      * @param slug the slug to be validated
-     * @throws SlugAlreadyExistsException if the slug already exists
      */
     private void validateSlug(String slug) {
         if (i18nSeriesRepository.existsBySlug(slug)) {
@@ -61,29 +55,43 @@ public class I18nSeriesService {
     }
 
     /**
-     * @param i18nSeries the list of series to be validated
-     * @throws DuplicateSlugInLanguagesException if the slug already exists
-     * @throws SlugAlreadyExistsException        if the slug already exists in the database
+     * @param languages the languages to be validated
+     * @throws DuplicateSlugInLanguagesException if the slugs are duplicated
      */
-    private void validateSlugInList(List<I18nSeries> i18nSeries) {
+    private void validateDuplicateSlugs(Collection<SeriesLanguageDTO> languages) {
         Set<String> slugSet = new HashSet<>();
-        for (I18nSeries series : i18nSeries) {
-            var slug = series.getSlug();
+        for (SeriesLanguageDTO language : languages) {
+            String slug = language.slug();
             if (!slugSet.add(slug)) {
                 throw new DuplicateSlugInLanguagesException(slug);
             }
-            this.validateSlug(slug);
         }
     }
 
     /**
-     * @param i18nSeries the series to be validated
-     * @throws LanguageAlreadyExistsForResourceException if the language already exists for the series
+     * @param slugs the slugs to be validated
      */
-    private void validateLanguageForSeries(I18nSeries i18nSeries) {
-        if (i18nSeriesRepository.existsBySeriesAndLanguage(i18nSeries.getSeries(), i18nSeries.getLanguage())) {
-            throw new LanguageAlreadyExistsForResourceException(i18nSeries.getLanguage(), i18nSeries.getSeries().getId());
+    private void validateSlugInCollection(Collection<String> slugs) {
+        slugs.forEach(this::validateSlug);
+    }
+
+    /**
+     * @param slug    the slug to be validated
+     * @param seriesId the series id to be validated
+     * @throws SlugAlreadyExistsException if the slug already exists and does not belong to the series id provided
+     */
+    private void validateSlugWithOwner(String slug, UUID seriesId) {
+        if (i18nSeriesRepository.existsBySlugAndSeriesIdNot(slug, seriesId)) {
+            throw new SlugAlreadyExistsException(slug);
         }
+    }
+
+    /**
+     * @param slugs   the slugs to be validated
+     * @param seriesId the series id to be validated
+     */
+    private void validateSlugWithOwnerInCollection(Collection<String> slugs, UUID seriesId) {
+        slugs.forEach(slug -> validateSlugWithOwner(slug, seriesId));
     }
 
 }

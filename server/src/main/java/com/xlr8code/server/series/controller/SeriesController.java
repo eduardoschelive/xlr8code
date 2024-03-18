@@ -3,7 +3,7 @@ package com.xlr8code.server.series.controller;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.dto.CreateSeriesDTO;
+import com.xlr8code.server.series.dto.SeriesDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.service.SeriesService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +25,8 @@ public class SeriesController {
     private final LocaleService localeService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody CreateSeriesDTO createSeriesDTO) {
-        var createdSeries = seriesService.create(createSeriesDTO);
+    public ResponseEntity<Void> create(@Valid @RequestBody SeriesDTO seriesDTO) {
+        var createdSeries = seriesService.create(seriesDTO);
         return ResponseEntity.created(URI.create(Endpoint.Series.BASE_PATH + "/" + createdSeries.getId())).build();
     }
 
@@ -58,6 +58,12 @@ public class SeriesController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         seriesService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TranslatedSeriesDTO> update(@PathVariable String id, @Valid @RequestBody SeriesDTO seriesDTO) {
+        var updated = seriesService.update(id, seriesDTO);
+        return ResponseEntity.ok(updated);
     }
 
 }

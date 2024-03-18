@@ -7,7 +7,9 @@ import com.xlr8code.server.user.dto.UserMetadataDTO;
 import com.xlr8code.server.user.entity.UserMetadata;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.repository.UserMetadataRepository;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,10 @@ public class UserMetadataService {
 
     private final UserMetadataRepository userMetadataRepository;
 
+    @Resource
+    @Lazy
+    private UserMetadataService self;
+
     /**
      * @param uuidString            UUID of the user
      * @param updateUserMetadataDTO {@link UpdateUserMetadataDTO} of the user
@@ -28,7 +34,7 @@ public class UserMetadataService {
     @Transactional
     public UserMetadataDTO updateMetadataByUserUUID(String uuidString, UpdateUserMetadataDTO updateUserMetadataDTO) {
         var uuid = UUIDUtils.convertFromString(uuidString).orElseThrow(UserNotFoundException::new);
-        return this.updateMetadataByUserUUID(uuid, updateUserMetadataDTO);
+        return self.updateMetadataByUserUUID(uuid, updateUserMetadataDTO);
     }
 
     /**
