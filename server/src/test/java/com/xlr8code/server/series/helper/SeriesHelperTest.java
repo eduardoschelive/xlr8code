@@ -31,6 +31,16 @@ class SeriesHelperTest {
         assertNotNull(result);
     }
 
+
+    @Test
+    void it_should_map_series_to_TranslatedDTO_with_languages() {
+        var series = buildSeries();
+
+        var result = seriesHelper.mapSeriesToTranslatedSeriesDTO(Set.of(Language.BRAZILIAN_PORTUGUESE, Language.AMERICAN_ENGLISH), series.getFirst());
+
+        assertNotNull(result);
+    }
+
     private List<Series> buildSeries() {
         return List.of(
                 buildSerie(),

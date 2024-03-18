@@ -3,6 +3,7 @@ package com.xlr8code.server.series.service;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.dto.SeriesDTO;
 import com.xlr8code.server.series.dto.SeriesLanguageDTO;
+import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import org.junit.jupiter.api.*;
@@ -144,6 +145,48 @@ class SeriesServiceTest {
         @Test
         void it_should_throw_exception_when_deleting_non_existing_series() {
             assertThrows(SeriesNotFoundException.class, () -> seriesService.delete("non-existing-id"));
+        }
+
+    }
+
+    @Nested
+    class UpdateTests {
+
+        private Series createSeries;
+
+        @BeforeEach
+        void setUp() {
+            createSeries = seriesService.create(buildCreateSeriesDTO());
+        }
+
+        @AfterEach
+        void tearDown() {
+            seriesRepository.deleteAll();
+        }
+
+        @Test
+        void it_should_update_series() {
+            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var updateSeriesDTO = buildCreateSeriesDTO();
+
+            var result = seriesService.update(series.getId().toString(), updateSeriesDTO);
+
+            assertNotNull(result);
+        }
+
+        @Test
+        void it_should_throw_exception_when_updating_non_existing_series() {
+            var updateDTO = buildCreateSeriesDTO();
+            assertThrows(SeriesNotFoundException.class, () -> seriesService.update("non-existing-id", updateDTO));
+        }
+
+        @Test
+        void it_should_allow_repeat_slug_if_series_is_owner() {
+            var updateSeriesDTO = buildCreateSeriesDTO();
+
+            var result = seriesService.update(createSeries.getId().toString(), updateSeriesDTO);
+
+            assertNotNull(result);
         }
 
     }
