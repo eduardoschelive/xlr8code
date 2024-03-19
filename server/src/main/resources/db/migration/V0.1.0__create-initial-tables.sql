@@ -63,7 +63,9 @@ CREATE TABLE user_codes
 
 CREATE TABLE series
 (
-    series_id   UUID PRIMARY KEY
+    series_id   UUID PRIMARY KEY,
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE i18n_series
@@ -81,7 +83,9 @@ CREATE TABLE sections
 (
     section_id          UUID PRIMARY KEY,
     series_id           UUID REFERENCES series (series_id),
-    order_within_series SMALLINT NOT NULL
+    order_within_series SMALLINT NOT NULL,
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE i18n_sections
@@ -100,7 +104,9 @@ CREATE TABLE article
     section_id           UUID REFERENCES sections (section_id),
     order_within_section SMALLINT NOT NULL,
     previous_post_id     UUID REFERENCES article (article_id),
-    next_post_id         UUID REFERENCES article (article_id)
+    next_post_id         UUID REFERENCES article (article_id),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE i18n_articles
