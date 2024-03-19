@@ -1,5 +1,6 @@
 package com.xlr8code.server.article.entity;
 
+import com.xlr8code.server.common.entity.AuditableEntity;
 import com.xlr8code.server.section.entity.Section;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "article")
-public class Article {
+public class Article extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "article_id", nullable = false)

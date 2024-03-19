@@ -1,5 +1,6 @@
 package com.xlr8code.server.series.entity;
 
+import com.xlr8code.server.common.entity.AuditableEntity;
 import com.xlr8code.server.section.entity.Section;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Series {
+public class Series extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "series_id", nullable = false)
