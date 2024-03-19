@@ -4,10 +4,11 @@ import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.series.dto.SeriesDTO;
+import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
+import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
-import com.xlr8code.server.series.helper.SeriesServiceHelper;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,7 +29,6 @@ public class SeriesService {
 
     private final SeriesRepository seriesRepository;
     private final I18nSeriesService i18nSeriesService;
-    private final SeriesServiceHelper seriesHelper;
 
     @Resource
     @Lazy
@@ -40,7 +42,7 @@ public class SeriesService {
     public Series create(SeriesDTO seriesDTO) {
         this.i18nSeriesService.validateSlugInList(seriesDTO.languages().values());
 
-        var series = this.seriesHelper.mapSeriesDTOToEntity(seriesDTO);
+        var series = seriesDTO.toEntity();
 
         return this.seriesRepository.save(series);
     }
@@ -55,8 +57,9 @@ public class SeriesService {
     public Page<TranslatedSeriesDTO> findAll(Set<Language> languages, Pageable pageable) {
         try {
             var seriesPage = seriesRepository.findAll(pageable);
-            var seriesLanguagesDTOList = this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, seriesPage.getContent());
-            return new PageImpl<>(seriesLanguagesDTOList, pageable, seriesPage.getTotalElements());
+            var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, seriesPage.getContent());
+
+            return new PageImpl<>(filteredTranslatedSeriesDTOs, pageable, seriesPage.getTotalElements());
         } catch (PropertyReferenceException e) {
             throw new PropertyDoesNotExistsException(e.getPropertyName());
         }
@@ -72,10 +75,11 @@ public class SeriesService {
     @Transactional(readOnly = true)
     public Page<TranslatedSeriesDTO> search(String query, Set<Language> languages, Pageable pageable) {
         var seriesPage = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.unsorted());
-
         var page = seriesRepository.search(query, languages, seriesPage);
-        var seriesLanguagesDTOList = this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, page.getContent());
-        return new PageImpl<>(seriesLanguagesDTOList, pageable, page.getTotalElements());
+
+        var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, page.getContent());
+
+        return new PageImpl<>(filteredTranslatedSeriesDTOs, pageable, page.getTotalElements());
     }
 
     /**
@@ -110,7 +114,7 @@ public class SeriesService {
     @Transactional
     public TranslatedSeriesDTO findById(String uuidString, Set<Language> languages) {
         var entity = self.findById(uuidString);
-        return this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, entity);
+        return TranslatedSeriesDTO.fromEntity(entity, languages);
     }
 
     /**
@@ -137,14 +141,88 @@ public class SeriesService {
 
         this.i18nSeriesService.validateSlugInListWithOwner(seriesLanguagesDTOs, existingSeries.getId());
 
-        var updatedInternationalization = this.seriesHelper.updateI18nSeriesForSeries(existingSeries, seriesDTO, languages);
+        var updatedInternationalization = this.updateInternationalizationForSeries(existingSeries, seriesDTO, languages);
 
         existingSeries.getInternationalization().clear();
         existingSeries.getInternationalization().addAll(updatedInternationalization);
 
         var savedEntity = seriesRepository.save(existingSeries);
 
-        return this.seriesHelper.mapSeriesToTranslatedSeriesDTO(languages, savedEntity);
+        return TranslatedSeriesDTO.fromEntity(savedEntity, languages);
+    }
+
+    /**
+     * @param languages  the languages to filter
+     * @param seriesList the series to be mapped
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedSeriesDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Series> seriesList) {
+        var seriesLanguagesDTOList = this.mapSeriesToTranslatedSeriesDTO(languages, seriesList);
+        return this.filterEmptyLanguages(seriesLanguagesDTOList);
+    }
+
+    /**
+     * @param languages  the languages to be filtered
+     * @param seriesList the series to be mapped
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedSeriesDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Series> seriesList) {
+        return seriesList.stream()
+                .map(s -> TranslatedSeriesDTO.fromEntity(s, languages))
+                .toList();
+    }
+
+    /**
+     * @param seriesLanguagesDTOList the series languages to be filtered
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedSeriesDTO> filterEmptyLanguages(List<TranslatedSeriesDTO> seriesLanguagesDTOList) {
+        return seriesLanguagesDTOList.stream()
+                .filter(dto -> !dto.languages().isEmpty())
+                .toList();
+    }
+
+    /**
+     * @param series          the series to be updated
+     * @param updateSeriesDTO the series to be updated
+     * @param languages       the languages to be updated
+     * @return the series languages updated to {@link I18nSeries}
+     */
+    private Set<I18nSeries> updateInternationalizationForSeries(Series series, SeriesDTO updateSeriesDTO, Set<Language> languages) {
+        var updatedI18nSeries = new HashSet<I18nSeries>();
+
+        for (var language : languages) {
+            var seriesLanguageDTO = updateSeriesDTO.languages().get(language);
+
+            var i18n = findOrCreateI18NSeriesEntity(series, language);
+            updateI18NSeriesEntity(i18n, seriesLanguageDTO);
+
+            updatedI18nSeries.add(i18n);
+        }
+
+        return updatedI18nSeries;
+    }
+
+    /**
+     * @param series   the series to be updated
+     * @param language the language to be updated
+     * @return the series language to be updated
+     */
+    private I18nSeries findOrCreateI18NSeriesEntity(Series series, Language language) {
+        return series.getInternationalization().stream()
+                .filter(i -> i.getLanguage().equals(language))
+                .findFirst()
+                .orElseGet(() -> I18nSeries.builder().series(series).language(language).build());
+    }
+
+    /**
+     * @param i18n              the series language to be updated
+     * @param seriesLanguageDTO the series language to be updated
+     */
+    private void updateI18NSeriesEntity(I18nSeries i18n, SeriesLanguageDTO seriesLanguageDTO) {
+        i18n.setTitle(seriesLanguageDTO.title());
+        i18n.setDescription(seriesLanguageDTO.description());
+        i18n.setSlug(seriesLanguageDTO.slug());
     }
 
 }
