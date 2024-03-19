@@ -2,17 +2,17 @@ package com.xlr8code.server.user.entity;
 
 import com.xlr8code.server.authentication.entity.UserCode;
 import com.xlr8code.server.authentication.entity.UserSession;
+import com.xlr8code.server.common.entity.AuditableEntity;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(of = "id")
-public class User implements UserDetails {
+public class User extends AuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -69,14 +67,6 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserCode> userCodes;
-
-    @Column(name = "created_at")
-    @CreatedDate
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private Instant updatedAt;
 
     public void activate() {
         this.active = true;
@@ -123,6 +113,20 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (getClass() != o.getClass() && !(o instanceof HibernateProxy)) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(getId());
     }
 
 }
