@@ -27,6 +27,11 @@ public class SeriesServiceHelper {
                 .toList();
     }
 
+    /**
+     * @param languages the languages to filter
+     * @param series the series to be filtered
+     * @return the {@link TranslatedSeriesDTO} with the specified languages
+     */
     public TranslatedSeriesDTO mapSeriesToTranslatedSeriesDTO(Set<Language> languages, Series series) {
         return buildTranslatedSeriesDTO(languages, series);
     }
