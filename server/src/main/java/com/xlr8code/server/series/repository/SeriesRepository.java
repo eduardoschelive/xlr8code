@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface SeriesRepository extends JpaRepository<Series, UUID> {
 
     @Query("SELECT s FROM Series s " +
-            "LEFT JOIN s.internationalization i18n " +
+            "LEFT JOIN s.i18nSeries i18n " +
             "WHERE i18n.language IN :languages " +
             "AND (LOWER(i18n.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "     OR LOWER(i18n.description) LIKE LOWER(CONCAT('%', :query, '%'))) " +
