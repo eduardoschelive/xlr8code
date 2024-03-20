@@ -15,7 +15,7 @@ public record TranslatedSeriesDTO(
 ) {
 
     public static TranslatedSeriesDTO fromEntity(Series series, Set<Language> languages) {
-        var seriesLanguages = series.getInternationalization().stream()
+        var seriesLanguages = series.getI18nSeries().stream()
                 .filter(i18n -> languages.contains(i18n.getLanguage()))
                 .collect(Collectors.toMap(
                         I18nSeries::getLanguage,

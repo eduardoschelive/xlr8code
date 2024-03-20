@@ -143,8 +143,8 @@ public class SeriesService {
 
         var updatedInternationalization = this.updateInternationalizationForSeries(existingSeries, seriesDTO, languages);
 
-        existingSeries.getInternationalization().clear();
-        existingSeries.getInternationalization().addAll(updatedInternationalization);
+        existingSeries.getI18nSeries().clear();
+        existingSeries.getI18nSeries().addAll(updatedInternationalization);
 
         var savedEntity = seriesRepository.save(existingSeries);
 
@@ -209,7 +209,7 @@ public class SeriesService {
      * @return the series language to be updated
      */
     private I18nSeries findOrCreateI18NSeriesEntity(Series series, Language language) {
-        return series.getInternationalization().stream()
+        return series.getI18nSeries().stream()
                 .filter(i -> i.getLanguage().equals(language))
                 .findFirst()
                 .orElseGet(() -> I18nSeries.builder().series(series).language(language).build());

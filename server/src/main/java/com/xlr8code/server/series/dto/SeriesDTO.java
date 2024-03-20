@@ -1,7 +1,6 @@
 package com.xlr8code.server.series.dto;
 
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,7 +19,7 @@ public record SeriesDTO(
                         .map(entry -> entry.getValue().toEntity(series, entry.getKey()))
                         .collect(Collectors.toSet());
 
-                series.setInternationalization(seriesLanguages);
+                series.setI18nSeries(seriesLanguages);
 
                 return series;
         }
