@@ -21,11 +21,11 @@ public class ContentLanguageInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        var handlerMethod = (HandlerMethod) handler;
-        var method = handlerMethod.getMethod();
-
-        var headerValue = this.getHeaderValue(method, request);
-        response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
+        if (handler instanceof HandlerMethod handlerMethod) {
+            var method = handlerMethod.getMethod();
+            var headerValue = this.getHeaderValue(method, request);
+            response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
+        }
 
         return true;
     }

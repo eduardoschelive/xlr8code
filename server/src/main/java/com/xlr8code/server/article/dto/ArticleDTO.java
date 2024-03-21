@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record ArticleDTO(
-        @NotEmpty
-        Map<Language, @Valid ArticleLanguageDTO> languages,
         @NullOrNotBlank
         String seriesId,
         @NullOrNotBlank
@@ -21,7 +19,9 @@ public record ArticleDTO(
         @NullOrNotBlank
         String previousArticleId,
         @Positive
-        Integer position
+        Integer position,
+        @NotEmpty
+        Map<Language, @Valid ArticleLanguageDTO> languages
 ) {
 
     public Article toEntity(Series series, Article nextArticle, Article previousArticle, Article parent) {
@@ -43,8 +43,8 @@ public record ArticleDTO(
         return article;
     }
 
-    public Article toEntity(Series series) {
-        return this.toEntity(series, null, null, null);
+    public Article toEntity() {
+        return this.toEntity(null, null, null, null);
     }
 
 }
