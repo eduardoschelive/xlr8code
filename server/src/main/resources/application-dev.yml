@@ -1,0 +1,35 @@
+spring:
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/xlr8code
+    username: postgres # example
+    password: 1234 # example
+    driverClassName: org.postgresql.Driver
+
+jwt:
+  access-token:
+    secret-key: secret
+    expiration-time: 10
+    unit: HOURS
+
+user:
+  session:
+    expiration-time: 7
+    unit: DAYS
+    token-length: 64
+    key: secret
+  activation-code:
+    unit: HOURS
+    expiration-time: 15
+    length: 6
+  password-reset-code:
+    unit: MINUTES
+    expiration-time: 15
+    length: 6
+
+logging:
+  config: classpath:log4j2.xml
