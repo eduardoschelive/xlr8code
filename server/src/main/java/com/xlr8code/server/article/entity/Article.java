@@ -1,9 +1,8 @@
 package com.xlr8code.server.article.entity;
 
 import com.xlr8code.server.common.entity.AuditableEntity;
-import com.xlr8code.server.section.entity.Section;
+import com.xlr8code.server.series.entity.Series;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,31 +12,36 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "article")
+@Table(name = "articles")
 public class Article extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "article_id", nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "section_id")
-    private Section section;
+    @ManyToOne
+    @JoinColumn(name = "parent_article_id")
+    private Article parent;
 
-    @NotNull
-    @Column(name = "order_within_section", nullable = false)
-    private Short orderWithinSection;
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Article> children;
+
+    @ManyToOne
+    @JoinColumn(name = "series_id")
+    private Series series;
+
+    @Column(name = "position")
+    private Integer position;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "previous_post_id")
-    private Article previousPost;
+    @JoinColumn(name = "previous_article_id")
+    private Article previousArticle;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "next_post_id")
-    private Article nextPost;
+    @JoinColumn(name = "next_article_id")
+    private Article nextArticle;
 
     @OneToMany(mappedBy = "article")
     private Set<I18nArticle> i18nArticles;
-
 
 }

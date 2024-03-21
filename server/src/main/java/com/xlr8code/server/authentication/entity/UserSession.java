@@ -1,11 +1,9 @@
 package com.xlr8code.server.authentication.entity;
 
-import com.xlr8code.server.common.entity.AuditableEntity;
 import com.xlr8code.server.common.utils.DateTimeUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 

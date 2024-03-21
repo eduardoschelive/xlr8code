@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class SeriesNotFoundException extends ApplicationException {
 
     public SeriesNotFoundException(String uuid) {
-        super("SERIES_NOT_FOUND",  uuid);
+        super("SERIES_NOT_FOUND", uuid);
     }
 
     @Override

@@ -76,6 +76,10 @@
                 "value": "series",
                 "label": "series"
 	    },
+            {
+	        "value": "article",
+                "label": "article"
+            },
 	    {
 	        "value": "common",
 		"label": "common"

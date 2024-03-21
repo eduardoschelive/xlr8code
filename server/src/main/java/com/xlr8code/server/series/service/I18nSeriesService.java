@@ -18,8 +18,8 @@ public class I18nSeriesService {
 
     /**
      * @param seriesLanguageDTOS the i18n series to be validated
-     * @throws SlugAlreadyExistsException if the slug already exists
-     *  @throws DuplicateSlugInLanguagesException if the slugs are duplicated
+     * @throws SlugAlreadyExistsException        if the slug already exists
+     * @throws DuplicateSlugInLanguagesException if the slugs are duplicated
      */
     @Transactional(readOnly = true)
     public void validateSlugInList(Collection<SeriesLanguageDTO> seriesLanguageDTOS) {
@@ -32,9 +32,9 @@ public class I18nSeriesService {
 
     /**
      * @param seriesLanguageDTOS the i18n series to be validated
-     * @param seriesId  the series id to be validated
+     * @param seriesId           the series id to be validated
      * @throws DuplicateSlugInLanguagesException if the slugs are duplicated
-     * @throws SlugAlreadyExistsException if the slug already exists and does not belong to the series id provided
+     * @throws SlugAlreadyExistsException        if the slug already exists and does not belong to the series id provided
      */
     @Transactional(readOnly = true)
     public void validateSlugInListWithOwner(Collection<SeriesLanguageDTO> seriesLanguageDTOS, UUID seriesId) {
@@ -76,7 +76,7 @@ public class I18nSeriesService {
     }
 
     /**
-     * @param slug    the slug to be validated
+     * @param slug     the slug to be validated
      * @param seriesId the series id to be validated
      * @throws SlugAlreadyExistsException if the slug already exists and does not belong to the series id provided
      */
@@ -87,7 +87,7 @@ public class I18nSeriesService {
     }
 
     /**
-     * @param slugs   the slugs to be validated
+     * @param slugs    the slugs to be validated
      * @param seriesId the series id to be validated
      */
     private void validateSlugWithOwnerInCollection(Collection<String> slugs, UUID seriesId) {

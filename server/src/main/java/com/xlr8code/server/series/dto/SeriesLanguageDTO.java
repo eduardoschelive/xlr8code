@@ -14,14 +14,14 @@ public record SeriesLanguageDTO(
         String description
 ) {
 
-        public I18nSeries toEntity(Series series, Language language) {
-                return I18nSeries.builder()
-                        .title(this.title())
-                        .slug(this.slug())
-                        .language(language)
-                        .description(this.description())
-                        .series(series)
-                        .build();
-        }
+    public I18nSeries toEntity(Series series, Language language) {
+        return I18nSeries.builder()
+                .title(this.title())
+                .slug(this.slug())
+                .language(language)
+                .description(this.description())
+                .series(series)
+                .build();
+    }
 
 }

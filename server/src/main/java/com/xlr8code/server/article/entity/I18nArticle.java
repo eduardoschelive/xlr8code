@@ -2,11 +2,13 @@ package com.xlr8code.server.article.entity;
 
 import com.xlr8code.server.common.enums.Language;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
