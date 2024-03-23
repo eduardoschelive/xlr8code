@@ -26,6 +26,8 @@ class SeriesServiceTest {
     @Autowired
     private SeriesRepository seriesRepository;
 
+
+
     @Nested
     class CreateTests {
 
@@ -105,6 +107,15 @@ class SeriesServiceTest {
                     .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
 
             assertTrue(hasBrazilianPortuguese);
+        }
+
+        @Test
+        void it_should_check_if_series_exists() {
+            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+
+            var result = seriesService.existsById(series.getId().toString());
+
+            assertTrue(result);
         }
 
     }

@@ -152,6 +152,16 @@ public class SeriesService {
     }
 
     /**
+     * @param id the series id
+     * @return whether the series exists
+     */
+    @Transactional
+    public boolean existsById(String id) {
+        var uuid = UUIDUtils.convertFromString(id);
+        return uuid.filter(this.seriesRepository::existsById).isPresent();
+    }
+
+    /**
      * @param languages  the languages to filter
      * @param seriesList the series to be mapped
      * @return the series languages with non-empty languages

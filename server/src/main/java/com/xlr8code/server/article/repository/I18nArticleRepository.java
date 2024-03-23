@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface I18nArticleRepository extends JpaRepository<I18nArticle, UUID> {
+    boolean existsBySlug(String slug);
 }

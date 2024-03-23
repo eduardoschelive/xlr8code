@@ -41,7 +41,7 @@ public class Article extends AuditableEntity {
     @JoinColumn(name = "next_article_id")
     private Article nextArticle;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<I18nArticle> i18nArticles;
 
 }

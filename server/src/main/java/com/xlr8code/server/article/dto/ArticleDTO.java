@@ -1,8 +1,10 @@
 package com.xlr8code.server.article.dto;
 
+import com.xlr8code.server.article.annotation.ExistingArticle;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.common.annotation.NullOrNotBlank;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.series.annotation.ExistingSeries;
 import com.xlr8code.server.series.entity.Series;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,12 +14,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record ArticleDTO(
-        @NullOrNotBlank
+        @ExistingSeries(optional = true)
         String seriesId,
-        @NullOrNotBlank
+        @ExistingArticle(optional = true)
         String nextArticleId,
-        @NullOrNotBlank
+        @ExistingArticle(optional = true)
         String previousArticleId,
+        @ExistingArticle(optional = true)
+        String parentArticleId,
         @Positive
         Integer position,
         @NotEmpty
@@ -41,10 +45,6 @@ public record ArticleDTO(
         article.setI18nArticles(articleLanguages);
 
         return article;
-    }
-
-    public Article toEntity() {
-        return this.toEntity(null, null, null, null);
     }
 
 }

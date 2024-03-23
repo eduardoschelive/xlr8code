@@ -18,7 +18,7 @@ public class UUIDUtils {
     public static Optional<UUID> convertFromString(String string) {
         try {
             return Optional.of(UUID.fromString(string));
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             return Optional.empty();
         }
     }
