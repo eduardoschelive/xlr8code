@@ -1,6 +1,7 @@
 package com.xlr8code.server.article.service;
 
 import com.xlr8code.server.article.dto.ArticleLanguageDTO;
+import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.repository.I18nArticleRepository;
 import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
 import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
@@ -30,10 +31,27 @@ public class I18nArticleService {
     }
 
     /**
+     * @param slug the slug to be validated
+     * @param owner the {@link Article} of the slug
+     */
+    private void validateSlug(String slug, Article owner) {
+        if (i18nArticleRepository.existsBySlugAndArticleNot(slug, owner)) {
+            throw new SlugAlreadyExistsException(slug);
+        }
+    }
+
+    /**
      * @param slugs the slugs to be validated
      */
     private void validateSlugInCollection(Collection<String> slugs) {
         slugs.forEach(this::validateSlug);
+    }
+
+    /**
+     * @param slugs the slugs to be validated
+     */
+    private void validateSlugInCollection(Collection<String> slugs, Article owner) {
+        slugs.forEach(slug -> validateSlug(slug, owner));
     }
 
     /**
@@ -63,5 +81,15 @@ public class I18nArticleService {
                 .toList();
         validateSlugInCollection(slugs);
     }
+
+    @Transactional(readOnly = true)
+    public void validateSlugInList(Collection<ArticleLanguageDTO> articleLanguageDTOS, Article owner) {
+        this.validateDuplicateSlugs(articleLanguageDTOS);
+        List<String> slugs = articleLanguageDTOS.stream()
+                .map(ArticleLanguageDTO::slug)
+                .toList();
+        validateSlugInCollection(slugs, owner);
+    }
+
 
 }

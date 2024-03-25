@@ -33,6 +33,7 @@ public class ArticleService {
      * @return the created article
      */
     public Article create(ArticleDTO articleDTO) {
+        this.i18nArticleService.validateSlugInList(articleDTO.languages().values());
         var article = convertToEntity(articleDTO);
         return this.articleRepository.save(article);
     }
@@ -69,6 +70,37 @@ public class ArticleService {
     }
 
     /**
+     * @param id the id of the article
+     */
+    @Transactional
+    public void delete(String id) {
+        var uuid = UUIDUtils.convertFromString(id).orElseThrow(() -> new ArticleNotFoundException(id));
+        this.articleRepository.deleteById(uuid);
+    }
+
+    @Transactional
+    public Article update(String id, ArticleDTO articleDTO) {
+        var article = self.findById(id);
+
+        this.i18nArticleService.validateSlugInList(articleDTO.languages().values(), article);
+
+        var updatedArticle = convertToEntity(articleDTO);
+        updatedArticle.setId(article.getId());
+
+        // set id for the i18n articles
+        updatedArticle.getI18nArticles().forEach(i18nArticle -> {
+            i18nArticle.setArticle(updatedArticle);
+            i18nArticle.setId(article.getI18nArticles().stream()
+                    .filter(i18nArticle1 -> i18nArticle1.getLanguage().equals(i18nArticle.getLanguage()))
+                    .findFirst()
+                    .orElse(i18nArticle)
+                    .getId());
+        });
+
+        return this.articleRepository.save(updatedArticle);
+    }
+
+    /**
      * @param articleDTO the article to be converted
      * @return the converted article
      * @throws ArticleNotFoundException if the article with the specified id does not exist
@@ -79,8 +111,6 @@ public class ArticleService {
         var nextArticle = ObjectUtils.executeIfNotNull(articleDTO.nextArticleId(), self::findById);
         var previousArticle = ObjectUtils.executeIfNotNull(articleDTO.previousArticleId(), self::findById);
         var parentArticle = ObjectUtils.executeIfNotNull(articleDTO.parentArticleId(), self::findById);
-
-        this.i18nArticleService.validateSlugInList(articleDTO.languages().values());
 
         return articleDTO.toEntity(series, nextArticle, previousArticle, parentArticle);
     }

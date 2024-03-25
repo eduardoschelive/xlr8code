@@ -23,7 +23,7 @@ public class Article extends AuditableEntity {
     @JoinColumn(name = "parent_article_id")
     private Article parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<Article> children;
 
     @ManyToOne
