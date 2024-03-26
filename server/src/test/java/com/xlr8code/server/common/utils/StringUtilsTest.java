@@ -2,6 +2,7 @@ package com.xlr8code.server.common.utils;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,4 +29,22 @@ class StringUtilsTest {
         assertThat(StringUtils.splitPascalCase(input)).isEqualTo(expectedOutput);
     }
 
+    static Stream<Arguments> blankStringProvider() {
+        return Stream.of(
+                Arguments.of((String) null),
+                Arguments.of(""),
+                Arguments.of(" "),
+                Arguments.of("  "),
+                Arguments.of("\t"),
+                Arguments.of("\n"),
+                Arguments.of("\r"),
+                Arguments.of("\r\n")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("blankStringProvider")
+    void it_should_return_true_for_blank_strings(String input) {
+        assertThat(StringUtils.isBlank(input)).isTrue();
+    }
 }

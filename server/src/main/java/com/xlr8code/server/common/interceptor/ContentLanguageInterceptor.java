@@ -1,8 +1,8 @@
 package com.xlr8code.server.common.interceptor;
 
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
-import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.service.LocaleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +15,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ContentLanguageInterceptor implements HandlerInterceptor {
 
-    private final LocaleService localeService;
     private static final String CONTENT_LANGUAGE_HEADER = "Content-Language";
     private static final String LANGUAGE_SEPARATOR = ", ";
+    private final LocaleService localeService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        var handlerMethod = (HandlerMethod) handler;
-        var method = handlerMethod.getMethod();
-
-        var headerValue = this.getHeaderValue(method, request);
-        response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
+        if (handler instanceof HandlerMethod handlerMethod) {
+            var method = handlerMethod.getMethod();
+            var headerValue = this.getHeaderValue(method, request);
+            response.setHeader(CONTENT_LANGUAGE_HEADER, headerValue);
+        }
 
         return true;
     }

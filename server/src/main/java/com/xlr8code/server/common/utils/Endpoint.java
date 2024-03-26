@@ -36,4 +36,8 @@ public class Endpoint {
         public static final String BASE_PATH = API_PREFIX + "/series";
     }
 
+    public record Article() {
+        public static final String BASE_PATH = API_PREFIX + "/articles";
+    }
+
 }

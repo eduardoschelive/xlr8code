@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class I18nSeriesServiceTest {
 
     @Autowired
-    private I18nSeriesService i18nSeriesService;
+    private SeriesSlugValidator seriesSlugValidator;
 
     @Autowired
     private I18nSeriesRepository i18nSeriesRepository;
@@ -55,26 +55,28 @@ class I18nSeriesServiceTest {
 
         @AfterEach
         void tearDown() {
-            seriesRepository.deleteAll();
+            i18nSeriesRepository.deleteAll();
         }
 
         @Test
         void it_should_validate_slug_in_list() {
             var createI18nSeriesDTO = new SeriesLanguageDTO("title", "slug", "description");
 
-            Collection<SeriesLanguageDTO> createCollection = Set.of(createI18nSeriesDTO);
+            var createCollection = Set.of(createI18nSeriesDTO);
+            var slugs = createCollection.stream().map(SeriesLanguageDTO::slug).toList();
 
-            assertThrows(SlugAlreadyExistsException.class, () -> i18nSeriesService.validateSlugInList(createCollection));
+            assertThrows(SlugAlreadyExistsException.class, () -> seriesSlugValidator.validateSlugInList(slugs));
         }
 
         @Test
         void it_should_validate_slug_in_list_with_owner() {
             var createI18nSeriesDTO = new SeriesLanguageDTO("title", "slug", "description");
-            var randomUUID = UUID.randomUUID();
+            var randomSeries = seriesRepository.save(new Series());
 
             Collection<SeriesLanguageDTO> createCollection = Set.of(createI18nSeriesDTO);
+            var slugs = createCollection.stream().map(SeriesLanguageDTO::slug).toList();
 
-            assertThrows(SlugAlreadyExistsException.class, () -> i18nSeriesService.validateSlugInListWithOwner(createCollection, randomUUID));
+            assertThrows(SlugAlreadyExistsException.class, () -> seriesSlugValidator.validateSlugInList(slugs, randomSeries));
         }
 
         @Test
@@ -83,8 +85,9 @@ class I18nSeriesServiceTest {
             var createI18nSeriesDTO2 = new SeriesLanguageDTO("title2", "slug", "description");
 
             var createCollection = Set.of(createI18nSeriesDTO, createI18nSeriesDTO2);
+            var slugs = createCollection.stream().map(SeriesLanguageDTO::slug).toList();
 
-            assertThrows(DuplicateSlugInLanguagesException.class, () -> i18nSeriesService.validateSlugInList(createCollection));
+            assertThrows(DuplicateSlugInLanguagesException.class, () -> seriesSlugValidator.validateSlugInList(slugs));
         }
 
     }

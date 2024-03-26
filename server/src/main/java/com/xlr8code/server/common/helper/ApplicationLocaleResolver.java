@@ -1,7 +1,7 @@
 package com.xlr8code.server.common.helper;
 
-import com.xlr8code.server.common.utils.DoubleUtils;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.utils.DoubleUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -19,9 +19,6 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private static final String QUALITY_PARAMETER = "q=";
     private static final String LOCALE_SEPARATOR = ",";
     private static final Double DEFAULT_QUALITY_SCORE = 1.0;
-
-    private record LocaleWithQualityScore(Locale locale, double qualityScore) {
-    }
 
     /**
      * <p>
@@ -50,10 +47,10 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
         var acceptedLanguages = parseAcceptLanguageHeader(acceptLanguageHeader);
 
         for (var localeWithQualityScore : acceptedLanguages) {
-             var locale = localeWithQualityScore.locale;
-             if (isSupported(locale.getLanguage())) {
-                 allAcceptedLanguages.add(locale);
-             }
+            var locale = localeWithQualityScore.locale;
+            if (isSupported(locale.getLanguage())) {
+                allAcceptedLanguages.add(locale);
+            }
         }
 
         if (allAcceptedLanguages.isEmpty()) {
@@ -157,6 +154,9 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private boolean isSupported(String locale) {
         var supportedLocales = List.of(SUPPORTED_LANGUAGES);
         return supportedLocales.stream().anyMatch(supportedLocale -> supportedLocale.getCode().equalsIgnoreCase(locale));
+    }
+
+    private record LocaleWithQualityScore(Locale locale, double qualityScore) {
     }
 
 }

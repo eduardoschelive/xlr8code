@@ -2,7 +2,7 @@ package com.xlr8code.server.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class PropertyDoesNotExistsException  extends ApplicationException{
+public class PropertyDoesNotExistsException extends ApplicationException {
 
     public PropertyDoesNotExistsException(String propertyName) {
         super("PROPERTY_DOES_NOT_EXISTS", propertyName);

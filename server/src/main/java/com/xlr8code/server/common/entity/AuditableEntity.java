@@ -20,7 +20,7 @@ public class AuditableEntity {
     protected Instant createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", updatable = false)
+    @Column(name = "updated_at")
     protected Instant updatedAt;
 
 }

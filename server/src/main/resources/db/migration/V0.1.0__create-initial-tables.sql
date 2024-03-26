@@ -63,59 +63,43 @@ CREATE TABLE user_codes
 
 CREATE TABLE series
 (
-    series_id   UUID PRIMARY KEY,
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    series_id  UUID PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE i18n_series
 (
-    id            UUID PRIMARY KEY,
-    series_id     UUID REFERENCES series (series_id),
-    language TEXT NOT NULL,
-    title          TEXT NOT NULL,
+    id          UUID PRIMARY KEY,
+    series_id   UUID REFERENCES series (series_id),
+    language    TEXT NOT NULL,
+    title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
-    description   TEXT,
+    description TEXT,
     CONSTRAINT unique_series_language UNIQUE (series_id, language)
 );
 
-CREATE TABLE sections
+CREATE TABLE articles
 (
-    section_id          UUID PRIMARY KEY,
-    series_id           UUID REFERENCES series (series_id),
-    order_within_series SMALLINT NOT NULL,
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-CREATE TABLE i18n_sections
-(
-    id            UUID PRIMARY KEY,
-    section_id    UUID REFERENCES sections (section_id),
-    language TEXT NOT NULL,
-    label         TEXT NOT NULL,
-    slug          TEXT NOT NULL UNIQUE,
-    CONSTRAINT unique_section_language UNIQUE (section_id, language)
-);
-
-CREATE TABLE article
-(
-    article_id           UUID PRIMARY KEY,
-    section_id           UUID REFERENCES sections (section_id),
-    order_within_section SMALLINT NOT NULL,
-    previous_post_id     UUID REFERENCES article (article_id),
-    next_post_id         UUID REFERENCES article (article_id),
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    article_id        UUID PRIMARY KEY,
+    previous_article_id  UUID REFERENCES articles (article_id),
+    next_article_id      UUID REFERENCES articles (article_id),
+    parent_article_id UUID                     NULL,
+    series_id         UUID,
+    created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    position     INT,
+    FOREIGN KEY (series_id) REFERENCES series (series_id),
+    FOREIGN KEY (parent_article_id) REFERENCES articles (article_id)
 );
 
 CREATE TABLE i18n_articles
 (
-    id            UUID PRIMARY KEY,
-    article_id    UUID REFERENCES article (article_id),
-    language TEXT NOT NULL,
-    title         TEXT NOT NULL,
-    slug         TEXT NOT NULL UNIQUE,
-    content       TEXT NOT NULL,
+    id         UUID PRIMARY KEY,
+    article_id UUID REFERENCES articles (article_id),
+    language   TEXT NOT NULL,
+    title      TEXT NOT NULL,
+    slug       TEXT NOT NULL UNIQUE,
+    content    TEXT NOT NULL,
     CONSTRAINT unique_article_language UNIQUE (article_id, language)
 );

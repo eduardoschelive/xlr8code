@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users
     created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     activated_at TIMESTAMP WITH TIME ZONE
-);
+                               );
 
 CREATE TABLE IF NOT EXISTS user_metadata
 (
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS user_metadata
     profile_picture_url TEXT,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS user_preferences
 (
@@ -25,11 +25,11 @@ CREATE TABLE IF NOT EXISTS user_preferences
     theme    TEXT NOT NULL,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS roles
 (
-    role_id serial PRIMARY KEY,
+    role_id SERIAL PRIMARY KEY,
     name    TEXT NOT NULL
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS user_role
     PRIMARY KEY (user_id, role_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (role_id) REFERENCES roles (role_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS user_sessions
 (
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS user_sessions
     session_token   TEXT               NOT NULL UNIQUE,
     expires_at      TIMESTAMP          NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS user_codes
 (
@@ -59,63 +59,47 @@ CREATE TABLE IF NOT EXISTS user_codes
     code_type  TEXT      NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS series
 (
-    series_id   UUID PRIMARY KEY,
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
+    series_id  UUID PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    );
 
 CREATE TABLE IF NOT EXISTS i18n_series
 (
-    id            UUID PRIMARY KEY,
-    series_id     UUID REFERENCES series (series_id),
-    language TEXT NOT NULL,
-    title          TEXT NOT NULL,
+    id          UUID PRIMARY KEY,
+    series_id   UUID REFERENCES series (series_id),
+    language    TEXT NOT NULL,
+    title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
-    description   TEXT,
+    description TEXT,
     CONSTRAINT unique_series_language UNIQUE (series_id, language)
-);
+    );
 
-CREATE TABLE IF NOT EXISTS sections
+CREATE TABLE IF NOT EXISTS articles
 (
-    section_id          UUID PRIMARY KEY,
-    series_id           UUID REFERENCES series (series_id),
-    order_within_series SMALLINT NOT NULL,
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS i18n_sections
-(
-    id            UUID PRIMARY KEY,
-    section_id    UUID REFERENCES sections (section_id),
-    language TEXT NOT NULL,
-    label         TEXT NOT NULL,
-    slug          TEXT NOT NULL UNIQUE,
-    CONSTRAINT unique_section_language UNIQUE (section_id, language)
-);
-
-CREATE TABLE IF NOT EXISTS article
-(
-    article_id           UUID PRIMARY KEY,
-    section_id           UUID REFERENCES sections (section_id),
-    order_within_section SMALLINT NOT NULL,
-    previous_post_id     UUID REFERENCES article (article_id),
-    next_post_id         UUID REFERENCES article (article_id),
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
+    article_id        UUID PRIMARY KEY,
+    previous_article_id  UUID REFERENCES articles (article_id),
+    next_article_id      UUID REFERENCES articles (article_id),
+    parent_article_id UUID                     NULL,
+    series_id         UUID,
+    created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    position     INT,
+    FOREIGN KEY (series_id) REFERENCES series (series_id),
+    FOREIGN KEY (parent_article_id) REFERENCES articles (article_id)
+    );
 
 CREATE TABLE IF NOT EXISTS i18n_articles
 (
-    id            UUID PRIMARY KEY,
-    article_id    UUID REFERENCES article (article_id),
-    language TEXT NOT NULL,
-    title         TEXT NOT NULL,
-    slug         TEXT NOT NULL UNIQUE,
-    content       TEXT NOT NULL,
+    id         UUID PRIMARY KEY,
+    article_id UUID REFERENCES articles (article_id),
+    language   TEXT NOT NULL,
+    title      TEXT NOT NULL,
+    slug       TEXT NOT NULL UNIQUE,
+    content    TEXT NOT NULL,
     CONSTRAINT unique_article_language UNIQUE (article_id, language)
-);
+    );

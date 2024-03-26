@@ -16,4 +16,12 @@ public class StringUtils {
         return string.replaceAll(CAMEL_CASE_REGEX, " ");
     }
 
+    /**
+     * @param s the string to be checked
+     * @return true if the given string is null or blank, false otherwise
+     * @see String#isBlank()
+     */
+    public static boolean isBlank(String s) {
+        return s == null || s.isBlank();
+    }
 }
