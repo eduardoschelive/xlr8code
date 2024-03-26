@@ -26,4 +26,15 @@ public record TranslatedSeriesDTO(
         return new TranslatedSeriesDTO(series.getId(), seriesLanguages);
     }
 
+    public static TranslatedSeriesDTO fromEntity(Series series) {
+        var seriesLanguages = series.getI18nSeries().stream()
+                .collect(Collectors.toMap(
+                        I18nSeries::getLanguage,
+                        SeriesTranslationDTO::fromEntity,
+                        (existing, replacement) -> existing
+                ));
+
+        return new TranslatedSeriesDTO(series.getId(), seriesLanguages);
+    }
+
 }

@@ -21,7 +21,7 @@ public class Series extends AuditableEntity {
     @Column(name = "series_id", nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL)
     private Set<I18nSeries> i18nSeries;
 
     @OneToMany
