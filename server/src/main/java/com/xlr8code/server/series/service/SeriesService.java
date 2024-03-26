@@ -28,7 +28,7 @@ import java.util.UUID;
 public class SeriesService {
 
     private final SeriesRepository seriesRepository;
-    private final I18nSeriesService i18nSeriesService;
+    private final SeriesSlugValidator seriesSlugValidator;
 
     @Resource
     @Lazy
@@ -40,7 +40,8 @@ public class SeriesService {
      */
     @Transactional
     public Series create(SeriesDTO seriesDTO) {
-        this.i18nSeriesService.validateSlugInList(seriesDTO.languages().values());
+        //TODO refactor
+        this.seriesSlugValidator.validateSlugInList(seriesDTO.languages().values().stream().map(SeriesLanguageDTO::slug).toList());
 
         var series = seriesDTO.toEntity();
 
@@ -137,9 +138,9 @@ public class SeriesService {
         var existingSeries = self.findById(uuidString);
 
         var languages = seriesDTO.languages().keySet();
-        var seriesLanguagesDTOs = seriesDTO.languages().values();
+        var seriesLanguagesDTOs = seriesDTO.languages().values().stream().map(SeriesLanguageDTO::slug).toList();
 
-        this.i18nSeriesService.validateSlugInListWithOwner(seriesLanguagesDTOs, existingSeries.getId());
+        this.seriesSlugValidator.validateSlugInList(seriesLanguagesDTOs, existingSeries);
 
         var updatedInternationalization = this.updateInternationalizationForSeries(existingSeries, seriesDTO, languages);
 

@@ -2,7 +2,6 @@ package com.xlr8code.server.article.dto;
 
 import com.xlr8code.server.article.annotation.ExistingArticle;
 import com.xlr8code.server.article.entity.Article;
-import com.xlr8code.server.common.annotation.NullOrNotBlank;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.annotation.ExistingSeries;
 import com.xlr8code.server.series.entity.Series;

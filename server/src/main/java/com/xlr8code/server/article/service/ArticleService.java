@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final I18nArticleService i18nArticleService;
+    private final ArticleSlugValidator articleSlugValidator;
     private final SeriesService seriesService;
 
     @Lazy
@@ -33,7 +33,8 @@ public class ArticleService {
      * @return the created article
      */
     public Article create(ArticleDTO articleDTO) {
-        this.i18nArticleService.validateSlugInList(articleDTO.languages().values());
+        this.articleSlugValidator.validateSlugs(articleDTO.languages().values());
+
         var article = convertToEntity(articleDTO);
         return this.articleRepository.save(article);
     }
@@ -82,7 +83,7 @@ public class ArticleService {
     public Article update(String id, ArticleDTO articleDTO) {
         var article = self.findById(id);
 
-        this.i18nArticleService.validateSlugInList(articleDTO.languages().values(), article);
+        this.articleSlugValidator.validateSlugs(articleDTO.languages().values(), article);
 
         var updatedArticle = convertToEntity(articleDTO);
         updatedArticle.setId(article.getId());
