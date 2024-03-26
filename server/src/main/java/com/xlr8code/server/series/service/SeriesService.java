@@ -41,7 +41,8 @@ public class SeriesService {
     @Transactional
     public Series create(SeriesDTO seriesDTO) {
         this.seriesSlugValidator.validateSlugs(seriesDTO.languages().values());
-        var series = seriesDTO.toEntity();
+        var emptySeries = new Series();
+        var series = seriesDTO.toEntity(emptySeries);
         return this.seriesRepository.save(series);
     }
 

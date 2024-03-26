@@ -2,6 +2,7 @@ package com.xlr8code.server.article.service;
 
 import com.xlr8code.server.article.dto.ArticleDTO;
 import com.xlr8code.server.article.entity.Article;
+import com.xlr8code.server.article.entity.ArticleRelation;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
 import com.xlr8code.server.common.utils.ObjectUtils;
@@ -34,8 +35,8 @@ public class ArticleService {
      */
     public Article create(ArticleDTO articleDTO) {
         this.articleSlugValidator.validateSlugs(articleDTO.languages().values());
-
-        var article = convertToEntity(articleDTO);
+        var emptyArticle = new Article();
+        var article = convertToEntity(emptyArticle, articleDTO);
         return this.articleRepository.save(article);
     }
 
@@ -85,8 +86,7 @@ public class ArticleService {
 
         this.articleSlugValidator.validateSlugs(articleDTO.languages().values(), article);
 
-        var updatedArticle = convertToEntity(articleDTO);
-        updatedArticle.setId(article.getId());
+        var updatedArticle = convertToEntity(article, articleDTO);
 
         // set id for the i18n articles
         updatedArticle.getI18nArticles().forEach(i18nArticle -> {
@@ -107,13 +107,19 @@ public class ArticleService {
      * @throws ArticleNotFoundException if the article with the specified id does not exist
      * @throws SeriesNotFoundException  if the series with the specified id does not exist
      */
-    private Article convertToEntity(ArticleDTO articleDTO) {
+    private Article convertToEntity(Article article, ArticleDTO articleDTO) {
         var series = ObjectUtils.executeIfNotNull(articleDTO.seriesId(), seriesService::findById);
         var nextArticle = ObjectUtils.executeIfNotNull(articleDTO.nextArticleId(), self::findById);
         var previousArticle = ObjectUtils.executeIfNotNull(articleDTO.previousArticleId(), self::findById);
         var parentArticle = ObjectUtils.executeIfNotNull(articleDTO.parentArticleId(), self::findById);
 
-        return articleDTO.toEntity(series, nextArticle, previousArticle, parentArticle);
+        var articleRelation = ArticleRelation.builder()
+                .nextArticle(nextArticle)
+                .previousArticle(previousArticle)
+                .parentArticle(parentArticle)
+                .build();
+
+        return articleDTO.toEntity(article, series, articleRelation);
     }
 
 }

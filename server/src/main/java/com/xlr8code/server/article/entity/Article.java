@@ -20,26 +20,14 @@ public class Article extends AuditableEntity {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "parent_article_id")
-    private Article parent;
-
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private Set<Article> children;
-
-    @ManyToOne
     @JoinColumn(name = "series_id")
     private Series series;
 
     @Column(name = "position")
     private Integer position;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "previous_article_id")
-    private Article previousArticle;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "next_article_id")
-    private Article nextArticle;
+    @Embedded
+    private ArticleRelation articleRelation;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private Set<I18nArticle> i18nArticles;

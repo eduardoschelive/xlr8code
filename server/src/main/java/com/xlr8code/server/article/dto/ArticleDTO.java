@@ -2,6 +2,7 @@ package com.xlr8code.server.article.dto;
 
 import com.xlr8code.server.article.annotation.ExistingArticle;
 import com.xlr8code.server.article.entity.Article;
+import com.xlr8code.server.article.entity.ArticleRelation;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.annotation.ExistingSeries;
 import com.xlr8code.server.series.entity.Series;
@@ -27,15 +28,10 @@ public record ArticleDTO(
         Map<Language, @Valid ArticleLanguageDTO> languages
 ) {
 
-    public Article toEntity(Series series, Article nextArticle, Article previousArticle, Article parent) {
-        var article = new Article();
-
-        article.setSeries(series);
-        article.setNextArticle(nextArticle);
-        article.setPreviousArticle(previousArticle);
-        article.setParent(parent);
-
+    public Article toEntity(Article article, Series series, ArticleRelation articleRelation) {
         article.setPosition(this.position());
+        article.setSeries(series);
+        article.setArticleRelation(articleRelation);
 
         var articleLanguages = this.languages().entrySet().stream()
                 .map(entry -> entry.getValue().toEntity(article, entry.getKey()))
