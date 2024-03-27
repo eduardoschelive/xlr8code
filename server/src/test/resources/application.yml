@@ -17,12 +17,6 @@ spring:
   messages:
     basename: i18n/messages
 
-jwt:
-  access-token:
-    secret-key: secret
-    expiration-time: 1
-    unit: HOURS
-
 user:
   session:
     expiration-time: 7

@@ -11,9 +11,12 @@ import com.xlr8code.server.common.utils.HashUtils;
 import com.xlr8code.server.common.utils.RandomUtils;
 import com.xlr8code.server.user.entity.User;
 import jakarta.annotation.Resource;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

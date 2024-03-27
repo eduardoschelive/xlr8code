@@ -9,6 +9,7 @@ import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ public class AuthenticationService {
     private final UserActivationCodeService userActivationCodeService;
     private final UserPasswordResetCodeService userPasswordResetCodeService;
     private final EmailService emailService;
-    private final AccessTokenService accessTokenService;
     private final UserSessionService userSessionService;
 
     /**
@@ -53,19 +53,15 @@ public class AuthenticationService {
 
     /**
      * @param signInDTO the sign-in request body
-     * @return a {@link AuthResultDTO} containing the access token and the session
-     * @see AccessTokenService#generate(User)
+     * @return the session token generated
      */
     @Transactional
-    public AuthResultDTO signIn(SignInDTO signInDTO) {
+    public String signIn(SignInDTO signInDTO) {
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signInDTO.login(), signInDTO.password());
 
         var user = this.authenticate(usernamePasswordAuthenticationToken);
 
-        var token = this.accessTokenService.generate(user);
-        var userSessionToken = this.userSessionService.generate(user);
-
-        return new AuthResultDTO(token, userSessionToken);
+        return this.userSessionService.generate(user);
     }
 
     /**
@@ -83,17 +79,13 @@ public class AuthenticationService {
 
     /**
      * @param sessionToken the refresh session request body
-     * @return a {@link AuthResultDTO} containing the new access token and the new session
+     * @return the refreshed session token
      * @see UserSessionService#validateSessionToken(String)
      */
     @Transactional
-    public AuthResultDTO refreshSession(String sessionToken) {
+    public String refreshSession(String sessionToken) {
         var userSession = this.userSessionService.validateSessionToken(sessionToken);
-
-        var newRefreshSessionToken = this.userSessionService.refresh(userSession);
-        var newAccessToken = this.accessTokenService.generate(userSession.getUser());
-
-        return new AuthResultDTO(newAccessToken, newRefreshSessionToken);
+        return this.userSessionService.refresh(userSession);
     }
 
     /**

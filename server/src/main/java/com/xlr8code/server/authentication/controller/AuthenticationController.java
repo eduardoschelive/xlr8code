@@ -2,11 +2,11 @@ package com.xlr8code.server.authentication.controller;
 
 import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.service.AuthenticationService;
+import com.xlr8code.server.authentication.utils.SessionCookieUtils;
 import com.xlr8code.server.common.utils.Endpoint;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private static final String SESSION_TOKEN_COOKIE_NAME = "session_token";
     private final AuthenticationService authenticationService;
 
     @PostMapping(Endpoint.Authentication.SIGN_UP)
@@ -30,25 +29,29 @@ public class AuthenticationController {
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_IN)
-    public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
-        var signInResultDTO = this.authenticationService.signIn(signInRequestDTO);
-        return this.buildAuthResponse(signInResultDTO);
+    public ResponseEntity<Void> signIn(@RequestBody @Valid SignInDTO signInRequestDTO) {
+        var sessionToken = this.authenticationService.signIn(signInRequestDTO);
+        var duration = signInRequestDTO.rememberMe() ? this.authenticationService.getSessionDuration() : -1;
+        var cookie = SessionCookieUtils.createSessionToken(sessionToken, duration);
+
+        return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie).build();
     }
 
     @PostMapping(Endpoint.Authentication.SIGN_OUT)
-    public ResponseEntity<Void> signOut(@CookieValue(SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
+    public ResponseEntity<Void> signOut(@CookieValue(SessionCookieUtils.SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
         this.authenticationService.signOut(sessionToken);
 
-        var invalidateSessionCookie = this.buildInvalidateSessionCookie();
+        var invalidateSessionCookie = SessionCookieUtils.createSessionToken("", 0);
 
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, invalidateSessionCookie).build();
     }
 
     @PostMapping(Endpoint.Authentication.REFRESH_SESSION)
-    public ResponseEntity<TokenDTO> refreshSession(@CookieValue(SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
-        var refreshedSessionAuthResult = this.authenticationService.refreshSession(sessionToken);
+    public ResponseEntity<Void> refreshSession(@CookieValue(SessionCookieUtils.SESSION_TOKEN_COOKIE_NAME) String sessionToken) {
+        var refreshedSessionToken = this.authenticationService.refreshSession(sessionToken);
+        var cookie = SessionCookieUtils.createSessionToken(refreshedSessionToken, this.authenticationService.getSessionDuration());
 
-        return this.buildAuthResponse(refreshedSessionAuthResult);
+        return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie).build();
     }
 
     @GetMapping(Endpoint.Authentication.ACTIVATE_USER)
@@ -77,30 +80,6 @@ public class AuthenticationController {
         this.authenticationService.resetPassword(resetPasswordRequestDTO);
 
         return ResponseEntity.noContent().build();
-    }
-
-    private ResponseEntity<TokenDTO> buildAuthResponse(AuthResultDTO authResultDTO) {
-        var sessionToken = authResultDTO.sessionToken();
-
-        var sessionCookie = this.buildSessionCookie(sessionToken, this.authenticationService.getSessionDuration());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, sessionCookie)
-                .body(new TokenDTO(authResultDTO.token()));
-    }
-
-    private String buildSessionCookie(String sessionToken, long maxAge) {
-        var cookie = ResponseCookie.from(SESSION_TOKEN_COOKIE_NAME, sessionToken)
-                .httpOnly(true)
-                .maxAge(maxAge)
-                .path("/")
-                .build();
-
-        return cookie.toString();
-    }
-
-    private String buildInvalidateSessionCookie() {
-        return this.buildSessionCookie("", 0);
     }
 
 }
