@@ -3,6 +3,7 @@ package com.xlr8code.server.authentication.controller;
 import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.service.AuthenticationService;
+import com.xlr8code.server.authentication.utils.SessionCookieUtils;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
@@ -39,7 +40,7 @@ class AuthenticationControllerTest {
     private static final String EMAIL = "test@test.com";
     private static final String PASSWORD = "password";
 
-    private static final String SESSION_TOKEN_COOKIE_NAME = "session_token";
+    private static final String SESSION_TOKEN_COOKIE_NAME = SessionCookieUtils.SESSION_TOKEN_COOKIE_NAME;
 
     @MockBean
     private AuthenticationService authenticationService;
@@ -95,17 +96,14 @@ class AuthenticationControllerTest {
 
         @Test
         void should_sign_in() throws Exception {
-            var signInDTO = new SignInDTO(USERNAME, PASSWORD);
+            var signInDTO = new SignInDTO(USERNAME, PASSWORD, true);
 
-            when(authenticationService.signIn(signInDTO)).thenReturn(new AuthResultDTO(
-                    "token",
-                    "sessionToken"
-            ));
+            when(authenticationService.signIn(signInDTO)).thenReturn(UUID.randomUUID().toString());
 
             mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.SIGN_IN)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(signInDTO)))
-                    .andExpect(status().isOk())
+                    .andExpect(status().isNoContent())
                     .andExpect(cookie().exists(SESSION_TOKEN_COOKIE_NAME));
 
         }
@@ -118,7 +116,7 @@ class AuthenticationControllerTest {
         @Test
         void should_sign_out() throws Exception {
 
-            mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.SIGN_OUT).cookie(new Cookie("session_token", "sessionToken")))
+            mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.SIGN_OUT).cookie(new Cookie(SESSION_TOKEN_COOKIE_NAME, "sessionToken")))
                     .andExpect(status().isNoContent())
                     .andExpect(cookie().exists(SESSION_TOKEN_COOKIE_NAME))
                     .andExpect(cookie().maxAge(SESSION_TOKEN_COOKIE_NAME, 0));
@@ -142,13 +140,12 @@ class AuthenticationControllerTest {
 
         @Test
         void should_refresh_session() throws Exception {
-            var refreshedSessionAuthResult = new AuthResultDTO("token", "sessionToken");
             var sessionCookie = new Cookie(SESSION_TOKEN_COOKIE_NAME, SESSION_TOKEN);
 
-            when(authenticationService.refreshSession(SESSION_TOKEN)).thenReturn(refreshedSessionAuthResult);
+            when(authenticationService.refreshSession(SESSION_TOKEN)).thenReturn(UUID.randomUUID().toString());
 
             mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.REFRESH_SESSION).cookie(sessionCookie))
-                    .andExpect(status().isOk())
+                    .andExpect(status().isNoContent())
                     .andExpect(cookie().exists(SESSION_TOKEN_COOKIE_NAME));
 
         }
@@ -160,14 +157,13 @@ class AuthenticationControllerTest {
         }
 
         @Test
-        void should_return_bad_request_when_session_token_is_invalid() throws Exception {
+        void should_return_unauthorized_when_session_token_is_invalid() throws Exception {
             var invalidSessionCookie = new Cookie(SESSION_TOKEN_COOKIE_NAME, "invalid");
 
             when(authenticationService.refreshSession("invalid")).thenThrow(new InvalidRefreshSessionTokenException());
 
             mockMvc.perform(post(Endpoint.Authentication.BASE_PATH + Endpoint.Authentication.REFRESH_SESSION).cookie(invalidSessionCookie))
                     .andExpect(status().isUnauthorized());
-
         }
 
     }

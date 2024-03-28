@@ -87,7 +87,7 @@ class AuthenticationServiceTest {
 
     @Test
     void it_should_not_sign_in_if_inactive() {
-        var signInDTO = new SignInDTO(INACTIVE_USERNAME, PASSWORD);
+        var signInDTO = new SignInDTO(INACTIVE_USERNAME, PASSWORD, true);
 
         Executable executable = () -> authenticationService.signIn(signInDTO);
 
@@ -96,7 +96,7 @@ class AuthenticationServiceTest {
 
     @Test
     void it_should_sign_in() {
-        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD);
+        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD, true);
         var authResultDTO = authenticationService.signIn(signInDTO);
 
         assertNotNull(authResultDTO);
@@ -104,9 +104,8 @@ class AuthenticationServiceTest {
 
     @Test
     void it_should_sign_out() {
-        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD);
-        var authResultDTO = authenticationService.signIn(signInDTO);
-        var sessionToken = authResultDTO.sessionToken();
+        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD, true);
+        var sessionToken = authenticationService.signIn(signInDTO);
 
         authenticationService.signOut(sessionToken);
 
@@ -119,9 +118,8 @@ class AuthenticationServiceTest {
 
     @Test
     void it_should_refresh_session() {
-        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD);
-        var authResultDTO = authenticationService.signIn(signInDTO);
-        var sessionToken = authResultDTO.sessionToken();
+        var signInDTO = new SignInDTO(ACTIVE_USERNAME, PASSWORD, true);
+        var sessionToken = authenticationService.signIn(signInDTO);
 
         var newAuthResultDTO = authenticationService.refreshSession(sessionToken);
 
