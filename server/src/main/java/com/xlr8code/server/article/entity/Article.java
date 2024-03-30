@@ -3,8 +3,7 @@ package com.xlr8code.server.article.entity;
 import com.xlr8code.server.common.entity.AuditableEntity;
 import com.xlr8code.server.series.entity.Series;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -13,6 +12,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "articles")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Article extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

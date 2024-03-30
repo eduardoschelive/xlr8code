@@ -40,6 +40,11 @@ public class WebSecurityConfig {
         authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
         authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
 
+        // ARTICLE
+        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+
         authorizeRequests.anyRequest().permitAll();
     }
 

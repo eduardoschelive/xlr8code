@@ -1,11 +1,8 @@
 package com.xlr8code.server.article.service;
 
-import com.xlr8code.server.article.dto.ArticleDTO;
-import com.xlr8code.server.article.dto.ArticleLanguageDTO;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
-import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import com.xlr8code.server.series.service.SeriesService;
@@ -14,8 +11,6 @@ import com.xlr8code.server.utils.SeriesTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,9 +39,9 @@ class ArticleServiceTest {
     @BeforeEach
     void setUp() {
         series = seriesService.create(SeriesTestUtils.buildSeriesDTO());
-        parentArticle = articleService.create(ArticleTestUtils.buiildArticleDTO());
-        nextArticle = articleService.create(ArticleTestUtils.buiildArticleDTO());
-        previousArticle = articleService.create(ArticleTestUtils.buiildArticleDTO());
+        parentArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
+        nextArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
+        previousArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
     }
 
     @AfterEach
@@ -60,7 +55,7 @@ class ArticleServiceTest {
 
         @Test
         void it_should_create_article() {
-            var articleDTO = ArticleTestUtils.buiildArticleDTO();
+            var articleDTO = ArticleTestUtils.buildArticleDTO();
 
             var article = articleService.create(articleDTO);
 
@@ -106,7 +101,7 @@ class ArticleServiceTest {
         @Test
         void it_should_update_article() {
             var article = articleRepository.findAll().getFirst();
-            var articleDTO = ArticleTestUtils.buiildArticleDTO();
+            var articleDTO = ArticleTestUtils.buildArticleDTO();
 
             var updatedArticle = articleService.update(article.getId().toString(), articleDTO);
 
@@ -116,7 +111,7 @@ class ArticleServiceTest {
 
         @Test
         void it_should_throw_exception_when_updating_non_existing_article() {
-            var articleDTO = ArticleTestUtils.buiildArticleDTO();
+            var articleDTO = ArticleTestUtils.buildArticleDTO();
 
             assertThrows(ArticleNotFoundException.class, () -> articleService.update("non-existing-id", articleDTO));
         }
