@@ -1,11 +1,8 @@
 package com.xlr8code.server.authentication.filter;
 
-import com.xlr8code.server.authentication.exception.InvalidTokenException;
-import com.xlr8code.server.authentication.service.CustomUserDetailsService;
 import com.xlr8code.server.authentication.service.UserSessionService;
 import com.xlr8code.server.authentication.utils.SessionCookieUtils;
 import com.xlr8code.server.common.exception.ApplicationException;
-import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +20,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService customUserDetailsService;
     private final UserSessionService userSessionService;
 
     @Override
@@ -33,17 +29,17 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         var sessionCookie = SessionCookieUtils.getSessionTokenFromRequest(request);
 
-         if (sessionCookie != null) {
-             try {
-                 var userSession = userSessionService.validateSessionToken(sessionCookie);
-                 UserDetails userDetails = userSession.getUser();
+        if (sessionCookie != null) {
+            try {
+                var userSession = userSessionService.validateSessionToken(sessionCookie);
+                UserDetails userDetails = userSession.getUser();
 
-                 var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                 SecurityContextHolder.getContext().setAuthentication(authentication);
-             } catch (ApplicationException e) {
-                 filterChain.doFilter(request, response);
-                 return;
-             }
+                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (ApplicationException e) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);

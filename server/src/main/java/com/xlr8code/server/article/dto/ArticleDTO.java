@@ -17,9 +17,8 @@ public record ArticleDTO(
         @ExistingSeries(optional = true)
         String seriesId,
         @ExistingArticle(optional = true)
+        String previousArticleId, @ExistingArticle(optional = true)
         String nextArticleId,
-        @ExistingArticle(optional = true)
-        String previousArticleId,
         @ExistingArticle(optional = true)
         String parentArticleId,
         @Positive

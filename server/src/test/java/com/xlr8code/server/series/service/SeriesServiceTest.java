@@ -6,6 +6,7 @@ import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
+import com.xlr8code.server.utils.SeriesTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +39,7 @@ class SeriesServiceTest {
 
         @Test
         void it_should_create_series() {
-            var createSeriesDTO = buildCreateSeriesDTO();
+            var createSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
             var createdSeries = seriesService.create(createSeriesDTO);
 
@@ -52,7 +53,7 @@ class SeriesServiceTest {
 
         @BeforeEach
         void setUp() {
-            seriesService.create(buildCreateSeriesDTO());
+            seriesService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
@@ -125,7 +126,7 @@ class SeriesServiceTest {
 
         @BeforeEach
         void setUp() {
-            seriesService.create(buildCreateSeriesDTO());
+            seriesService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
@@ -167,7 +168,7 @@ class SeriesServiceTest {
 
         @BeforeEach
         void setUp() {
-            createSeries = seriesService.create(buildCreateSeriesDTO());
+            createSeries = seriesService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
@@ -178,7 +179,7 @@ class SeriesServiceTest {
         @Test
         void it_should_update_series() {
             var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
-            var updateSeriesDTO = buildCreateSeriesDTO();
+            var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
             var result = seriesService.update(series.getId().toString(), updateSeriesDTO);
 
@@ -187,28 +188,19 @@ class SeriesServiceTest {
 
         @Test
         void it_should_throw_exception_when_updating_non_existing_series() {
-            var updateDTO = buildCreateSeriesDTO();
+            var updateDTO = SeriesTestUtils.buildSeriesDTO();
             assertThrows(SeriesNotFoundException.class, () -> seriesService.update("non-existing-id", updateDTO));
         }
 
         @Test
         void it_should_allow_repeat_slug_if_series_is_owner() {
-            var updateSeriesDTO = buildCreateSeriesDTO();
+            var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
             var result = seriesService.update(createSeries.getId().toString(), updateSeriesDTO);
 
             assertNotNull(result);
         }
 
-    }
-
-    private SeriesDTO buildCreateSeriesDTO() {
-        Map<Language, SeriesLanguageDTO> languages = Map.of(
-                Language.AMERICAN_ENGLISH, new SeriesLanguageDTO("title", "description", "slug"),
-                Language.BRAZILIAN_PORTUGUESE, new SeriesLanguageDTO("titulo", "descrição", "slug")
-        );
-
-        return new SeriesDTO(languages);
     }
 
 }
