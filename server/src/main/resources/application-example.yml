@@ -1,28 +1,21 @@
 spring:
   jpa:
-    database: H2
+    database: postgresql
     show-sql: true
     hibernate:
-      ddl-auto: none
-
+      ddl-auto: validate
   datasource:
-    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    url: jdbc:postgresql://test:0000/test
     username: test
     password: test
-    driverClassName: org.h2.Driver
-
-  flyway:
-    enabled: false
-
-  messages:
-    basename: i18n/messages
+    driverClassName: org.postgresql.Driver
 
 user:
   session:
     expiration-time: 7
     unit: DAYS
     token-length: 64
-    key: secret
+    key: fake-secret-dont-use-this
   activation-code:
     unit: HOURS
     expiration-time: 15
@@ -33,7 +26,7 @@ user:
     length: 6
 
 authentication:
-    cleanup-cron: 0 0 0 * * * # every day at midnight
+  cleanup-cron: 0 0 0 * * * # every day at midnight
 
 logging:
   config: classpath:log4j2.xml
