@@ -3,6 +3,7 @@ package com.xlr8code.server.article.service;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.repository.SeriesRepository;
 import com.xlr8code.server.series.service.SeriesService;
@@ -11,6 +12,8 @@ import com.xlr8code.server.utils.SeriesTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -163,6 +166,16 @@ class ArticleServiceTest {
         @Test
         void it_should_throw_exception_when_finding_non_existing_article() {
             assertThrows(ArticleNotFoundException.class, () -> articleService.findById("non-existing-id"));
+        }
+
+        @Test
+        void it_should_return_translated_article() {
+            var article = articleRepository.findAll().getFirst();
+
+            var result = articleService.findById(article.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
+
+            assertNotNull(result);
+            assertEquals(article.getId(), result.id());
         }
 
     }

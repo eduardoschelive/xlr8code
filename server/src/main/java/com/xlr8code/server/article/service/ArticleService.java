@@ -1,20 +1,28 @@
 package com.xlr8code.server.article.service;
 
 import com.xlr8code.server.article.dto.ArticleDTO;
+import com.xlr8code.server.article.dto.ArticleTranslationDTO;
+import com.xlr8code.server.article.dto.TranslatedArticleDTO;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.entity.ArticleRelation;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.ObjectUtils;
 import com.xlr8code.server.common.utils.UUIDUtils;
+import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
+import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.service.SeriesService;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -72,6 +80,17 @@ public class ArticleService {
     }
 
     /**
+     * @param id  the id of the article
+     * @param languages the languages to be used for the translation
+     * @return the article with the specified id
+     */
+    @Transactional(readOnly = true)
+    public TranslatedArticleDTO findById(String id, Set<Language> languages) {
+        var article = self.findById(id);
+        return TranslatedArticleDTO.fromEntity(article, languages);
+    }
+
+    /**
      * @param id the id of the article
      */
     @Transactional
@@ -122,4 +141,34 @@ public class ArticleService {
         return articleDTO.toEntity(article, series, articleRelation);
     }
 
+    /**
+     * @param languages  the languages to filter
+     * @param articles the articles to be mapped
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedArticleDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Article> articles) {
+        var translatedArticleDTOS = this.mapSeriesToTranslatedSeriesDTO(languages, articles);
+        return this.filterEmptyLanguages(translatedArticleDTOS);
+    }
+
+    /**
+     * @param languages  the languages to be filtered
+     * @param articles the articles to be mapped
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedArticleDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Article> articles) {
+        return articles.stream()
+                .map(a -> TranslatedArticleDTO.fromEntity(a, languages))
+                .toList();
+    }
+
+    /**
+     * @param seriesLanguagesDTOList the series languages to be filtered
+     * @return the series languages with non-empty languages
+     */
+    private List<TranslatedArticleDTO> filterEmptyLanguages(List<TranslatedArticleDTO> seriesLanguagesDTOList) {
+        return seriesLanguagesDTOList.stream()
+                .filter(dto -> !dto.languages().isEmpty())
+                .toList();
+    }
 }

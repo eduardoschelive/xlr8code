@@ -96,5 +96,18 @@ class ArticleControllerTest {
 
     }
 
+    @Nested
+    class GetTests {
+
+        @Test
+        void it_should_return_200_ok() throws Exception {
+            var articleId = UUID.randomUUID().toString();
+
+            mockMvc.perform(get(Endpoint.Article.BASE_PATH + "/" + articleId))
+                    .andExpect(status().isOk());
+        }
+
+    }
+
 
 }
