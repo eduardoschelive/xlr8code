@@ -90,17 +90,18 @@ public class AuthenticationService {
 
     /**
      * @param code the activation code
+     * @return the activated user's session token
      * @throws AccountAlreadyActivatedException if the user is already activated
      */
     @Transactional
-    public void activateUser(String code) {
+    public String activateUser(String code) {
         var activationCode = this.userActivationCodeService.validate(code);
-
         var user = activationCode.getUser();
 
         this.userService.activate(user);
-
         this.userActivationCodeService.removeAllFromUser(user);
+
+        return this.userSessionService.generate(user);
     }
 
     /**

@@ -54,11 +54,14 @@ public class AuthenticationController {
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie).build();
     }
 
-    @GetMapping(Endpoint.Authentication.ACTIVATE_USER)
+    @PostMapping(Endpoint.Authentication.ACTIVATE_USER)
     public ResponseEntity<Void> activateUser(@RequestParam String code) {
-        this.authenticationService.activateUser(code);
+        var sessionToken = this.authenticationService.activateUser(code);
 
-        return ResponseEntity.noContent().build();
+        // expire when user closes the browser
+        var cookie = SessionCookieUtils.createSessionToken(sessionToken, -1);
+
+        return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie).build();
     }
 
     @PostMapping(Endpoint.Authentication.RESEND_ACTIVATION_CODE)

@@ -178,13 +178,13 @@ class AuthenticationControllerTest {
         void should_activate_user() throws Exception {
             var activationCode = "activationCode";
 
-            mockMvc.perform(get(ACTIVATION_URL_TEMPLATE).param("code", activationCode))
+            mockMvc.perform(post(ACTIVATION_URL_TEMPLATE).param("code", activationCode))
                     .andExpect(status().isNoContent());
         }
 
         @Test
         void should_return_bad_request_when_activation_code_is_missing() throws Exception {
-            mockMvc.perform(get(ACTIVATION_URL_TEMPLATE))
+            mockMvc.perform(post(ACTIVATION_URL_TEMPLATE))
                     .andExpect(status().isBadRequest());
         }
 
