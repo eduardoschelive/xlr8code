@@ -1,8 +1,49 @@
 spring:
-  profiles:
-    active: dev
-
   flyway:
     locations: classpath:db/migration
   messages:
     basename: i18n/messages
+  jpa:
+    database: postgresql
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    test-connection: true
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+
+logging:
+  config: classpath:log4j2.xml
+
+user:
+  session:
+    expiration-time: ${SESSION_EXPIRATION_TIME}
+    unit: ${SESSION_EXPIRATION_UNIT}
+    token-length: ${SESSION_TOKEN_LENGTH}
+    key: ${SESSION_KEY}
+  activation-code:
+    unit: ${ACTIVATION_CODE_UNIT}
+    expiration-time: ${ACTIVATION_CODE_EXPIRATION_TIME}
+    length: ${ACTIVATION_CODE_LENGTH}
+  password-reset-code:
+    unit: ${PASSWORD_RESET_CODE_UNIT}
+    expiration-time: ${PASSWORD_RESET_CODE_EXPIRATION_TIME}
+    length: ${PASSWORD_RESET_CODE_LENGTH}
+
+
+authentication:
+  cleanup-cron: ${AUTHENTICATION_CLEANUP_CRON}
