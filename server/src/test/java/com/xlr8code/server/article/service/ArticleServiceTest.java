@@ -34,7 +34,6 @@ class ArticleServiceTest {
     private SeriesRepository seriesRepository;
 
     private Series series;
-    private Article parentArticle;
     private Article nextArticle;
     private Article previousArticle;
 
@@ -42,7 +41,6 @@ class ArticleServiceTest {
     @BeforeEach
     void setUp() {
         series = seriesService.create(SeriesTestUtils.buildSeriesDTO());
-        parentArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
         nextArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
         previousArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
     }
@@ -65,15 +63,6 @@ class ArticleServiceTest {
             assertNotNull(article);
         }
 
-        @Test
-        void it_should_create_article_with_parent() {
-            var articleDTO = ArticleTestUtils.buildArticleDTOWithParentArticle(parentArticle.getId().toString());
-
-            var article = articleService.create(articleDTO);
-
-            assertNotNull(article);
-            assertEquals(parentArticle.getId(), article.getArticleRelation().getParentArticle().getId());
-        }
 
         @Test
         void it_should_create_article_with_next_and_previous_article() {

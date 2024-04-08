@@ -130,45 +130,13 @@ public class ArticleService {
         var series = ObjectUtils.executeIfNotNull(articleDTO.seriesId(), seriesService::findById);
         var nextArticle = ObjectUtils.executeIfNotNull(articleDTO.nextArticleId(), self::findById);
         var previousArticle = ObjectUtils.executeIfNotNull(articleDTO.previousArticleId(), self::findById);
-        var parentArticle = ObjectUtils.executeIfNotNull(articleDTO.parentArticleId(), self::findById);
 
         var articleRelation = ArticleRelation.builder()
                 .nextArticle(nextArticle)
                 .previousArticle(previousArticle)
-                .parentArticle(parentArticle)
                 .build();
 
         return articleDTO.toEntity(article, series, articleRelation);
     }
-
-    /**
-     * @param languages  the languages to filter
-     * @param articles the articles to be mapped
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedArticleDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Article> articles) {
-        var translatedArticleDTOS = this.mapSeriesToTranslatedSeriesDTO(languages, articles);
-        return this.filterEmptyLanguages(translatedArticleDTOS);
-    }
-
-    /**
-     * @param languages  the languages to be filtered
-     * @param articles the articles to be mapped
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedArticleDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Article> articles) {
-        return articles.stream()
-                .map(a -> TranslatedArticleDTO.fromEntity(a, languages))
-                .toList();
-    }
-
-    /**
-     * @param seriesLanguagesDTOList the series languages to be filtered
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedArticleDTO> filterEmptyLanguages(List<TranslatedArticleDTO> seriesLanguagesDTOList) {
-        return seriesLanguagesDTOList.stream()
-                .filter(dto -> !dto.languages().isEmpty())
-                .toList();
-    }
+    
 }

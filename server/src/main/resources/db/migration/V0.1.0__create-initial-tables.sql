@@ -84,13 +84,11 @@ CREATE TABLE articles
     article_id        UUID PRIMARY KEY,
     previous_article_id  UUID REFERENCES articles (article_id),
     next_article_id      UUID REFERENCES articles (article_id),
-    parent_article_id UUID                     NULL,
     series_id         UUID,
     created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     position     INT,
-    FOREIGN KEY (series_id) REFERENCES series (series_id),
-    FOREIGN KEY (parent_article_id) REFERENCES articles (article_id)
+    FOREIGN KEY (series_id) REFERENCES series (series_id)
 );
 
 CREATE TABLE i18n_articles

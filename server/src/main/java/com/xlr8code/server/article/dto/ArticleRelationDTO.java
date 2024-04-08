@@ -7,16 +7,17 @@ import com.xlr8code.server.common.utils.ObjectUtils;
 import java.util.UUID;
 
 public record ArticleRelationDTO(
-        UUID parentArticleId,
         UUID previousArticleId,
         UUID nextArticleId
 ) {
 
     public static ArticleRelationDTO fromEntity(ArticleRelation articleRelation) {
+        var previousArticle = ObjectUtils.executeIfNotNull(articleRelation, ArticleRelation::getPreviousArticle);
+        var nextArticle = ObjectUtils.executeIfNotNull(articleRelation, ArticleRelation::getNextArticle);
+
         return new ArticleRelationDTO(
-                ObjectUtils.executeIfNotNull(articleRelation.getParentArticle(), Article::getId),
-                ObjectUtils.executeIfNotNull(articleRelation.getPreviousArticle(), Article::getId),
-                ObjectUtils.executeIfNotNull(articleRelation.getNextArticle(), Article::getId)
+                ObjectUtils.executeIfNotNull(previousArticle, Article::getId),
+                ObjectUtils.executeIfNotNull(nextArticle, Article::getId)
         );
     }
 

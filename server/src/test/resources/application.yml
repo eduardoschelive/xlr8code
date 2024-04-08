@@ -4,6 +4,18 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  mail:
+    host: fake-smtp-server
+    port: 25
+    test-connection: false
+    username: null
+    password: null
+    properties:
+      mail:
+        auth: true
+        starttls:
+          enable: true
+          required: true
 
   datasource:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL

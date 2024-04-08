@@ -9,24 +9,20 @@ import java.util.UUID;
 
 public class ArticleTestUtils {
 
-    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, String parentArticleId, Integer position, Map<Language, ArticleLanguageDTO> languages) {
-        return new ArticleDTO(seriesId, previousArticleId, nextArticleId, parentArticleId, position, languages);
+    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, Integer position, Map<Language, ArticleLanguageDTO> languages) {
+        return new ArticleDTO(seriesId, previousArticleId, nextArticleId, position, languages);
     }
 
-    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, String parentArticleId, Integer position) {
+    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, Integer position) {
         var languages = Map.of(
                 Language.AMERICAN_ENGLISH, buildArticleLanguageDTO("title", UUID.randomUUID().toString(), "content")
         );
 
-        return buildArticleDTO(seriesId, previousArticleId, nextArticleId, parentArticleId, position, languages);
+        return buildArticleDTO(seriesId, previousArticleId, nextArticleId, position, languages);
     }
 
     public static ArticleDTO buildArticleDTO() {
-        return buildArticleDTO(null, null, null, null, 1);
-    }
-
-    public static ArticleDTO buildArticleDTOWithParentArticle(String parentArticleId) {
-        return buildArticleDTO(null, null, null, parentArticleId, 1);
+        return buildArticleDTO(null, null, null, 1);
     }
 
     public static ArticleLanguageDTO buildArticleLanguageDTO(String title, String slug, String content) {
@@ -34,11 +30,11 @@ public class ArticleTestUtils {
     }
 
     public static ArticleDTO buildArticleDTOWithNextAndPreviousArticle(String nextArticleId, String previousArticleId) {
-        return buildArticleDTO(null, previousArticleId, nextArticleId, null, 1);
+            return buildArticleDTO(null, previousArticleId, nextArticleId, 1);
     }
 
     public static ArticleDTO buildArticleDTOWithSeries(String string) {
-        return buildArticleDTO(string, null, null, null, 1);
+        return buildArticleDTO(string, null, null, 1);
     }
 
 }

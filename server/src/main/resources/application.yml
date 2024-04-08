@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   flyway:
     locations: classpath:db/migration
   messages:
