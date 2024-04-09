@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt_BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:ẗh="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ative a sua conta</title>
+</head>
+<body style="margin: 0; font-family: 'Helvetica', sans-serif; ">
+<div style="width: 100%; margin: 0 auto; display: inline-block; background-color: #181825; color: #CDD6F4;">
+    <header style="width: 100%; text-align: center;">
+        <h1 style="font-size: 5vw; font-weight: 600; color: #CBA6F7; margin-bottom: 2.4vh;">LOGO</h1>
+    </header>
+    <div style="background-color: #313244; width: 90%; border-radius: 3.6vw; padding: 4.8vw; box-sizing: border-box; display: block; margin: 0 auto;">
+        <main style="display: inline-block; width: 100%;">
+            <section style="width: 100%; text-align: center;">
+                <h1 style="font-size: 3.6vw; font-weight: 600; color: #CBA6F7; margin-bottom: 2.4vh;">Olá <span th:text="${name}" th:remove="tag"></span>
+                    <br>
+                    <span style="color: #CDD6F4; font-weight: 400;">O seu código de ativação é</span></h1>
+            </section>
+            <section style="width: 100%; display: inline-block; margin: 0 auto;">
+                <ul style="list-style-type: none; padding: 0; font-size: 3.6vw; color: #181825; text-align: center;">
+                    <li style="background-color: #B4BEFE; border-radius: 1vw; padding: 2.4vw; display: inline-block; margin-right: 1vw;" th:each="char : ${activationCode.toCharArray()}" th:text="${char}"></li>
+                </ul>
+            </section>
+            <section style="width: 100%; text-align: center;">
+                <p style="font-size: 2.8vw; color: #CDD6F4; margin-bottom: 7.2vh; font-weight: normal;">
+                    Basta digitar o código acima ou clicar no <span>botão</span> abaixo e ativar instantaneamente.
+                </p>
+            </section>
+            <section style="width: 100%; text-align: center; height: 7.2vh; display: inline-block;">
+                <a style="font-size: 3.6vw; color: #252121; background-color: #98A0D7; padding: 2.4vh 9.6vw; border-radius: 1vw; text-decoration: none; display: inline-block;" href="[[link]]" target="_blank">
+                    ATIVAR!
+                </a>
+            </section>
+        </main>
+    </div>
+    <footer style="width: 90%; display: block; margin: 2.4vh auto 2.4vh auto;">
+        <div style="width: 0.2vw; height: 7.2vh; background-color: #CBA6F7; margin-right: 1.6vw; display: inline-block; vertical-align: middle;"></div>
+        <p style="color: #CDD6F4; opacity: 0.5; font-size: 2.4vw; line-height: 1.4; display: inline-block; vertical-align: middle;">
+            <i>xlr8 your coding skils</i>
+            <br>Equipe xlr8code
+        </p>
+    </footer>
+</div>
+</body>
+</html>

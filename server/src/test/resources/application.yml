@@ -44,6 +44,10 @@ user:
     expiration-time: 15
     length: 6
 
+
+mail:
+  from: mail@xlr8code.com
+
 authentication:
     cleanup-cron: 0 0 0 * * * # every day at midnight
 

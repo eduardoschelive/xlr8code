@@ -1,10 +1,14 @@
 package com.xlr8code.server.common.service;
 
+import com.xlr8code.server.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 @Log4j2
@@ -12,6 +16,10 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
+
+    @Value("${mail.from}")
+    private String from;
 
     public void sendEmail(String email, String subject, String body) {
         log.info("Sending email to {} with subject: {} and body: {}", email, subject, body);
@@ -23,7 +31,7 @@ public class EmailService {
             helper.setTo(email);
             helper.setSubject(subject);
             helper.setText(body, true);
-            helper.setFrom("mail@xlr8code.com");
+            helper.setFrom(from);
 
             javaMailSender.send(message);
         } catch (Exception e) {
@@ -32,9 +40,21 @@ public class EmailService {
         }
     }
 
-    public void sendActivationEmail(String email, String activationCode) {
+    public void sendActivationEmail(User user, String activationCode) {
+        var template = "user-activation";
+
+
+
         var subject = "Account activation";
-        var body = "Your activation code is " + activationCode;
+
+        var email = user.getEmail();
+
+        var context = new Context();
+        context.setVariable("name", user.getUsername());
+        context.setVariable("activationCode", activationCode);
+
+        var body = templateEngine.process(template, context);
+
 
         this.sendEmail(email, subject, body);
     }

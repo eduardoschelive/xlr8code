@@ -24,6 +24,6 @@ public class CreateUserListener implements ApplicationListener<OnCreateUserEvent
         }
 
         var activationCode = this.userActivationCodeService.generate(user);
-        this.emailService.sendActivationEmail(user.getEmail(), activationCode.getCode());
+        this.emailService.sendActivationEmail(user, activationCode.getCode());
     }
 }

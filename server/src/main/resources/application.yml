@@ -46,6 +46,8 @@ user:
     expiration-time: ${PASSWORD_RESET_CODE_EXPIRATION_TIME}
     length: ${PASSWORD_RESET_CODE_LENGTH}
 
+mail:
+  from: mail@xlr8code.com
 
 authentication:
   cleanup-cron: ${AUTHENTICATION_CLEANUP_CRON}
