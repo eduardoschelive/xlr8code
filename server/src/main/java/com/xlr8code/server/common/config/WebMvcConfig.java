@@ -17,7 +17,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final LocaleService localeService;
 
-
     @Bean
     public LocaleResolver localeResolver() {
         return new ApplicationLocaleResolver();

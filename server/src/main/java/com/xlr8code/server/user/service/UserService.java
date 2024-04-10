@@ -9,7 +9,6 @@ import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.event.OnCreateUserEvent;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
 import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
@@ -45,7 +44,6 @@ public class UserService {
      *                      </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
-     * @see OnCreateUserEvent
      */
     @Transactional
     public User create(CreateUserDTO userCreateDTO) {
@@ -54,11 +52,7 @@ public class UserService {
 
         var user = userCreateDTO.toUser(passwordEncoder);
 
-        var newUser = this.userRepository.save(user);
-
-        this.applicationEventPublisher.publishEvent(new OnCreateUserEvent(newUser));
-
-        return newUser;
+        return this.userRepository.save(user);
     }
 
     /**

@@ -1,13 +1,16 @@
 package com.xlr8code.server.common.service;
 
-import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.common.interfaces.Mail;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
@@ -17,53 +20,54 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
+    private final MessageSource messageSource;
 
     @Value("${mail.from}")
     private String from;
 
-    public void sendEmail(String email, String subject, String body) {
-        log.info("Sending email to {} with subject: {} and body: {}", email, subject, body);
-
+    @Async
+    public void sendEmail(String[] to, String subject, String body) {
         try {
             var message = javaMailSender.createMimeMessage();
 
             var helper = new MimeMessageHelper(message, true);
-            helper.setTo(email);
+            helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, true);
             helper.setFrom(from);
 
             javaMailSender.send(message);
-        } catch (Exception e) {
-            log.error("Error while sending email" );
-            e.printStackTrace();
+        } catch (MailException | MessagingException e) {
+            log.error("Error while sending email ", e);
         }
-    }
-
-    public void sendActivationEmail(User user, String activationCode) {
-        var template = "user-activation";
-
-
-
-        var subject = "Account activation";
-
-        var email = user.getEmail();
-
-        var context = new Context();
-        context.setVariable("name", user.getUsername());
-        context.setVariable("activationCode", activationCode);
-
-        var body = templateEngine.process(template, context);
-
-
-        this.sendEmail(email, subject, body);
     }
 
     public void sendPasswordResetEmail(String email, String passwordResetCode) {
         var subject = "Password reset";
         var body = "Your currentPassword reset code is " + passwordResetCode;
 
-        this.sendEmail(email, subject, body);
+        var mails = new String[]{
+                email
+        };
+
+        this.sendEmail(mails, subject, body);
+    }
+
+    @Async
+    public void sendMail(Mail mail) {
+        try {
+            var message = javaMailSender.createMimeMessage();
+
+            var helper = new MimeMessageHelper(message, true);
+            helper.setTo(mail.getTo());
+            helper.setSubject(mail.getSubject(messageSource));
+            helper.setText(mail.getBody(templateEngine), true);
+            helper.setFrom(from);
+
+            javaMailSender.send(message);
+        } catch (MailException | MessagingException e) {
+            log.error("Error while sending email ", e);
+        }
     }
 
 }

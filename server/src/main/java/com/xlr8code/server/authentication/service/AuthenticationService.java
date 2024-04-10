@@ -7,12 +7,15 @@ import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordE
 import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
+import com.xlr8code.server.user.mail.AccountActivationMail;
 import com.xlr8code.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,9 @@ public class AuthenticationService {
     private final UserPasswordResetCodeService userPasswordResetCodeService;
     private final EmailService emailService;
     private final UserSessionService userSessionService;
+
+    @Value("${user.activation-code.url}")
+    private String activationCodeUrl;
 
     /**
      * @param authenticationToken the authentication token to be used for authentication
@@ -48,7 +54,11 @@ public class AuthenticationService {
      */
     @Transactional
     public User signUp(SignUpDTO signUpDTO) {
-        return this.userService.create(signUpDTO.toCreateUserDTO());
+        var user = this.userService.create(signUpDTO.toCreateUserDTO());
+
+        this.sendActivationMail(user);
+
+        return user;
     }
 
     /**
@@ -119,9 +129,7 @@ public class AuthenticationService {
         var login = resendCodeDTO.login();
         var user = this.userService.findByLogin(login);
 
-        var activationCode = this.userActivationCodeService.generate(user);
-
-        this.emailService.sendActivationEmail(user, activationCode.getCode());
+        this.sendActivationMail(user);
     }
 
     /**
@@ -169,6 +177,27 @@ public class AuthenticationService {
     public long getSessionDuration() {
         return this.userSessionService.getSessionDuration();
     }
+
+    /**
+     * @param user the user to send the activation email to
+     */
+    private void sendActivationMail(User user) {
+        var activationCode = this.userActivationCodeService.generate(user);
+
+        var userLocale = user.getPreferences().getLanguage().getCode();
+
+        var activationEmail = AccountActivationMail.builder()
+                .to(new String[]{user.getEmail()})
+                .username(user.getUsername())
+                .activationLink(this.activationCodeUrl + activationCode.getCode())
+                .activationCode(activationCode.getCode())
+                .activationCodeUrl(this.activationCodeUrl)
+                .locale(Locale.of(userLocale))
+                .build();
+
+        this.emailService.sendMail(activationEmail);
+    }
+
 
 }
 

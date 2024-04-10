@@ -39,6 +39,7 @@ user:
     unit: HOURS
     expiration-time: 15
     length: 6
+    url: http://localhost:8080/activate?code=
   password-reset-code:
     unit: MINUTES
     expiration-time: 15

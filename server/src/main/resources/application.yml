@@ -41,6 +41,7 @@ user:
     unit: ${ACTIVATION_CODE_UNIT}
     expiration-time: ${ACTIVATION_CODE_EXPIRATION_TIME}
     length: ${ACTIVATION_CODE_LENGTH}
+    url: http://localhost:8080/activate?code=
   password-reset-code:
     unit: ${PASSWORD_RESET_CODE_UNIT}
     expiration-time: ${PASSWORD_RESET_CODE_EXPIRATION_TIME}
