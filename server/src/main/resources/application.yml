@@ -46,6 +46,7 @@ user:
     unit: ${PASSWORD_RESET_CODE_UNIT}
     expiration-time: ${PASSWORD_RESET_CODE_EXPIRATION_TIME}
     length: ${PASSWORD_RESET_CODE_LENGTH}
+    url: http://localhost:8080/reset-password?code=
 
 mail:
   from: mail@xlr8code.com

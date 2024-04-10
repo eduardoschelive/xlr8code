@@ -44,7 +44,7 @@ user:
     unit: MINUTES
     expiration-time: 15
     length: 6
-
+    url: http://localhost:8080/reset-password?code=
 
 mail:
   from: mail@xlr8code.com

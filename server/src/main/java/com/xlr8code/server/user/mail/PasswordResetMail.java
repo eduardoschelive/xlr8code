@@ -11,14 +11,14 @@ import java.util.Locale;
 
 @Getter
 @Builder
-public class AccountActivationMail implements Mail {
-    private static final String TEMPLATE = "user-activation";
-    private static final String SUBJECT_KEY = "mail.account.activation.subject";
+public class PasswordResetMail implements Mail {
+    private static final String TEMPLATE = "password-recovery";
+    private static final String SUBJECT_KEY = "mail.account.recovery.subject";
 
     private final String[] to;
 
-    private final String activationCode;
-    private final String activationUrl;
+    private final String passwordResetCode;
+    private final String passwordResetUrl;
     private final String username;
 
     private final Locale locale;
@@ -32,8 +32,8 @@ public class AccountActivationMail implements Mail {
     public String getBody(TemplateEngine templateEngine) {
         var context = new Context(locale);
         context.setVariable("username", username);
-        context.setVariable("activationCode", activationCode);
-        context.setVariable("activationUrl", activationUrl);
+        context.setVariable("passwordResetCode", passwordResetCode);
+        context.setVariable("passwordResetUrl", passwordResetUrl);
         return templateEngine.process(TEMPLATE, context);
     }
 

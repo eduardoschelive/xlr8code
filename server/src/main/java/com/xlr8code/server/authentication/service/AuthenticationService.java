@@ -8,6 +8,7 @@ import com.xlr8code.server.common.service.EmailService;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.mail.AccountActivationMail;
+import com.xlr8code.server.user.mail.PasswordResetMail;
 import com.xlr8code.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,9 @@ public class AuthenticationService {
 
     @Value("${user.activation-code.url}")
     private String activationCodeUrl;
+
+    @Value("${user.password-reset-code.url}")
+    private String passwordResetCodeUrl;
 
     /**
      * @param authenticationToken the authentication token to be used for authentication
@@ -148,7 +152,17 @@ public class AuthenticationService {
 
         var passwordResetCode = this.userPasswordResetCodeService.generate(user);
 
-        this.emailService.sendPasswordResetEmail(user.getEmail(), passwordResetCode.getCode());
+        var userLocale = user.getPreferences().getLanguage().getCode();
+
+        var passwordResetEmail = PasswordResetMail.builder()
+                .to(new String[]{user.getEmail()})
+                .username(user.getUsername())
+                .passwordResetCode(passwordResetCode.getCode())
+                .passwordResetUrl(this.passwordResetCodeUrl + passwordResetCode.getCode())
+                .locale(Locale.of(userLocale))
+                .build();
+
+        this.emailService.sendMail(passwordResetEmail);
     }
 
     /**
@@ -189,9 +203,8 @@ public class AuthenticationService {
         var activationEmail = AccountActivationMail.builder()
                 .to(new String[]{user.getEmail()})
                 .username(user.getUsername())
-                .activationLink(this.activationCodeUrl + activationCode.getCode())
                 .activationCode(activationCode.getCode())
-                .activationCodeUrl(this.activationCodeUrl)
+                .activationUrl(this.activationCodeUrl + activationCode.getCode())
                 .locale(Locale.of(userLocale))
                 .build();
 
