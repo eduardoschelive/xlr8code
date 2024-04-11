@@ -26,34 +26,6 @@ public class EmailService {
     private String from;
 
     @Async
-    public void sendEmail(String[] to, String subject, String body) {
-        try {
-            var message = javaMailSender.createMimeMessage();
-
-            var helper = new MimeMessageHelper(message, true);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(body, true);
-            helper.setFrom(from);
-
-            javaMailSender.send(message);
-        } catch (MailException | MessagingException e) {
-            log.error("Error while sending email ", e);
-        }
-    }
-
-    public void sendPasswordResetEmail(String email, String passwordResetCode) {
-        var subject = "Password reset";
-        var body = "Your currentPassword reset code is " + passwordResetCode;
-
-        var mails = new String[]{
-                email
-        };
-
-        this.sendEmail(mails, subject, body);
-    }
-
-    @Async
     public void sendMail(Mail mail) {
         try {
             var message = javaMailSender.createMimeMessage();
