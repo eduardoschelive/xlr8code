@@ -28,9 +28,7 @@ public class PasswordResetMail implements Mail {
         return messageSource.getMessage(SUBJECT_KEY, null, locale);
     }
 
-    @Override
-    public String getBody(TemplateEngine templateEngine) {
-        var context = new Context(locale);
+    public String getBody(TemplateEngine templateEngine, Context context) {
         context.setVariable("username", username);
         context.setVariable("passwordResetCode", passwordResetCode);
         context.setVariable("passwordResetUrl", passwordResetUrl);

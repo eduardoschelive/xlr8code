@@ -48,6 +48,9 @@ user:
     length: ${PASSWORD_RESET_CODE_LENGTH}
     url: http://localhost:8080/reset-password?code=
 
+application:
+  logo-url: ${APPLICATION_LOGO_URL}
+
 mail:
   from: mail@xlr8code.com
 

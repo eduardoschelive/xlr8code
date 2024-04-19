@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
@@ -25,15 +26,21 @@ public class EmailService {
     @Value("${mail.from}")
     private String from;
 
+    @Value("${application.logo-url}")
+    private String logoUrl;
+
     @Async
     public void sendMail(Mail mail) {
         try {
             var message = javaMailSender.createMimeMessage();
-
+            var context = new Context(mail.getLocale());
             var helper = new MimeMessageHelper(message, true);
+
+            context.setVariable("logoUrl", logoUrl);
+
             helper.setTo(mail.getTo());
             helper.setSubject(mail.getSubject(messageSource));
-            helper.setText(mail.getBody(templateEngine), true);
+            helper.setText(mail.getBody(templateEngine, context), true);
             helper.setFrom(from);
 
             javaMailSender.send(message);

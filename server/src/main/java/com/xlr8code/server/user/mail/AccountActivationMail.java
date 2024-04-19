@@ -29,8 +29,7 @@ public class AccountActivationMail implements Mail {
     }
 
     @Override
-    public String getBody(TemplateEngine templateEngine) {
-        var context = new Context(locale);
+    public String getBody(TemplateEngine templateEngine, Context context) {
         context.setVariable("username", username);
         context.setVariable("activationCode", activationCode);
         context.setVariable("activationUrl", activationUrl);

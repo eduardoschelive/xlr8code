@@ -49,6 +49,9 @@ user:
 mail:
   from: mail@xlr8code.com
 
+application:
+    logo-url: http://localhost:8080/logo.png
+
 authentication:
     cleanup-cron: 0 0 0 * * * # every day at midnight
 
