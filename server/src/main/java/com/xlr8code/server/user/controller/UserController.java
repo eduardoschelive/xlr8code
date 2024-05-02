@@ -2,11 +2,13 @@ package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.dto.*;
+import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,12 @@ public class UserController {
     private final UserService userService;
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
+
+    @GetMapping
+    public ResponseEntity<Void> findAllUsers(Specification<User> filters) {
+
+        return ResponseEntity.noContent().build();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
