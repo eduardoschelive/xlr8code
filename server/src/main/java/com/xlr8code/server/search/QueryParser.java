@@ -4,74 +4,60 @@ import com.xlr8code.server.search.annotation.Searchable;
 import com.xlr8code.server.search.exception.SearchException;
 import com.xlr8code.server.search.model.SearchOperation;
 import com.xlr8code.server.search.model.SearchPagination;
-import com.xlr8code.server.search.model.SearchParam;
 import com.xlr8code.server.search.utils.SearchUtils;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class QueryParser {
 
-    private final Map<String, String> queryMap;
-    Map<String, Pair<Searchable, Class<?>>> searchableFields;
-    Class<?> targetClass;
+    private static final String SEARCH_PARAM_SEPARATOR = "_";
 
-    public QueryParser(Map<String, String> queryMap, Class<?> targetClass) throws SearchException {
-        this.queryMap = queryMap;
-        this.targetClass = targetClass;
+    private final Map<String, String> queryParameters;
+    private final Map<String, Pair<Searchable, Class<?>>> searchableFields;
+    private final Map<String, List<Pair<String, String>>> parsedSearchParams;
+
+    public QueryParser(Map<String, String> queryParameters, Class<?> targetClass) throws SearchException {
+        this.queryParameters = queryParameters;
         this.searchableFields = SearchUtils.extractSearchableFields(targetClass);
-        validateQuery();
+        this.parsedSearchParams = new HashMap<>();
+        parseQueryParameters();
     }
 
-    public String extractField(String key) {
-        return key.substring(0, key.lastIndexOf("_"));
-    }
-
-    public String extractOperation(String key) {
-        var index = key.lastIndexOf("_");
-        if (index == -1) {
-            // TODO: throw custom exception
-            throw new IllegalArgumentException("Missing operation in key: " + key);
+    private void parseQueryParameters() throws SearchException {
+        for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            String operation = extractOperation(key);
+            String field = extractField(key);
+            validateKey(field, operation);
+            parsedSearchParams.computeIfAbsent(operation, k -> new ArrayList<>()).add(Pair.of(field, value));
         }
-        return key.substring(index);
+        System.out.println(parsedSearchParams);
     }
 
-    public void validateQuery() throws SearchException {
-        for (String key : queryMap.keySet()) {
-            validateKey(key);
-        }
+    private String extractField(String key) {
+        return key.contains(SEARCH_PARAM_SEPARATOR) ? key.substring(0, key.lastIndexOf(SEARCH_PARAM_SEPARATOR)) : key;
     }
 
-    private void validateKey(String key) throws SearchException {
-        var operation = extractOperation(key);
-        validateOperation(operation);
-
-        String field = extractField(key);
-        validateField(field, operation);
+    private String extractOperation(String key) {
+        return key.contains(SEARCH_PARAM_SEPARATOR) ? key.substring(key.lastIndexOf(SEARCH_PARAM_SEPARATOR) + 1) : "";
     }
 
-    private void validateOperation(String operation) throws SearchException {
+    private void validateKey(String field, String operation) throws SearchException {
         if (!SearchOperation.isSupported(operation) && !SearchPagination.isSupported(operation)) {
-            throw new SearchException("Operation not supported: " + operation + ". Supported operations: " + SearchOperation.getOperations());
+            throw new SearchException("Unsupported operation: " + operation);
+        }
+        if (shouldValidateField(operation) && !searchableFields.containsKey(field)) {
+            throw new SearchException("Unsupported field: " + field);
         }
     }
 
-    private void validateField(String field, String operation) throws SearchException {
-        var searchPagination = SearchPagination.fromSuffix(operation);
-        boolean shouldValidateField = searchPagination == null || searchPagination.isFieldDependant();
-        if (shouldValidateField && !searchableFields.containsKey(field)) {
-            throw new SearchException("Field not found: " + field + ". Supported fields: " + searchableFields.keySet());
-        }
-    }
-
-    public Sort getSort() {
-
-
-
-        return null;
+    private boolean shouldValidateField(String operation) {
+        return SearchPagination.fromSuffix(operation) == null || SearchPagination.fromSuffix(operation).isFieldDependant();
     }
 
 }

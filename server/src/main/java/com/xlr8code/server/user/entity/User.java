@@ -3,6 +3,7 @@ package com.xlr8code.server.user.entity;
 import com.xlr8code.server.authentication.entity.UserCode;
 import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.common.entity.AuditableEntity;
+import com.xlr8code.server.search.annotation.NestedSearchable;
 import com.xlr8code.server.search.annotation.Searchable;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
@@ -63,6 +64,7 @@ public class User extends AuditableEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     )
+    @NestedSearchable
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

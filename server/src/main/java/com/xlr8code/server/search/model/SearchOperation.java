@@ -13,25 +13,25 @@ import java.util.stream.Collectors;
 @Getter
 public enum SearchOperation {
 
-    EQUALITY("_eq"),
-    EQUALITY_CASE_INSENSITIVE("_eqi"),
-    NEGATION("_neq"),
-    NEGATION_CASE_INSENSITIVE("_neqi"),
-    GREATER_THAN("_gt"),
-    GREATER_THAN_OR_EQUAL_TO("_gte"),
-    LESS_THAN("_lt"),
-    LESS_THAN_OR_EQUAL_TO("_lte"),
-    STARTS_WITH("_sw"),
-    STARTS_WITH_CASE_INSENSITIVE("_swi"),
-    ENDS_WITH("_ew"),
-    ENDS_WITH_CASE_INSENSITIVE("_ewi"),
-    CONTAINS("_ct"),
-    CONTAINS_CASE_INSENSITIVE("_cti"),
-    IN("_in"),
-    NOT_IN("_nin"),
-    IS_NULL("_null"),
-    IS_EMPTY("_empty"),
-    BETWEEN("_btw");
+    EQUALITY("eq"),
+    EQUALITY_CASE_INSENSITIVE("eqi"),
+    NEGATION("neq"),
+    NEGATION_CASE_INSENSITIVE("neqi"),
+    GREATER_THAN("gt"),
+    GREATER_THAN_OR_EQUAL_TO("gte"),
+    LESS_THAN("lt"),
+    LESS_THAN_OR_EQUAL_TO("lte"),
+    STARTS_WITH("sw"),
+    STARTS_WITH_CASE_INSENSITIVE("swi"),
+    ENDS_WITH("ew"),
+    ENDS_WITH_CASE_INSENSITIVE("ewi"),
+    CONTAINS("ct"),
+    CONTAINS_CASE_INSENSITIVE("cti"),
+    IN("in"),
+    NOT_IN("nin"),
+    IS_NULL("null"),
+    IS_EMPTY("empty"),
+    BETWEEN("btw");
 
     private final String suffix;
 

@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum SearchPagination {
 
-    PAGE("_page", false),
-    SIZE("_size", false),
-    SORT("_sort", true);
+    PAGE("page", false),
+    SIZE("size", false),
+    SORT("sort", true);
 
     private final String suffix;
     private final boolean fieldDependant;
