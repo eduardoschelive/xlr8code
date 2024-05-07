@@ -97,9 +97,14 @@
                 "label": "documentation"
             },
             {
+                "value": "search",
+                "label": "search"
+            },
+	    {
                 "value": "",
                 "label": "none"
-            }
+	    } 
+
         ]
     },
     "check_ticket": {

@@ -12,12 +12,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum SearchPagination {
 
-    PAGE("page", false),
-    SIZE("size", false),
-    SORT("sort", true);
+    PAGE("page"),
+    SIZE("size");
 
     private final String suffix;
-    private final boolean fieldDependant;
 
     private static final Map<String, SearchPagination> SUFFIX_ENUM =
             Arrays.stream(SearchPagination.values())

@@ -10,18 +10,17 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-public enum SearchSortType {
+public enum SearchSorting {
 
-    ASC("asc"),
-    DESC("desc");
+    SORT("sort");
 
     private final String suffix;
 
-    private static final Map<String, SearchSortType> SUFFIX_ENUM =
-            Arrays.stream(SearchSortType.values())
-                    .collect(Collectors.toMap(SearchSortType::getSuffix, Function.identity()));
+    private static final Map<String, SearchSorting> SUFFIX_ENUM =
+            Arrays.stream(SearchSorting.values())
+                    .collect(Collectors.toMap(SearchSorting::getSuffix, Function.identity()));
 
-    public static SearchSortType fromSuffix(String suffix) {
+    public static SearchSorting fromSuffix(String suffix) {
         return SUFFIX_ENUM.get(suffix.toLowerCase());
     }
 
