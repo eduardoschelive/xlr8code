@@ -9,11 +9,11 @@ public class SessionCookieUtils {
 
     /**
      * @param sessionToken the session token to be used
-     * @param maxAge the maximum age of the cookie in seconds
-     *               (if negative, the cookie is deleted when the browser is closed)
-     *               (if zero, the cookie is deleted immediately)
-     *               (if positive, the cookie is deleted after the specified number of seconds)
-     *               Cannot be null.
+     * @param maxAge       the maximum age of the cookie in seconds
+     *                     (if negative, the cookie is deleted when the browser is closed)
+     *                     (if zero, the cookie is deleted immediately)
+     *                     (if positive, the cookie is deleted after the specified number of seconds)
+     *                     Cannot be null.
      * @return the created session token cookie
      */
     public static String createSessionToken(String sessionToken, long maxAge) {

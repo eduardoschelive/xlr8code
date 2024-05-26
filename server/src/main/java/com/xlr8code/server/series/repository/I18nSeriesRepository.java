@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface I18nSeriesRepository extends JpaRepository<I18nSeries, UUID> {
     boolean existsBySlug(String slug);
+
     boolean existsBySlugAndSeriesNot(String slug, Series owner);
 }

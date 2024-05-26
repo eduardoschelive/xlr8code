@@ -4,9 +4,7 @@ import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.series.dto.SeriesDTO;
-import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
-import com.xlr8code.server.series.entity.I18nSeries;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
@@ -18,7 +16,6 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

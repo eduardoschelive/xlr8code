@@ -9,8 +9,11 @@ import java.util.Locale;
 public interface Mail {
 
     String[] getTo();
+
     String getSubject(MessageSource messageSource);
+
     String getBody(TemplateEngine templateEngine, Context context);
+
     Locale getLocale();
 
 }

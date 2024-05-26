@@ -16,12 +16,12 @@ import java.lang.annotation.Target;
 )
 public @interface ExistingSeries {
 
-        String message() default "Please provide a existing series id";
+    String message() default "Please provide a existing series id";
 
-        boolean optional() default false;
+    boolean optional() default false;
 
-        Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-        Class<?>[] payload() default {};
+    Class<?>[] payload() default {};
 
 }

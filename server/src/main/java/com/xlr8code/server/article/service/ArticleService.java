@@ -1,7 +1,6 @@
 package com.xlr8code.server.article.service;
 
 import com.xlr8code.server.article.dto.ArticleDTO;
-import com.xlr8code.server.article.dto.ArticleTranslationDTO;
 import com.xlr8code.server.article.dto.TranslatedArticleDTO;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.entity.ArticleRelation;
@@ -10,18 +9,14 @@ import com.xlr8code.server.article.repository.ArticleRepository;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.ObjectUtils;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
-import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.service.SeriesService;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -80,7 +75,7 @@ public class ArticleService {
     }
 
     /**
-     * @param id  the id of the article
+     * @param id        the id of the article
      * @param languages the languages to be used for the translation
      * @return the article with the specified id
      */
@@ -138,5 +133,5 @@ public class ArticleService {
 
         return articleDTO.toEntity(article, series, articleRelation);
     }
-    
+
 }
