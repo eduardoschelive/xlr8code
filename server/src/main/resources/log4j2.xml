@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
     <Properties>
-        <Property name="FILE_PATH">/logs</Property>
+        <Property name="FILE_PATH">/var/log</Property>
         <Property name="CONSOLE_PATTERN">%highlight{%d{HH:mm:ss.SSS}}{FATAL=red, ERROR=red, WARN=yellow, INFO=green,
             DEBUG=cyan, TRACE=blue} [%t] %highlight{%-5level}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan,
             TRACE=blue} %highlight{%logger{36}}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} -

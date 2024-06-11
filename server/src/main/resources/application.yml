@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: dev
   flyway:
     locations: classpath:db/migration
   messages:
@@ -11,9 +9,9 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
   mail:
     host: ${MAIL_HOST}
@@ -41,18 +39,18 @@ user:
     unit: ${ACTIVATION_CODE_UNIT}
     expiration-time: ${ACTIVATION_CODE_EXPIRATION_TIME}
     length: ${ACTIVATION_CODE_LENGTH}
-    url: http://localhost:8080/activate?code=
+    url: ${ACTIVATION_CODE_URL}
   password-reset-code:
     unit: ${PASSWORD_RESET_CODE_UNIT}
     expiration-time: ${PASSWORD_RESET_CODE_EXPIRATION_TIME}
     length: ${PASSWORD_RESET_CODE_LENGTH}
-    url: http://localhost:8080/reset-password?code=
+    url: ${PASSWORD_RESET_CODE_URL}
 
 application:
   logo-url: ${APPLICATION_LOGO_URL}
 
 mail:
-  from: mail@xlr8code.com
+  from: ${MAIL_FROM}
 
 authentication:
   cleanup-cron: ${AUTHENTICATION_CLEANUP_CRON}
