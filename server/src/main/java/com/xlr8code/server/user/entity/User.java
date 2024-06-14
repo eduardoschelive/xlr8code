@@ -44,6 +44,7 @@ public class User extends AuditableEntity implements UserDetails {
     @Embedded
     private UserPassword userPassword;
 
+    @Searchable
     @Column(name = "active", nullable = false)
     private boolean active;
 

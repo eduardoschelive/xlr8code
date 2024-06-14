@@ -8,11 +8,10 @@ import java.util.Map;
 public class Test {
 
     public static void main(String[] args) throws SearchException {
-        Map<String, String> queryMap = Map.of("roles.userRole_eq", "John", "username_eq", "Doe", "roles.userRole_ct", "Jane", "roles.userRole_sort", "ASC", "_page", "1", "_size", "10");
+        Map<String, String> queryMap = Map.of("username_eq", "Doe" ,"_page", "1", "_size", "10", "active_eq", "true");
 
         var time = System.currentTimeMillis();
         new QueryParser(queryMap, User.class).parseQueryParameters();
         System.out.println("Time taken: " + (System.currentTimeMillis() - time) + "ms");
     }
-
 }

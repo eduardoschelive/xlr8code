@@ -34,11 +34,11 @@ public class QueryParser {
 
     private String extractFieldPath(String key) {
         var separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
-        return separatorIndex != -1 ? key.substring(0, separatorIndex) : null;
+        return separatorIndex != -1 ? key.substring(0, separatorIndex).trim() : null;
     }
 
     private String extractOperation(String key) {
         var separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
-        return separatorIndex != -1 ? key.substring(separatorIndex + 1) : null;
+        return separatorIndex != -1 ? key.substring(separatorIndex + 1).trim() : null;
     }
 }

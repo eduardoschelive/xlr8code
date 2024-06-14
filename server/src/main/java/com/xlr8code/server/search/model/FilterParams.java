@@ -1,6 +1,7 @@
 package com.xlr8code.server.search.model;
 
 import com.xlr8code.server.search.enums.SearchOperation;
+import com.xlr8code.server.search.strategies.ParsingStrategySelector;
 import lombok.Getter;
 import lombok.ToString;
 import org.antlr.v4.runtime.misc.Pair;
@@ -22,9 +23,10 @@ public class FilterParams {
         return SUFFIX_ENUM.containsKey(suffix.toLowerCase());
     }
 
-    public void computeIfAbsent(String operation, String fieldPath, String value) {
+    public void computeIfAbsent(String operation, String fieldPath, String value, Class<?> expectedType) {
         SearchOperation searchOperation = fromSuffix(operation);
-        Pair<String, Object> fieldPathPair = new Pair<>(fieldPath, value);
+        Object parsedValue = ParsingStrategySelector.parse(expectedType, value);
+        Pair<String, Object> fieldPathPair = new Pair<>(fieldPath, parsedValue);
 
         searchParams.computeIfAbsent(searchOperation, k -> new ArrayList<>()).add(fieldPathPair);
     }

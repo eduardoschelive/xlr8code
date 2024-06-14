@@ -1,6 +1,7 @@
 package com.xlr8code.server.search.model;
 
 import com.xlr8code.server.search.annotation.Searchable;
+import com.xlr8code.server.search.strategies.ParsingStrategySelector;
 import com.xlr8code.server.search.utils.SearchUtils;
 import lombok.Getter;
 import lombok.ToString;
@@ -39,7 +40,8 @@ public class SearchParams {
 
         if (FilterParams.isSupported(operation)) {
             validateSearchableField(field);
-            filterParams.computeIfAbsent(operation, field, value);
+            var expectedType = searchableFields.get(field).getSecond();
+            filterParams.computeIfAbsent(operation, field, value, expectedType);
             return;
         }
 
