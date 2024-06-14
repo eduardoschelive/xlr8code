@@ -52,7 +52,7 @@ public class FilterSpecification<E> implements Specification<E> {
             }
         }
 
-        return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 
     private String extractFieldPath(String key) {

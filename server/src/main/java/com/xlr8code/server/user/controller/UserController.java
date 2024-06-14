@@ -1,8 +1,10 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.search.FilterSpecification;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
@@ -13,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping(Endpoint.User.BASE_PATH)
 @RequiredArgsConstructor
@@ -21,11 +26,13 @@ public class UserController {
     private final UserService userService;
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
+    private final UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<Void> findAllUsers(Specification<User> filters) {
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
+        Specification<User> specification = new FilterSpecification<>(queryParameters, User.class);
+        var response = this.userRepository.findAll(specification).stream().map(UserDTO::from).toList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
