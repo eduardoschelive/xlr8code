@@ -1,9 +1,15 @@
 package com.xlr8code.server.search.strategies;
 
-public class StringParsing implements ParsingStrategy<String> {
+import com.xlr8code.server.search.enums.SearchOperation;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+
+public class StringParsing implements ParsingStrategy {
+
     @Override
-    public String parse(Object value) {
-        return value.toString();
+    public Predicate buildPredicate(CriteriaBuilder criteriaBuilder, Path<?> path, String fieldName, SearchOperation searchOperation, String value) {
+        return null;
     }
 
 }

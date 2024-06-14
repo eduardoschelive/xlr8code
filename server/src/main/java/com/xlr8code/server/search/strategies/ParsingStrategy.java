@@ -1,7 +1,17 @@
 package com.xlr8code.server.search.strategies;
 
-public interface ParsingStrategy<T> {
+import com.xlr8code.server.search.enums.SearchOperation;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 
-    T parse(Object value);
+public interface ParsingStrategy {
+
+    Predicate buildPredicate(CriteriaBuilder criteriaBuilder,
+                             Path<?> path,
+                             String fieldName,
+                             SearchOperation searchOperation,
+                             String value
+    );
 
 }
