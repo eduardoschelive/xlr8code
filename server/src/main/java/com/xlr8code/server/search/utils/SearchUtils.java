@@ -2,6 +2,7 @@ package com.xlr8code.server.search.utils;
 
 import com.xlr8code.server.search.annotation.NestedSearchable;
 import com.xlr8code.server.search.annotation.Searchable;
+import com.xlr8code.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.data.util.Pair;
