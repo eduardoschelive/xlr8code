@@ -2,16 +2,17 @@ package com.xlr8code.server.search.strategies;
 
 import com.xlr8code.server.search.utils.FilterOperationDetails;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 public abstract class ParsingStrategy {
 
     public Predicate buildPredicate(CriteriaBuilder criteriaBuilder,
-                             Root<?> root,
-                             String fieldName,
+                                    Root<?> root,
+                                    String fieldName,
                                     FilterOperationDetails filterOperationDetails,
-                             String value
+                                    String value
     ) {
         var isNegated = filterOperationDetails.negated();
 
@@ -21,20 +22,35 @@ public abstract class ParsingStrategy {
     }
 
     private Predicate getPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, String value) {
+        var path = getPath(root, fieldName);
         return switch (filterOperationDetails.filterOperation()) {
-            case EQUALITY -> criteriaBuilder.equal(root.get(fieldName), value);
-            case IN -> getInClause(criteriaBuilder, root, fieldName, value);
-            case NULL -> criteriaBuilder.isNull(root.get(fieldName));
-            default -> throw new IllegalArgumentException("Unsupported operation: " + filterOperationDetails.filterOperation());
+            case EQUALITY -> criteriaBuilder.equal(path, value);
+            case IN -> getInClause(criteriaBuilder, path, value);
+            case NULL -> criteriaBuilder.isNull(path);
+            default ->
+                    throw new IllegalArgumentException("Unsupported operation: " + filterOperationDetails.filterOperation());
         };
     }
 
-    public CriteriaBuilder.In<Object> getInClause(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, String value) {
-        var inClause = criteriaBuilder.in(root.get(fieldName));
+    public CriteriaBuilder.In<Object> getInClause(CriteriaBuilder criteriaBuilder, Path<?> path, String value) {
+        var inClause = criteriaBuilder.in(path.as(Object.class));
         for (var item : value.split(",")) {
             inClause.value(item);
         }
         return inClause;
+    }
+
+    public Path<Object> getPath(Root<?> root, String fieldName) {
+        if (fieldName.contains(".")) {
+            var parts = fieldName.split("\\.");
+            var path = root.get(parts[0]);
+            for (int i = 1; i < parts.length; i++) {
+                path = path.get(parts[i]);
+            }
+            return path;
+        } else {
+            return root.get(fieldName);
+        }
     }
 
 }

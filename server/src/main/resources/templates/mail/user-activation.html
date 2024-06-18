@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ẗh="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<html th:lang="${lang}" th:with="lang=${#locale.language}"
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link
             href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
             rel="stylesheet">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="color-scheme" content="dark only">
-    <meta name="supported-color-schemes" content="dark only">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="dark only" name="color-scheme">
+    <meta content="dark only" name="supported-color-schemes">
     <title>xl8code account activation</title>
     <style>
         * {
@@ -64,7 +65,7 @@
             padding: 12px 0;
         }
 
-        .main table{
+        .main table {
             width: 100%;
             margin: 0 auto;
         }
@@ -86,7 +87,7 @@
             padding: 0 16px;
         }
 
-        .main-text h3{
+        .main-text h3 {
             color: #CDD6F4;
             font-weight: normal;
         }
@@ -165,7 +166,7 @@
         <tr>
             <td>
                 <header class="header">
-                    <img th:src="${logoUrl}" alt="xl8code logo">
+                    <img alt="xl8code logo" th:src="${logoUrl}">
                 </header>
             </td>
         </tr>
@@ -201,7 +202,8 @@
                         <tr>
                             <td>
                                 <section class="main-text">
-                                    <a style="text-decoration:none; color: #181825" th:href="${activationUrl}" th:text="#{mail.account.activation.button}" class="button-link">
+                                    <a class="button-link" style="text-decoration:none; color: #181825"
+                                       th:href="${activationUrl}" th:text="#{mail.account.activation.button}">
                                     </a>
                                 </section>
                             </td>

@@ -26,7 +26,7 @@ public class StringUtils {
     }
 
     /**
-     * @param s the string to be checked
+     * @param s      the string to be checked
      * @param prefix the prefix to be stripped
      * @return the given string with the given prefix stripped if it starts with the prefix, otherwise the given string
      */
@@ -38,7 +38,7 @@ public class StringUtils {
     }
 
     /**
-     * @param s the string to be checked
+     * @param s      the string to be checked
      * @param suffix the suffix to be stripped
      * @return the given string with the given suffix stripped if it ends with the suffix, otherwise the given string
      */

@@ -1,5 +1,6 @@
 package com.xlr8code.server.user.entity;
 
+import com.xlr8code.server.search.annotation.Searchable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class UserMetadata {
     @MapsId
     private User user;
 
+    @Searchable
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.common.serialization.deserializer.LanguageDeserializer;
 import com.xlr8code.server.common.serialization.deserializer.ThemeDeserializer;
 import com.xlr8code.server.common.serialization.serializer.LanguageKeySerializer;
 import com.xlr8code.server.common.serialization.serializer.LanguageSerializer;
 import com.xlr8code.server.common.serialization.serializer.ThemeSerializer;
-import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.common.enums.Theme;
 
 public class JsonTestUtils {
 

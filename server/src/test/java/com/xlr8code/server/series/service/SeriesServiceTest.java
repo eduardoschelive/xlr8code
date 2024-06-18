@@ -1,8 +1,6 @@
 package com.xlr8code.server.series.service;
 
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.dto.SeriesDTO;
-import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.exception.SeriesNotFoundException;
 import com.xlr8code.server.series.repository.SeriesRepository;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +23,6 @@ class SeriesServiceTest {
 
     @Autowired
     private SeriesRepository seriesRepository;
-
 
 
     @Nested

@@ -21,10 +21,6 @@ class ApplicationLocaleResolverTest {
 
     private ApplicationLocaleResolver localeResolver;
 
-    @BeforeEach
-    void setUp() {
-        localeResolver = new ApplicationLocaleResolver();
-    }
     private static Stream<Arguments> provideTestData() {
         return Stream.of(
                 arguments(null, Locale.of("en_US")), // Test case for resolving locale without header
@@ -33,6 +29,11 @@ class ApplicationLocaleResolverTest {
                 arguments("en_US;q=0.8,pt_BR;q=0.9", Locale.of("pt_BR")), // Test case for resolving locale with quality score
                 arguments("en_US;q=0.8,pt_BR", Locale.of("pt_BR")) // Test case for resolving locale with quality score and default
         );
+    }
+
+    @BeforeEach
+    void setUp() {
+        localeResolver = new ApplicationLocaleResolver();
     }
 
     @ParameterizedTest

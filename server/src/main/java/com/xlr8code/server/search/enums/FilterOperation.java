@@ -26,11 +26,10 @@ public enum FilterOperation {
     EMPTY("empty", false),
     BETWEEN("btw", false);
 
-    private final String suffix;
-    private final boolean allowIgnoreCase;
-
     private static final Map<String, FilterOperation> OPERATIONS_MAP = Arrays.stream(FilterOperation.values())
             .collect(Collectors.toMap(FilterOperation::getSuffix, Function.identity()));
+    private final String suffix;
+    private final boolean allowIgnoreCase;
 
     public static FilterOperation fromSuffix(String suffix) {
         return OPERATIONS_MAP.get(suffix);

@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -43,6 +42,20 @@ class I18nSeriesServiceTest {
         seriesRepository.deleteAll();
     }
 
+    private I18nSeries buildCreateI18nSeries(
+            String slug,
+            String title,
+            String description,
+            Language language
+    ) {
+        return I18nSeries.builder()
+                .slug(slug)
+                .title(title)
+                .language(language)
+                .description(description)
+                .series(this.series)
+                .build();
+    }
 
     @Nested
     class SlugValidationTests {
@@ -90,22 +103,6 @@ class I18nSeriesServiceTest {
             assertThrows(DuplicateSlugInLanguagesException.class, () -> seriesSlugValidator.validateSlugInList(slugs));
         }
 
-    }
-
-
-    private I18nSeries buildCreateI18nSeries(
-            String slug,
-            String title,
-            String description,
-            Language language
-    ) {
-        return I18nSeries.builder()
-                .slug(slug)
-                .title(title)
-                .language(language)
-                .description(description)
-                .series(this.series)
-                .build();
     }
 
 }

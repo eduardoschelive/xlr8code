@@ -53,6 +53,7 @@ public class User extends AuditableEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @NestedSearchable
     private UserMetadata metadata;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -65,10 +66,10 @@ public class User extends AuditableEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     )
-    @NestedSearchable
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NestedSearchable
     private Set<UserSession> userSessions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

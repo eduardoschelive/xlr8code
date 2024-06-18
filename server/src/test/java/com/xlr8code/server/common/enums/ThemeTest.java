@@ -1,6 +1,5 @@
 package com.xlr8code.server.common.enums;
 
-import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.user.exception.ThemeNotFoundException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

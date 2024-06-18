@@ -1,9 +1,6 @@
 package com.xlr8code.server.series.controller;
 
-import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.dto.SeriesDTO;
-import com.xlr8code.server.series.dto.SeriesLanguageDTO;
 import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
 import com.xlr8code.server.series.entity.Series;
 import com.xlr8code.server.series.service.SeriesService;
@@ -24,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 

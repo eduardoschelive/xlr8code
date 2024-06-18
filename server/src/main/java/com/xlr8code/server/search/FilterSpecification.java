@@ -13,9 +13,8 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
 import static com.xlr8code.server.search.utils.FilterConstants.*;
 
@@ -27,6 +26,7 @@ public class FilterSpecification<E> implements Specification<E> {
     public FilterSpecification(Map<String, String> queryParameters, Class<E> targetClass) {
         this.queryParameters = queryParameters;
         this.searchableFields = SearchUtils.extractSearchableFields(targetClass);
+        System.out.println(this.searchableFields);
     }
 
     @Override
@@ -87,6 +87,7 @@ public class FilterSpecification<E> implements Specification<E> {
         result = StringUtils.stripSuffix(result, CASE_INSENSITIVE_SUFFIX);
         return result;
     }
+
     private String extractFieldPath(String key) {
         int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;

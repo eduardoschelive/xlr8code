@@ -10,7 +10,7 @@ import java.lang.invoke.MethodType;
 public class ParsingStrategySelector {
 
     // TODO: Not all classes will have a wrapper, change later
-    private static  Class<?> getWrapper(Class<?> expectedType) {
+    private static Class<?> getWrapper(Class<?> expectedType) {
         return MethodType.methodType(expectedType).wrap().returnType();
     }
 
