@@ -2,30 +2,21 @@ package com.xlr8code.server.search.strategies;
 
 import com.xlr8code.server.search.enums.FilterOperation;
 import com.xlr8code.server.search.utils.FilterOperationDetails;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
-import java.util.Arrays;
+import jakarta.persistence.criteria.*;
 
 public class StringParsing extends ParsingStrategy {
 
     private static final String WILDCARD = "%";
 
-    private static CriteriaBuilder.In<String> getInClause(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, String casedValue) {
-        return criteriaBuilder.in(casedPath).value(Arrays.toString(casedValue.split(",")));
-    }
-
     @Override
     public Predicate buildPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, String value) {
         var isNegated = filterOperationDetails.negated();
         var isCaseInsensitive = filterOperationDetails.isCaseInsensitive();
-        var path = super.getPath(root, fieldName);
+        var path = super.getPath(root, fieldName).as(String.class);
         var operation = filterOperationDetails.filterOperation();
 
         var casedValue = isCaseInsensitive ? value.toLowerCase() : value;
-        var casedPath = criteriaBuilder.lower(path.as(String.class));
+        var casedPath = criteriaBuilder.lower(path);
 
         var predicate = getPredicate(criteriaBuilder, casedPath, operation, casedValue);
         if (predicate == null) {
@@ -41,8 +32,17 @@ public class StringParsing extends ParsingStrategy {
             case STARTS_WITH, ENDS_WITH, LIKE ->
                     criteriaBuilder.like(casedPath, getOperationPattern(filterOperation, casedValue));
             case IN -> getInClause(criteriaBuilder, casedPath, casedValue);
+
             default -> null;
         };
+    }
+
+    private static CriteriaBuilder.In<String> getInClause(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, String casedValue) {
+        var in = criteriaBuilder.in(casedPath);
+        for (var item : casedValue.split(",")) {
+            in.value(item);
+        }
+        return in;
     }
 
     private String getOperationPattern(FilterOperation operation, String value) {
