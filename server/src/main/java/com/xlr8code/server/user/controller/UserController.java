@@ -1,7 +1,7 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.search.FilterSpecification;
+import com.xlr8code.server.filter.FilterSpecification;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.repository.UserRepository;

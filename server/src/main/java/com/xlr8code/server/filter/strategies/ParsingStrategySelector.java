@@ -1,6 +1,7 @@
-package com.xlr8code.server.search.strategies;
+package com.xlr8code.server.filter.strategies;
 
 
+import com.xlr8code.server.filter.exception.NoStrategyDefinedException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,7 @@ public class ParsingStrategySelector {
             return new StringParsing();
         }
 
-        throw new IllegalArgumentException("Unsupported type: " + expectedType);
+        throw new NoStrategyDefinedException(wrapper.getSimpleName());
     }
 
 }

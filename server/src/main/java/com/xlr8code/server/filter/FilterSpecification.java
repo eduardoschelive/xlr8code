@@ -1,11 +1,14 @@
-package com.xlr8code.server.search;
+package com.xlr8code.server.filter;
 
 import com.xlr8code.server.common.utils.StringUtils;
-import com.xlr8code.server.search.annotation.Searchable;
-import com.xlr8code.server.search.enums.FilterOperation;
-import com.xlr8code.server.search.strategies.ParsingStrategySelector;
-import com.xlr8code.server.search.utils.FilterOperationDetails;
-import com.xlr8code.server.search.utils.SearchUtils;
+import com.xlr8code.server.filter.annotation.Searchable;
+import com.xlr8code.server.filter.enums.FilterOperation;
+import com.xlr8code.server.filter.exception.BadFilterFormatException;
+import com.xlr8code.server.filter.exception.NoSuchFilterableFieldException;
+import com.xlr8code.server.filter.exception.UnsupportedFilterOperationException;
+import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
+import com.xlr8code.server.filter.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.utils.SearchUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -16,7 +19,7 @@ import org.springframework.data.util.Pair;
 import java.util.List;
 import java.util.Map;
 
-import static com.xlr8code.server.search.utils.FilterConstants.*;
+import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
 public class FilterSpecification<E> implements Specification<E> {
 
@@ -26,7 +29,6 @@ public class FilterSpecification<E> implements Specification<E> {
     public FilterSpecification(Map<String, String> queryParameters, Class<E> targetClass) {
         this.queryParameters = queryParameters;
         this.searchableFields = SearchUtils.extractSearchableFields(targetClass);
-        System.out.println(this.searchableFields);
     }
 
     @Override
@@ -41,21 +43,13 @@ public class FilterSpecification<E> implements Specification<E> {
         String fieldPath = extractFieldPath(entry.getKey());
         String operation = extractOperation(entry.getKey());
 
-        if (fieldPath == null || operation == null || !isSupported(operation)) {
-            throw new IllegalArgumentException("Invalid search parameter: " + entry.getKey());
-        }
-
+        validateFilterParameter(fieldPath, operation);
         validateSearchableField(fieldPath);
+
         Class<?> expectedType = searchableFields.get(fieldPath).getSecond();
         var parser = ParsingStrategySelector.getStrategy(expectedType);
         var filterOperationDetails = fromSuffix(operation);
         return parser.buildPredicate(criteriaBuilder, root, fieldPath, filterOperationDetails, entry.getValue());
-    }
-
-    private void validateSearchableField(String fieldPath) {
-        if (!searchableFields.containsKey(fieldPath)) {
-            throw new IllegalArgumentException("No such searchable field: " + fieldPath);
-        }
     }
 
     private FilterOperationDetails fromSuffix(String suffix) {
@@ -74,6 +68,23 @@ public class FilterSpecification<E> implements Specification<E> {
         FilterOperation operation = FilterOperation.fromSuffix(lowerCaseSuffix);
 
         return new FilterOperationDetails(operation, negated, caseInsensitive);
+    }
+
+    private void validateFilterParameter(String fieldPath, String operation) {
+        if (fieldPath == null || operation == null) {
+            throw new BadFilterFormatException();
+        }
+
+        if (!isSupported(operation)) {
+            throw new UnsupportedFilterOperationException(operation);
+        }
+
+    }
+
+    private void validateSearchableField(String fieldPath) {
+        if (!searchableFields.containsKey(fieldPath)) {
+            throw new NoSuchFilterableFieldException(fieldPath);
+        }
     }
 
     private boolean isSupported(String suffix) {

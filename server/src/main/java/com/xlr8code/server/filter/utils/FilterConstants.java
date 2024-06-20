@@ -1,4 +1,4 @@
-package com.xlr8code.server.search.utils;
+package com.xlr8code.server.filter.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

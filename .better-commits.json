@@ -97,8 +97,8 @@
                 "label": "documentation"
             },
             {
-                "value": "search",
-                "label": "search"
+                "value": "filter",
+                "label": "filter"
             },
 	    {
                 "value": "",

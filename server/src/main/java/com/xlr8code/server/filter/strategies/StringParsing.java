@@ -1,7 +1,7 @@
-package com.xlr8code.server.search.strategies;
+package com.xlr8code.server.filter.strategies;
 
-import com.xlr8code.server.search.enums.FilterOperation;
-import com.xlr8code.server.search.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.enums.FilterOperation;
+import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import jakarta.persistence.criteria.*;
 
 public class StringParsing extends ParsingStrategy {

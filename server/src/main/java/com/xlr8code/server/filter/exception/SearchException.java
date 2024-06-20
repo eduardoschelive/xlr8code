@@ -1,4 +1,4 @@
-package com.xlr8code.server.search.exception;
+package com.xlr8code.server.filter.exception;
 
 public class SearchException extends Exception {
 

@@ -1,6 +1,6 @@
-package com.xlr8code.server.search.utils;
+package com.xlr8code.server.filter.utils;
 
-import com.xlr8code.server.search.enums.FilterOperation;
+import com.xlr8code.server.filter.enums.FilterOperation;
 
 public record FilterOperationDetails(
         FilterOperation filterOperation,

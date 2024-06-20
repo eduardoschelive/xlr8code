@@ -1,6 +1,7 @@
-package com.xlr8code.server.search.strategies;
+package com.xlr8code.server.filter.strategies;
 
-import com.xlr8code.server.search.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.exception.UnsupportedFilterOperationOnFieldException;
+import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -28,7 +29,7 @@ public abstract class ParsingStrategy {
             case IN -> getInClause(criteriaBuilder, path, value);
             case NULL -> criteriaBuilder.isNull(path);
             default ->
-                    throw new IllegalArgumentException("Unsupported operation: " + filterOperationDetails.filterOperation());
+                    throw new UnsupportedFilterOperationOnFieldException( filterOperationDetails.filterOperation().getSuffix(), fieldName);
         };
     }
 
