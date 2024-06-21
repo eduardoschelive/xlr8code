@@ -19,7 +19,11 @@ public class ParsingStrategySelector {
         var wrapper = getWrapper(expectedType);
 
         if (wrapper == String.class) {
-            return new StringParsing();
+            return new StringParsingStrategy();
+        }
+
+        if (wrapper == Boolean.class) {
+            return new BooleanParsingStrategy();
         }
 
         throw new NoStrategyDefinedException(wrapper.getSimpleName());

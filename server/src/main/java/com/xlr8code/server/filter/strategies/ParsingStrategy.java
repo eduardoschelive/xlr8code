@@ -13,32 +13,22 @@ public abstract class ParsingStrategy {
                                     Root<?> root,
                                     String fieldName,
                                     FilterOperationDetails filterOperationDetails,
-                                    String value
+                                    Object value
     ) {
         var isNegated = filterOperationDetails.negated();
 
         var predicate = getPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, value);
-
         return isNegated ? criteriaBuilder.not(predicate) : predicate;
     }
 
-    private Predicate getPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, String value) {
+    private Predicate getPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
         var path = getPath(root, fieldName);
         return switch (filterOperationDetails.filterOperation()) {
             case EQUALITY -> criteriaBuilder.equal(path, value);
-            case IN -> getInClause(criteriaBuilder, path, value);
             case NULL -> criteriaBuilder.isNull(path);
             default ->
                     throw new UnsupportedFilterOperationOnFieldException( filterOperationDetails.filterOperation().getSuffix(), fieldName);
         };
-    }
-
-    public CriteriaBuilder.In<Object> getInClause(CriteriaBuilder criteriaBuilder, Path<?> path, String value) {
-        var inClause = criteriaBuilder.in(path.as(Object.class));
-        for (var item : value.split(",")) {
-            inClause.value(item);
-        }
-        return inClause;
     }
 
     public Path<Object> getPath(Root<?> root, String fieldName) {
