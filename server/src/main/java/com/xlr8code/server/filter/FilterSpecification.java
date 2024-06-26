@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -29,6 +30,10 @@ public class FilterSpecification<E> implements Specification<E> {
         this.queryParameters = queryParameters;
         this.searchableFields = FilterUtils.extractFilterableFields(targetClass);
         System.out.println("searchableFields: " + searchableFields);
+    }
+
+    public PageRequest getPageRequest() {
+        return PageRequest.of(0, 10);
     }
 
     @Override

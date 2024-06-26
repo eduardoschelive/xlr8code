@@ -10,6 +10,8 @@ import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,9 +31,10 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
-        Specification<User> specification = new FilterSpecification<>(queryParameters, User.class);
-        var response = this.userRepository.findAll(specification).stream().map(UserDTO::from).toList();
+    public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters, Pageable pageable) {
+        var response = userRepository.findAll(queryParameters, pageable, User.class)
+                .map(UserDTO::from);
+
         return ResponseEntity.ok(response);
     }
 
