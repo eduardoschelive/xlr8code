@@ -29,6 +29,7 @@ public class FilterSpecification<E> implements Specification<E> {
     public FilterSpecification(Map<String, String> queryParameters, Class<E> targetClass) {
         this.queryParameters = queryParameters;
         this.searchableFields = SearchUtils.extractSearchableFields(targetClass);
+        System.out.println("searchableFields: " + searchableFields);
     }
 
     @Override

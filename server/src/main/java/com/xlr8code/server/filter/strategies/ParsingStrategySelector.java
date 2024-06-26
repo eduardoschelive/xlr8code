@@ -4,6 +4,7 @@ package com.xlr8code.server.filter.strategies;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.filter.exception.NoStrategyDefinedException;
+import com.xlr8code.server.user.utils.UserRole;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,8 @@ public class ParsingStrategySelector {
             String.class, new StringParsingStrategy(),
             Boolean.class, new BooleanParsingStrategy(),
             Theme.class, new EnumParsingStrategy<>(Theme::fromCode),
-            Language.class, new EnumParsingStrategy<>(Language::fromCode)
+            Language.class, new EnumParsingStrategy<>(Language::fromCode),
+            UserRole.class, new EnumParsingStrategy<>(UserRole::valueOf)
     );
 
     public static ParsingStrategy getStrategy(Class<?> expectedType) {
