@@ -53,11 +53,11 @@ public class User extends AuditableEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @NestedSearchable
     private UserMetadata metadata;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @NestedSearchable
     private UserPreferences preferences;
 
     @ManyToMany(fetch = FetchType.EAGER)

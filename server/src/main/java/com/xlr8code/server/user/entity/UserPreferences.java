@@ -2,6 +2,7 @@ package com.xlr8code.server.user.entity;
 
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
+import com.xlr8code.server.filter.annotation.Searchable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,10 +28,12 @@ public class UserPreferences {
 
     @Column(name = "language", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Searchable
     private Language language;
 
     @Column(name = "theme", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Searchable
     private Theme theme;
 
 }

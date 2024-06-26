@@ -18,7 +18,7 @@ public class StringParsingStrategy extends ParsingStrategy {
         var stringValue = (String) value;
 
         var casedValue = isCaseInsensitive ? stringValue.toLowerCase() : stringValue;
-        var casedPath = criteriaBuilder.lower(path);
+        var casedPath = isCaseInsensitive ? criteriaBuilder.lower(path) : path;
 
         var predicate = getPredicate(criteriaBuilder, casedPath, operation, casedValue);
         if (predicate == null) {

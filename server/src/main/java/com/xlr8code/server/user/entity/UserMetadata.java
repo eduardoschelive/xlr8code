@@ -24,7 +24,6 @@ public class UserMetadata {
     @MapsId
     private User user;
 
-    @Searchable
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
