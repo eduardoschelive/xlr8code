@@ -28,12 +28,10 @@ public class UserPreferences {
 
     @Column(name = "language", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Searchable
     private Language language;
 
     @Column(name = "theme", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Searchable
     private Theme theme;
 
 }

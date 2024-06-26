@@ -14,10 +14,6 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParsingStrategySelector {
 
-    private static Class<?> getWrapper(Class<?> expectedType) {
-        return MethodType.methodType(expectedType).wrap().returnType();
-    }
-
     private static final Map<Class<?>, ParsingStrategy> STRATEGIES = Map.of(
             String.class, new StringParsingStrategy(),
             Boolean.class, new BooleanParsingStrategy(),
@@ -25,6 +21,10 @@ public class ParsingStrategySelector {
             Language.class, new EnumParsingStrategy<>(Language::fromCode),
             UserRole.class, new EnumParsingStrategy<>(UserRole::valueOf)
     );
+
+    private static Class<?> getWrapper(Class<?> expectedType) {
+        return MethodType.methodType(expectedType).wrap().returnType();
+    }
 
     public static ParsingStrategy getStrategy(Class<?> expectedType) {
         var wrapper = getWrapper(expectedType);

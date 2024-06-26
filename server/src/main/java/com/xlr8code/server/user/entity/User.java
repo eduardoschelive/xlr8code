@@ -44,7 +44,6 @@ public class User extends AuditableEntity implements UserDetails {
     @Embedded
     private UserPassword userPassword;
 
-    @Searchable
     @Column(name = "active", nullable = false)
     private boolean active;
 
@@ -57,7 +56,6 @@ public class User extends AuditableEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @NestedSearchable
     private UserPreferences preferences;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -66,7 +64,6 @@ public class User extends AuditableEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     )
-    @NestedSearchable
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

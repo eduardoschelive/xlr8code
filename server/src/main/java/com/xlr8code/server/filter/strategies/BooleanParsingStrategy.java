@@ -7,15 +7,15 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public class BooleanParsingStrategy extends ParsingStrategy{
+public class BooleanParsingStrategy extends ParsingStrategy {
 
     @Override
     public Predicate buildPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
-       var stringValue = value.toString().trim();
+        var stringValue = value.toString().trim();
 
-       if (filterOperationDetails.filterOperation().equals(FilterOperation.NULL)) {
-           return super.buildPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, null);
-         }
+        if (filterOperationDetails.filterOperation().equals(FilterOperation.NULL)) {
+            return super.buildPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, null);
+        }
 
         if (!isValidBoolean(stringValue)) {
             throw new InvalidBooleanFilterValueException(stringValue);

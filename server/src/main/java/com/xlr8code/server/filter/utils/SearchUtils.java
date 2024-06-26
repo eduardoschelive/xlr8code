@@ -4,7 +4,6 @@ import com.xlr8code.server.filter.annotation.NestedSearchable;
 import com.xlr8code.server.filter.annotation.Searchable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.springframework.data.util.Pair;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -16,23 +15,25 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SearchUtils {
 
-    public static Map<String, Pair<Searchable, Class<?>>> extractSearchableFields(Class<?> targetClass) {
-        Map<String, Pair<Searchable, Class<?>>> searchableFields = new HashMap<>();
-        Deque<String> fieldPathStack = new ArrayDeque<>();
+    public static Map<String, FilterableFieldDetails> extractSearchableFields(Class<?> targetClass) {
+        Map<String, FilterableFieldDetails> searchableFields = new HashMap<>();
+        var fieldPathStack = new ArrayDeque<String>();
         traverseFields(fieldPathStack, targetClass, searchableFields);
         return searchableFields;
     }
 
-    private static void traverseFields(Deque<String> fieldPathStack, Class<?> currentClass, Map<String, Pair<Searchable, Class<?>>> searchableFields) {
-        for (Field field : currentClass.getDeclaredFields()) {
+    private static void traverseFields(Deque<String> fieldPathStack, Class<?> currentClass, Map<String, FilterableFieldDetails> searchableFields) {
+        for (var field : currentClass.getDeclaredFields()) {
             evaluateField(field, fieldPathStack, searchableFields);
         }
     }
 
-    private static void evaluateField(Field field, Deque<String> fieldPathStack, Map<String, Pair<Searchable, Class<?>>> searchableFields) {
+    private static void evaluateField(Field field, Deque<String> fieldPathStack, Map<String, FilterableFieldDetails> searchableFields) {
         if (field.isAnnotationPresent(Searchable.class)) {
-            String fullPath = constructFieldPath(fieldPathStack, field.getName());
-            searchableFields.put(fullPath, Pair.of(field.getAnnotation(Searchable.class), field.getType()));
+            var annotation = field.getAnnotation(Searchable.class);
+            var fullPath = constructFieldPath(fieldPathStack, field.getName());
+            var customPath = annotation.customPath().isBlank() ? fullPath : annotation.customPath();
+            searchableFields.put(customPath, new FilterableFieldDetails(field.getType(), fullPath));
         }
 
         if (field.isAnnotationPresent(NestedSearchable.class)) {

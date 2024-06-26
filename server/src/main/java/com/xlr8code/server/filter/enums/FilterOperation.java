@@ -26,10 +26,9 @@ public enum FilterOperation {
     EMPTY("empty"),
     BETWEEN("btw");
 
-    private final String suffix;
-
     public static final Map<String, FilterOperation> OPERATIONS_MAP = Arrays.stream(FilterOperation.values())
             .collect(Collectors.toMap(FilterOperation::getSuffix, Function.identity()));
+    private final String suffix;
 
     public static FilterOperation fromSuffix(String suffix) {
         return OPERATIONS_MAP.get(suffix);

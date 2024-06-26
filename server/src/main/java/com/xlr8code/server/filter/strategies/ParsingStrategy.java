@@ -27,7 +27,7 @@ public abstract class ParsingStrategy {
             case EQUALITY -> criteriaBuilder.equal(path, value);
             case NULL -> criteriaBuilder.isNull(path);
             default ->
-                    throw new UnsupportedFilterOperationOnFieldException( filterOperationDetails.filterOperation().getSuffix(), fieldName);
+                    throw new UnsupportedFilterOperationOnFieldException(filterOperationDetails.filterOperation().getSuffix(), fieldName);
         };
     }
 

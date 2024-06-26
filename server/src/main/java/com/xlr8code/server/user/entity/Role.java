@@ -18,7 +18,6 @@ public class Role {
     @Column(name = "role_id", nullable = false, updatable = false, unique = true, columnDefinition = "SERIAL")
     private Long id;
 
-    @Searchable
     @Column(name = "name", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private UserRole userRole;

@@ -6,21 +6,21 @@ import org.springframework.http.HttpStatus;
 
 public class UnsupportedFilterOperationException extends ApplicationException {
 
-        public UnsupportedFilterOperationException(String operation) {
-            super("UNSUPPORTED_FILTER_OPERATION", operation, getSupportedOperations());
-        }
+    public UnsupportedFilterOperationException(String operation) {
+        super("UNSUPPORTED_FILTER_OPERATION", operation, getSupportedOperations());
+    }
 
-        @Override
-        public String getMessageIdentifier() {
-            return "filter.error.unsupported_filter_operation";
-        }
+    private static String getSupportedOperations() {
+        return String.join(", ", FilterOperation.OPERATIONS_MAP.keySet());
+    }
 
-        public HttpStatus getHttpStatus() {
-            return HttpStatus.BAD_REQUEST;
-        }
+    @Override
+    public String getMessageIdentifier() {
+        return "filter.error.unsupported_filter_operation";
+    }
 
-        private static String getSupportedOperations() {
-            return String.join(", ", FilterOperation.OPERATIONS_MAP.keySet());
-        }
+    public HttpStatus getHttpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
 
 }

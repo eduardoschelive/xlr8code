@@ -1,6 +1,5 @@
 package com.xlr8code.server.user.entity;
 
-import com.xlr8code.server.filter.annotation.Searchable;
 import jakarta.persistence.*;
 import lombok.*;
 
