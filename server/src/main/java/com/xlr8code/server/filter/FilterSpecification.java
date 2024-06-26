@@ -8,7 +8,7 @@ import com.xlr8code.server.filter.exception.UnsupportedFilterOperationException;
 import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import com.xlr8code.server.filter.utils.FilterableFieldDetails;
-import com.xlr8code.server.filter.utils.SearchUtils;
+import com.xlr8code.server.filter.utils.FilterUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -27,7 +27,7 @@ public class FilterSpecification<E> implements Specification<E> {
 
     public FilterSpecification(Map<String, String> queryParameters, Class<E> targetClass) {
         this.queryParameters = queryParameters;
-        this.searchableFields = SearchUtils.extractSearchableFields(targetClass);
+        this.searchableFields = FilterUtils.extractFilterableFields(targetClass);
         System.out.println("searchableFields: " + searchableFields);
     }
 

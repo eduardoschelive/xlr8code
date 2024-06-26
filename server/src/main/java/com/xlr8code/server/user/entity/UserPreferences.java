@@ -2,7 +2,6 @@ package com.xlr8code.server.user.entity;
 
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
-import com.xlr8code.server.filter.annotation.Searchable;
 import jakarta.persistence.*;
 import lombok.*;
 
