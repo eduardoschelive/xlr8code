@@ -8,12 +8,11 @@ import com.xlr8code.server.filter.exception.UnsupportedFilterOperationException;
 import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import com.xlr8code.server.filter.utils.FilterableFieldDetails;
-import com.xlr8code.server.filter.utils.FilterUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.data.domain.PageRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -21,20 +20,11 @@ import java.util.Map;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
+@RequiredArgsConstructor
 public class FilterSpecification<E> implements Specification<E> {
 
     private final Map<String, String> queryParameters;
-    private final Map<String, FilterableFieldDetails> searchableFields;
-
-    public FilterSpecification(Map<String, String> queryParameters, Class<E> targetClass) {
-        this.queryParameters = queryParameters;
-        this.searchableFields = FilterUtils.extractFilterableFields(targetClass);
-        System.out.println("searchableFields: " + searchableFields);
-    }
-
-    public PageRequest getPageRequest() {
-        return PageRequest.of(0, 10);
-    }
+    private final Map<String, FilterableFieldDetails> fieldDetailsMap;
 
     @Override
     public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -51,7 +41,7 @@ public class FilterSpecification<E> implements Specification<E> {
         validateFilterParameter(fieldPath, operation);
         validateSearchableField(fieldPath);
 
-        var filterableFieldDetails = searchableFields.get(fieldPath);
+        var filterableFieldDetails = fieldDetailsMap.get(fieldPath);
 
         var expectedType = filterableFieldDetails.fieldType();
         var parser = ParsingStrategySelector.getStrategy(expectedType);
@@ -60,7 +50,7 @@ public class FilterSpecification<E> implements Specification<E> {
     }
 
     private FilterOperationDetails fromSuffix(String suffix) {
-        String lowerCaseSuffix = suffix.toLowerCase();
+        var lowerCaseSuffix = suffix.toLowerCase();
         boolean negated = lowerCaseSuffix.startsWith(NEGATION_PREFIX);
         boolean caseInsensitive = lowerCaseSuffix.endsWith(CASE_INSENSITIVE_SUFFIX);
 
@@ -72,7 +62,7 @@ public class FilterSpecification<E> implements Specification<E> {
             lowerCaseSuffix = StringUtils.stripSuffix(lowerCaseSuffix, CASE_INSENSITIVE_SUFFIX);
         }
 
-        FilterOperation operation = FilterOperation.fromSuffix(lowerCaseSuffix);
+        var operation = FilterOperation.fromSuffix(lowerCaseSuffix);
 
         return new FilterOperationDetails(operation, negated, caseInsensitive);
     }
@@ -89,7 +79,7 @@ public class FilterSpecification<E> implements Specification<E> {
     }
 
     private void validateSearchableField(String fieldPath) {
-        if (!searchableFields.containsKey(fieldPath)) {
+        if (!fieldDetailsMap.containsKey(fieldPath)) {
             throw new NoSuchFilterableFieldException(fieldPath);
         }
     }
