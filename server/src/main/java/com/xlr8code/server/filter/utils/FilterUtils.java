@@ -1,7 +1,7 @@
 package com.xlr8code.server.filter.utils;
 
-import com.xlr8code.server.filter.annotation.NestedFilterable;
 import com.xlr8code.server.filter.annotation.Filterable;
+import com.xlr8code.server.filter.annotation.NestedFilterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

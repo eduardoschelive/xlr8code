@@ -19,7 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 import java.util.Map;
 
-import static com.xlr8code.server.filter.utils.FilterConstants.*;
+import static com.xlr8code.server.filter.utils.FilterConstants.CASE_INSENSITIVE_SUFFIX;
+import static com.xlr8code.server.filter.utils.FilterConstants.NEGATION_PREFIX;
 
 @RequiredArgsConstructor
 public class FilterSpecification<E> implements Specification<E> {

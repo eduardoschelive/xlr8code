@@ -8,6 +8,7 @@ public class PageNumberFormatException extends ApplicationException {
     public PageNumberFormatException(String parameterName) {
         super("FILTER_ERROR_PAGE_NUMBER_FORMAT", parameterName);
     }
+
     @Override
     public String getMessageIdentifier() {
         return "filter.error.invalid_page_number_format";

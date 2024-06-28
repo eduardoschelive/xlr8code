@@ -17,9 +17,7 @@ public class FilterPagination {
         int page = this.parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
         int size = this.parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
 
-        var zeroBasedPage = zeroBaseIndexPage(page);
-
-        return PageRequest.of(zeroBasedPage, size);
+        return PageRequest.of(page, size);
     }
 
     private int parseIntegerParameter(String parameterName, int defaultValue) {
@@ -36,15 +34,6 @@ public class FilterPagination {
         } catch (NumberFormatException e) {
             throw new PageNumberFormatException(value);
         }
-    }
-
-    /**
-     * Normalize page parameter to 0-based index
-     * @param page - 1-based index
-     * @return  0-based index
-     */
-    private int zeroBaseIndexPage(int page) {
-        return page - 1;
     }
 
 }

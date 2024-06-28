@@ -11,15 +11,18 @@ import static com.xlr8code.server.filter.utils.FilterConstants.*;
 @Getter
 public class QueryParameterDetails {
 
+    private static final List<String> PAGINATION_PARAMS = List.of(PAGE_PARAM, SIZE_PARAM);
+    private static final String SORT_SUFFIX = SEARCH_PARAM_SEPARATOR + SORT_PARAM;
     private final Map<String, String> filterParameters = new HashMap<>();
     private final Map<String, String> paginationParameters = new HashMap<>();
     private final Map<String, String> sortParameters = new HashMap<>();
 
-    private static final List<String> PAGINATION_PARAMS = List.of(PAGE_PARAM, SIZE_PARAM);
-    private static final String SORT_SUFFIX = SEARCH_PARAM_SEPARATOR + SORT_PARAM;
-
     public QueryParameterDetails(Map<String, String> parameters) {
         splitParameters(parameters);
+    }
+
+    private static boolean isSortParameter(String key) {
+        return key.endsWith(SORT_SUFFIX);
     }
 
     private void splitParameters(Map<String, String> parameters) {
@@ -35,10 +38,6 @@ public class QueryParameterDetails {
                 filterParameters.put(key, value);
             }
         }
-    }
-
-    private static boolean isSortParameter(String key) {
-        return key.endsWith(SORT_SUFFIX);
     }
 
     private boolean isPaginationParameter(String key) {

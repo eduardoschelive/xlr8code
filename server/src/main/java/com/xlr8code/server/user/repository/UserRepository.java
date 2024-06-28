@@ -3,7 +3,6 @@ package com.xlr8code.server.user.repository;
 import com.xlr8code.server.filter.repository.FilterRepository;
 import com.xlr8code.server.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

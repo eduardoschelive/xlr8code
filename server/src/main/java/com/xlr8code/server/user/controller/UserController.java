@@ -10,7 +10,6 @@ import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +30,6 @@ public class UserController {
     public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
         var response = userRepository.findAll(queryParameters, User.class)
                 .map(UserDTO::from);
-
-        System.out.println(response.getClass());
 
         return ResponseEntity.ok(response);
     }

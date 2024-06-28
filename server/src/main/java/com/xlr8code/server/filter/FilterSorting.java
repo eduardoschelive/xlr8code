@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import java.util.Map;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.ACCEPTED_SORT_VALUES;
-import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPARATOR;
 
 @RequiredArgsConstructor
 public class FilterSorting {
