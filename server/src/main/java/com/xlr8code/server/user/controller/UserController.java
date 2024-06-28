@@ -28,9 +28,11 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters, Pageable pageable) {
-        var response = userRepository.findAll(queryParameters, pageable, User.class)
+    public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
+        var response = userRepository.findAll(queryParameters, User.class)
                 .map(UserDTO::from);
+
+        System.out.println(response.getClass());
 
         return ResponseEntity.ok(response);
     }

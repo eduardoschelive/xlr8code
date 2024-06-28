@@ -3,20 +3,19 @@ package com.xlr8code.server.filter.exception;
 import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
-public class NoStrategyDefinedException extends ApplicationException {
+public class InvalidSortDirectionException extends ApplicationException {
 
-    public NoStrategyDefinedException(String fieldName) {
-        super("NO_STRATEGY_DEFINED", fieldName);
+    public InvalidSortDirectionException(String direction) {
+        super("INVALID_SORT_DIRECTION", direction);
     }
 
     @Override
     public String getMessageIdentifier() {
-        return "filter.error.no_strategy_defined";
+        return "filter.error.invalid_sort_direction";
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return HttpStatus.BAD_REQUEST;
     }
-
 }

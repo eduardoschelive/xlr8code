@@ -3,20 +3,19 @@ package com.xlr8code.server.filter.exception;
 import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
-public class NoStrategyDefinedException extends ApplicationException {
+public class NoSuchSortableFieldException extends ApplicationException {
 
-    public NoStrategyDefinedException(String fieldName) {
-        super("NO_STRATEGY_DEFINED", fieldName);
+    public NoSuchSortableFieldException(String fieldName) {
+        super("NO_SUCH_SORTABLE_FIELD", fieldName);
     }
 
     @Override
     public String getMessageIdentifier() {
-        return "filter.error.no_strategy_defined";
+        return "filter.error.no_such_sortable_field";
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return HttpStatus.BAD_REQUEST;
     }
-
 }

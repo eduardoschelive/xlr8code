@@ -10,7 +10,7 @@ public class PageNumberFormatException extends ApplicationException {
     }
     @Override
     public String getMessageIdentifier() {
-        return "filter.error.page-number-format";
+        return "filter.error.invalid_page_number_format";
     }
 
     @Override

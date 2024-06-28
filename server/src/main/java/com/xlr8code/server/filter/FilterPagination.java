@@ -6,8 +6,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Map;
 
-import static com.xlr8code.server.filter.utils.FilterConstants.PAGE_PARAM;
-import static com.xlr8code.server.filter.utils.FilterConstants.SIZE_PARAM;
+import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
 @RequiredArgsConstructor
 public class FilterPagination {
@@ -15,15 +14,18 @@ public class FilterPagination {
     private final Map<String, String> paginationParams;
 
     public PageRequest getPageRequest() {
-        int page = this.parseIntegerParameter(PAGE_PARAM);
-        int size = this.parseIntegerParameter(SIZE_PARAM);
-        return PageRequest.of(page, size);
+        int page = this.parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
+        int size = this.parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
+
+        var zeroBasedPage = zeroBaseIndexPage(page);
+
+        return PageRequest.of(zeroBasedPage, size);
     }
 
-    public int parseIntegerParameter(String parameterName) {
-        String value = paginationParams.get(parameterName);
+    private int parseIntegerParameter(String parameterName, int defaultValue) {
+        var value = paginationParams.get(parameterName);
         if (value == null) {
-            throw new PageNumberFormatException(null);
+            return defaultValue;
         }
         try {
             int parsedValue = Integer.parseInt(value);
@@ -34,6 +36,15 @@ public class FilterPagination {
         } catch (NumberFormatException e) {
             throw new PageNumberFormatException(value);
         }
+    }
+
+    /**
+     * Normalize page parameter to 0-based index
+     * @param page - 1-based index
+     * @return  0-based index
+     */
+    private int zeroBaseIndexPage(int page) {
+        return page - 1;
     }
 
 }
