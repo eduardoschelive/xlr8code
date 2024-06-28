@@ -2,6 +2,7 @@ package com.xlr8code.server.filter;
 
 import com.xlr8code.server.filter.exception.InvalidSortDirectionException;
 import com.xlr8code.server.filter.exception.NoSuchSortableFieldException;
+import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.filter.utils.FilterableFieldDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -22,8 +23,8 @@ public class FilterSorting {
         var sortBuilder = Sort.unsorted();
 
         for (Map.Entry<String, String> entry : sortingParams.entrySet()) {
-            String key = extractFieldPath(entry.getKey());
-            String value = entry.getValue();
+            var key = FilterUtils.extractFieldPath(entry.getKey());
+            var value = entry.getValue();
 
             if (!isSortField(key)) {
                 throw new NoSuchSortableFieldException(key);
@@ -47,12 +48,6 @@ public class FilterSorting {
 
     private boolean isValidSortOrder(String order) {
         return ACCEPTED_SORT_VALUES.contains(order);
-    }
-
-    // TODO: reuse of function in FilterPagination.java
-    private String extractFieldPath(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
-        return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
     }
 
 }

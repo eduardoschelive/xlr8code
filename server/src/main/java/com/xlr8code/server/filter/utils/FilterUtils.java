@@ -12,6 +12,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPARATOR;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterUtils {
 
@@ -55,6 +57,14 @@ public class FilterUtils {
         return (Class<?>) type;
     }
 
+    public static String extractFieldPath(String key) {
+        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
+    }
 
+    public static String extractOperation(String key) {
+        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
+    }
 
 }

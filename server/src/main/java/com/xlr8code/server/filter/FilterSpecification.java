@@ -7,6 +7,7 @@ import com.xlr8code.server.filter.exception.NoSuchFilterableFieldException;
 import com.xlr8code.server.filter.exception.UnsupportedFilterOperationException;
 import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.filter.utils.FilterableFieldDetails;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -35,8 +36,8 @@ public class FilterSpecification<E> implements Specification<E> {
     }
 
     private Predicate createPredicate(Map.Entry<String, String> entry, Root<E> root, CriteriaBuilder criteriaBuilder) {
-        String fieldPath = extractFieldPath(entry.getKey());
-        String operation = extractOperation(entry.getKey());
+        String fieldPath = FilterUtils.extractFieldPath(entry.getKey());
+        String operation = FilterUtils.extractOperation(entry.getKey());
 
         validateFilterParameter(fieldPath, operation);
         validateSearchableField(fieldPath);
@@ -94,16 +95,6 @@ public class FilterSpecification<E> implements Specification<E> {
         result = StringUtils.stripPrefix(result, NEGATION_PREFIX);
         result = StringUtils.stripSuffix(result, CASE_INSENSITIVE_SUFFIX);
         return result;
-    }
-
-    private String extractFieldPath(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
-        return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
-    }
-
-    private String extractOperation(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
-        return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
     }
 
 }
