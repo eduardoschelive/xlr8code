@@ -24,14 +24,12 @@ public class UserController {
     private final UserService userService;
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
-    private final UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
-        var response = userRepository.findAll(queryParameters, User.class)
-                .map(UserDTO::from);
+        var users = this.userService.findAll(queryParameters);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
