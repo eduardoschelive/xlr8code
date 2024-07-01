@@ -17,7 +17,7 @@ public class FilterConstants {
     public static final String SORT_PARAM = "sort";
 
     public static final int DEFAULT_PAGE = 0;
-    public static final int DEFAULT_SIZE = 20;
+    public static final int DEFAULT_SIZE = 10;
 
     public static final List<String> ACCEPTED_SORT_VALUES = List.of("asc", "desc");
 
