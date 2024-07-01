@@ -1,5 +1,6 @@
 package com.xlr8code.server.filter;
 
+import com.xlr8code.server.common.utils.PageUtils;
 import com.xlr8code.server.filter.exception.PageNumberFormatException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -14,8 +15,8 @@ public class FilterPagination {
     private final Map<String, String> paginationParams;
 
     public PageRequest getPageRequest() {
-        int page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
-        int size = parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
+        var page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
+        var size = parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
 
         return PageRequest.of(page, size);
     }
@@ -31,12 +32,16 @@ public class FilterPagination {
     private int parseValue(String value) {
         try {
             var parsedValue = Integer.parseInt(value);
-            if (parsedValue < 0) {
+            var zeroIndexValue = PageUtils.zeroIndexPage(parsedValue);
+
+            if (zeroIndexValue < 0) {
                 throw new PageNumberFormatException(value);
             }
-            return parsedValue;
+
+            return zeroIndexValue;
         } catch (NumberFormatException e) {
             throw new PageNumberFormatException(value);
         }
     }
+
 }
