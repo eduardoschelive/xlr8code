@@ -17,25 +17,25 @@ import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPA
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterUtils {
 
-    public static Map<String, FilterableFieldDetails> extractFilterableFields(Class<?> targetClass) {
-        Map<String, FilterableFieldDetails> fieldDetailsHashMap = new HashMap<>();
+    public static Map<String, FilterFieldDetails> extractFilterableFields(Class<?> targetClass) {
+        Map<String, FilterFieldDetails> fieldDetailsHashMap = new HashMap<>();
         var fieldPathStack = new ArrayDeque<String>();
         traverseFields(fieldPathStack, targetClass, fieldDetailsHashMap);
         return fieldDetailsHashMap;
     }
 
-    private static void traverseFields(Deque<String> fieldPathStack, Class<?> currentClass, Map<String, FilterableFieldDetails> fieldDetailsHashMap) {
+    private static void traverseFields(Deque<String> fieldPathStack, Class<?> currentClass, Map<String, FilterFieldDetails> fieldDetailsHashMap) {
         for (var field : currentClass.getDeclaredFields()) {
             evaluateField(field, fieldPathStack, fieldDetailsHashMap);
         }
     }
 
-    private static void evaluateField(Field field, Deque<String> fieldPathStack, Map<String, FilterableFieldDetails> fieldDetailsHashMap) {
+    private static void evaluateField(Field field, Deque<String> fieldPathStack, Map<String, FilterFieldDetails> fieldDetailsHashMap) {
         if (field.isAnnotationPresent(Filterable.class)) {
             var annotation = field.getAnnotation(Filterable.class);
             var fullPath = constructFieldPath(fieldPathStack, field.getName());
             var customPath = annotation.customPath().isBlank() ? fullPath : annotation.customPath();
-            fieldDetailsHashMap.put(customPath, new FilterableFieldDetails(field.getType(), fullPath));
+            fieldDetailsHashMap.put(customPath, new FilterFieldDetails(field.getType(), fullPath));
         }
 
         if (field.isAnnotationPresent(NestedFilterable.class)) {

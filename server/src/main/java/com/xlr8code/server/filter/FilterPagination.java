@@ -14,8 +14,8 @@ public class FilterPagination {
     private final Map<String, String> paginationParams;
 
     public PageRequest getPageRequest() {
-        int page = this.parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
-        int size = this.parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
+        int page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
+        int size = parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
 
         return PageRequest.of(page, size);
     }
@@ -25,8 +25,12 @@ public class FilterPagination {
         if (value == null) {
             return defaultValue;
         }
+        return parseValue(value);
+    }
+
+    private int parseValue(String value) {
         try {
-            int parsedValue = Integer.parseInt(value);
+            var parsedValue = Integer.parseInt(value);
             if (parsedValue < 0) {
                 throw new PageNumberFormatException(value);
             }
@@ -35,5 +39,4 @@ public class FilterPagination {
             throw new PageNumberFormatException(value);
         }
     }
-
 }

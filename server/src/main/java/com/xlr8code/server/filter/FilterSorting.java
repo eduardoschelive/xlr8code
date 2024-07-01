@@ -2,8 +2,8 @@ package com.xlr8code.server.filter;
 
 import com.xlr8code.server.filter.exception.InvalidSortDirectionException;
 import com.xlr8code.server.filter.exception.NoSuchSortableFieldException;
+import com.xlr8code.server.filter.utils.FilterFieldDetails;
 import com.xlr8code.server.filter.utils.FilterUtils;
-import com.xlr8code.server.filter.utils.FilterableFieldDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
@@ -15,11 +15,10 @@ import static com.xlr8code.server.filter.utils.FilterConstants.ACCEPTED_SORT_VAL
 public class FilterSorting {
 
     private final Map<String, String> sortingParams;
-    private final Map<String, FilterableFieldDetails> filterDetailsMap;
-
+    private final Map<String, FilterFieldDetails> filterDetailsMap;
 
     public Sort getSort() {
-        var sortBuilder = Sort.unsorted();
+        var initialSort = Sort.unsorted();
 
         for (Map.Entry<String, String> entry : sortingParams.entrySet()) {
             var key = FilterUtils.extractFieldPath(entry.getKey());
@@ -33,12 +32,16 @@ public class FilterSorting {
                 throw new InvalidSortDirectionException(value);
             }
 
-            var field = filterDetailsMap.get(key).fieldPath();
-            var direction = Sort.Direction.fromString(value);
-            sortBuilder = sortBuilder.and(Sort.by(direction, field));
+            initialSort = addSortByField(initialSort, key, value);
         }
 
-        return sortBuilder;
+        return initialSort;
+    }
+
+    private Sort addSortByField(Sort sortBuilder, String key, String value) {
+        var field = filterDetailsMap.get(key).fieldPath();
+        var direction = Sort.Direction.fromString(value);
+        return sortBuilder.and(Sort.by(direction, field));
     }
 
     private boolean isSortField(String key) {
