@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class PageNumberFormatException extends ApplicationException {
 
     public PageNumberFormatException(String parameterName) {
-        super("FILTER_ERROR_PAGE_NUMBER_FORMAT", parameterName);
+        super("PAGE_NUMBER_FORMAT", parameterName);
     }
 
     @Override

@@ -2,10 +2,12 @@ package com.xlr8code.server.filter;
 
 import com.xlr8code.server.common.utils.PageUtils;
 import com.xlr8code.server.filter.exception.PageNumberFormatException;
+import com.xlr8code.server.filter.exception.PageSizeFormatException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
@@ -15,32 +17,40 @@ public class FilterPagination {
     private final Map<String, String> paginationParams;
 
     public PageRequest getPageRequest() {
-        var page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE);
-        var size = parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE);
+        var page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE, PageNumberFormatException::new);
+        validatePageNumber(page);
 
-        return PageRequest.of(page, size);
+        var size = parseIntegerParameter(SIZE_PARAM, DEFAULT_SIZE, PageSizeFormatException::new);
+        validatePageSize(size);
+
+        var zeroBasedPage = PageUtils.zeroIndexPage(page);
+
+        return PageRequest.of(zeroBasedPage, size);
     }
 
-    private int parseIntegerParameter(String parameterName, int defaultValue) {
+    private int parseIntegerParameter(String parameterName, int defaultValue, Function<String, RuntimeException> exceptionSupplier) {
         var value = paginationParams.get(parameterName);
+
         if (value == null) {
             return defaultValue;
         }
-        return parseValue(value);
+
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw exceptionSupplier.apply(parameterName);
+        }
     }
 
-    private int parseValue(String value) {
-        try {
-            var parsedValue = Integer.parseInt(value);
-            var zeroIndexValue = PageUtils.zeroIndexPage(parsedValue);
+    private void validatePageSize(int size) {
+        if (size < 1 || size > MAX_SIZE) {
+            throw new PageSizeFormatException(SIZE_PARAM);
+        }
+    }
 
-            if (zeroIndexValue < 0) {
-                throw new PageNumberFormatException(value);
-            }
-
-            return zeroIndexValue;
-        } catch (NumberFormatException e) {
-            throw new PageNumberFormatException(value);
+    private void validatePageNumber(int page) {
+        if (page < 1) {
+            throw new PageNumberFormatException(PAGE_PARAM);
         }
     }
 
