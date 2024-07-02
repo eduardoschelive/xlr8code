@@ -8,7 +8,7 @@ import static com.xlr8code.server.filter.utils.FilterConstants.MAX_SIZE;
 public class PageSizeFormatException extends ApplicationException {
 
     public PageSizeFormatException(String parameterName) {
-        super("PAGE_SIZE_NUMBER_FORMAT", MAX_SIZE,  parameterName);
+        super("PAGE_SIZE_NUMBER_FORMAT", MAX_SIZE, parameterName);
     }
 
     @Override
