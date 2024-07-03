@@ -14,6 +14,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ *   As the feature is heavily bound to the database, it is not possible to unit test it
+ *  without a database. Therefore, integration tests are written to test the feature.
+ * This class is relative to @{@link FilterSpecification} class.
+ * */
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class FilterTest {
