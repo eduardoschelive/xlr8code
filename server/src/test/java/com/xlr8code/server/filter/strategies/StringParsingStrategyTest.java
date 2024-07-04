@@ -1,5 +1,6 @@
 package com.xlr8code.server.filter.strategies;
 
+import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.filter.entity.FilterTestEntity;
 import com.xlr8code.server.filter.repository.FilterTestRepository;
 import com.xlr8code.server.filter.utils.FilterTestUtils;
@@ -19,14 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StringParsingStrategyTest {
 
-    private static final int TEST_SIZE = 1;
-
     @Autowired
     private FilterTestRepository testRepository;
 
     @BeforeAll
-    static void setup(@Autowired FilterTestUtils filterTestUtils) {
-        filterTestUtils.createNEntities(TEST_SIZE, "stringField", true);
+    static void setup(@Autowired FilterTestRepository repository) {
+        var entity = FilterTestEntity.builder()
+                .stringField("stringField")
+                .booleanField(true)
+                .enumThemeField(Theme.LIGHT)
+                .build();
+
+        repository.save(entity);
     }
 
     @AfterAll
@@ -43,16 +48,16 @@ class StringParsingStrategyTest {
 
     private static Stream<Arguments> provideFilterParameters() {
         return Stream.of(
-                Arguments.of(Map.of("stringField_eq", "stringField0"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_eq-i", "STRINGFIELD0"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_n-eq", "stringField0"), TEST_SIZE - 1),
-                Arguments.of(Map.of("stringField_n-eq-i", "STRINGFIELD0"), TEST_SIZE - 1),
-                Arguments.of(Map.of("stringField_sw", "stringField"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_sw-i", "STRINGFIELD"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_ew", "0"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_ew-i", "0"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_lk", "stringField0"), TEST_SIZE),
-                Arguments.of(Map.of("stringField_in", "stringField0,stringField1"), TEST_SIZE)
+                Arguments.of(Map.of("stringField_eq", "stringField"), 1),
+                Arguments.of(Map.of("stringField_eq-i", "STRINGFIELD"), 1),
+                Arguments.of(Map.of("stringField_n-eq", "stringField"), 0),
+                Arguments.of(Map.of("stringField_n-eq-i", "STRINGFIELD"), 0),
+                Arguments.of(Map.of("stringField_sw", "stringFie"), 1),
+                Arguments.of(Map.of("stringField_sw-i", "STRINGFIE"), 1),
+                Arguments.of(Map.of("stringField_ew", "eld"), 1),
+                Arguments.of(Map.of("stringField_ew-i", "ELD"), 1),
+                Arguments.of(Map.of("stringField_lk", "stringField"), 1),
+                Arguments.of(Map.of("stringField_in", "stringField,stringField1"), 1)
         );
     }
 }
