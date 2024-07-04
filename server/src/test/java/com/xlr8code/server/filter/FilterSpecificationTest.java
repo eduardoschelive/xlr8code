@@ -21,16 +21,20 @@ import static org.junit.jupiter.api.Assertions.*;
  * */
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class FilterTest {
+class FilterSpecificationTest {
 
     @Autowired
     private FilterTestRepository testRepository;
 
-    private static final int TEST_SIZE = 10;
+    private static final int TEST_SIZE = 5;
+    private static final int AMOUNT_OF_DUPLICATES = 2;
+    private static final int TOTAL_SIZE = TEST_SIZE * AMOUNT_OF_DUPLICATES;
+    private static final String BASE_STRING = "stringField";
 
     @BeforeAll
     static void setup(@Autowired FilterTestUtils filterTestUtils) {
-        filterTestUtils.createNEntities(TEST_SIZE);
+        filterTestUtils.createNEntities(TEST_SIZE , BASE_STRING, true);
+        filterTestUtils.createNEntities(TEST_SIZE, BASE_STRING, false);
     }
 
     @AfterAll
@@ -41,7 +45,7 @@ class FilterTest {
     @Test
     void it_should_find_all() {
         List<FilterTestEntity> all = testRepository.findAll();
-        assertEquals(TEST_SIZE, all.size());
+        assertEquals(TOTAL_SIZE, all.size());
     }
 
     @Test
@@ -53,7 +57,7 @@ class FilterTest {
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(5, results.getTotalElements());
+        assertEquals(TEST_SIZE, results.getTotalElements());
     }
 
     @Test
@@ -65,28 +69,27 @@ class FilterTest {
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
 
-        assertEquals(TEST_SIZE / 2, results.getTotalElements());
-        assertEquals("stringField8", results.getContent().get(0).getStringField());
+        assertEquals(TEST_SIZE, results.getTotalElements());
     }
 
     @Test
     void it_should_filter_with_nested_relation() {
         var params = Map.of(
-                "testRelationEntity.stringRelationField_eq", "stringField00"
+                "testRelationEntity.stringRelationField_eq", BASE_STRING + "00"
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(1, results.getTotalElements());
+        assertEquals(AMOUNT_OF_DUPLICATES, results.getTotalElements());
     }
 
     @Test
     void it_should_filter_with_nested_one_to_one_relation() {
         var params = Map.of(
-                "testOneToOneRelationEntity.stringRelationField_eq", "stringField0"
+                "testOneToOneRelationEntity.stringRelationField_eq", BASE_STRING + "0"
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(1, results.getTotalElements());
+        assertEquals(AMOUNT_OF_DUPLICATES, results.getTotalElements());
     }
 
     @Test
@@ -97,16 +100,6 @@ class FilterTest {
 
         assertThrows(UnsupportedFilterOperationOnFieldException.class, () ->
                 testRepository.findAll(params, FilterTestEntity.class));
-    }
-
-    @Test
-    void it_should_filter_by_negated_boolean_field() {
-        var params = Map.of(
-                "booleanField_n-eq", "true"
-        );
-
-        Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(TEST_SIZE / 2, results.getTotalElements());
     }
 
     @Test

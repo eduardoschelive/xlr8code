@@ -19,10 +19,10 @@ public class FilterTestUtils {
     private final FilterRelationTestRepository relationTestRepository;
     private final FilterOneToOneRelationRepository oneToOneRelationRepository;
 
-    public void createNEntities(int n) {
+    public void createNEntities(int n, String baseString, boolean baseBoolean) {
         IntStream.range(0, n).forEach(i -> {
-            FilterTestEntity entity = createAndSaveFilterTestEntity(i);
-            IntStream.range(0, n).forEach(j -> createAndSaveFilterRelationTest(entity, i, j));
+            FilterTestEntity entity = createAndSaveFilterTestEntity(i, baseString, baseBoolean);
+            IntStream.range(0, n).forEach(j -> createAndSaveFilterRelationTest(entity, i, j, baseString, baseBoolean));
             createAndSaveFilterOneToOneRelationTest(entity, i);
         });
     }
@@ -33,18 +33,18 @@ public class FilterTestUtils {
         oneToOneRelationRepository.deleteAll();
     }
 
-    private FilterTestEntity createAndSaveFilterTestEntity(int index) {
+    private FilterTestEntity createAndSaveFilterTestEntity(int index, String baseString, boolean baseBoolean) {
         return testRepository.save(FilterTestEntity.builder()
-                .stringField("stringField" + index)
-                .booleanField(index % 2 == 0)
+                .stringField(baseString + index)
+                .booleanField(baseBoolean)
                 .build());
     }
 
-    private void createAndSaveFilterRelationTest(FilterTestEntity entity, int i, int j) {
+    private void createAndSaveFilterRelationTest(FilterTestEntity entity, int i, int j, String baseString, boolean baseBoolean) {
         relationTestRepository.save(FilterRelationTest.builder()
                 .testEntity(entity)
-                .stringRelationField("stringField" + i + j)
-                .booleanRelationField(j % 2 == 0)
+                .stringRelationField(baseString + i + j)
+                .booleanRelationField(baseBoolean)
                 .build());
     }
 
