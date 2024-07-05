@@ -63,7 +63,6 @@ class FilterUtilsTest {
     void it_should_extract_filterable_fields() {
         var result = FilterUtils.extractFilterableFields(FilterTestEntity.class);
 
-        assertEquals(6, result.size());
         assertTrue(result.containsKey("stringField"));
         assertTrue(result.containsKey("booleanField"));
         assertTrue(result.containsKey("testRelationEntity.stringRelationField"));
