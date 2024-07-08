@@ -55,7 +55,8 @@ public class AuthenticationController {
     }
 
     @PostMapping(Endpoint.Authentication.ACTIVATE_USER)
-    public ResponseEntity<Void> activateUser(@RequestParam String code) {
+    public ResponseEntity<Void> activateUser(@RequestBody @Valid ActivateUserDTO activateUserDTO) {
+        var code = activateUserDTO.code();
         var sessionToken = this.authenticationService.activateUser(code);
 
         // expire when user closes the browser

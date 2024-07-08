@@ -176,8 +176,10 @@ class AuthenticationControllerTest {
         @Test
         void should_activate_user() throws Exception {
             var activationCode = "activationCode";
+            var activateUserDTO = new ActivateUserDTO(activationCode);
 
-            mockMvc.perform(post(ACTIVATION_URL_TEMPLATE).param("code", activationCode))
+            mockMvc.perform(post(ACTIVATION_URL_TEMPLATE).contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(activateUserDTO)))
                     .andExpect(status().isNoContent());
         }
 
