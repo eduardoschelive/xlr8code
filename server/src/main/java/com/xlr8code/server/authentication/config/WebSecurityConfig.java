@@ -36,9 +36,9 @@ public class WebSecurityConfig {
         authorizeRequests.requestMatchers(HttpMethod.PATCH, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
 
         // SERIES
-        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Series.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
 
         // ARTICLE
         authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());

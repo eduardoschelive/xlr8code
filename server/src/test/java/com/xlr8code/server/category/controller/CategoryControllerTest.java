@@ -51,13 +51,13 @@ class CategoryControllerTest {
             // when
             when(categoryService.create(createSeriesDTO)).thenReturn(Category.builder().id(uuidToReturn).build());
             // then
-            mockMvc.perform(post(Endpoint.Series.BASE_PATH)
+            mockMvc.perform(post(Endpoint.Categories.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
                             .header("Accept-Language", "en_US, pt_BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(createSeriesDTO)))
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("Location", Endpoint.Series.BASE_PATH + "/" + uuidToReturn));
+                    .andExpect(header().string("Location", Endpoint.Categories.BASE_PATH + "/" + uuidToReturn));
         }
 
     }
@@ -67,7 +67,7 @@ class CategoryControllerTest {
 
         @Test
         void it_should_return_page_of_series() throws Exception {
-            mockMvc.perform(get(Endpoint.Series.BASE_PATH)
+            mockMvc.perform(get(Endpoint.Categories.BASE_PATH)
                             .header("Accept-Language", "en_US, pt_BR"))
                     .andExpect(status().isOk());
         }
@@ -77,14 +77,14 @@ class CategoryControllerTest {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
             when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
-            mockMvc.perform(get(Endpoint.Series.BASE_PATH + "/uuid")
+            mockMvc.perform(get(Endpoint.Categories.BASE_PATH + "/uuid")
                             .header("Accept-Language", "en_US, pt_BR"))
                     .andExpect(status().isOk());
         }
 
         @Test
         void it_should_return_page_of_series_when_searching() throws Exception {
-            mockMvc.perform(get(Endpoint.Series.BASE_PATH + "/search?query=test")
+            mockMvc.perform(get(Endpoint.Categories.BASE_PATH + "/search?query=test")
                             .header("Accept-Language", "en_US, pt_BR"))
                     .andExpect(status().isOk());
         }
@@ -99,7 +99,7 @@ class CategoryControllerTest {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
             when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
-            mockMvc.perform(delete(Endpoint.Series.BASE_PATH + "/uuid")
+            mockMvc.perform(delete(Endpoint.Categories.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin)))
                     .andExpect(status().isNoContent());
         }
@@ -115,7 +115,7 @@ class CategoryControllerTest {
             var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
             when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null, null));
 
-            mockMvc.perform(put(Endpoint.Series.BASE_PATH + "/uuid")
+            mockMvc.perform(put(Endpoint.Categories.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
                             .header("Accept-Language", "en_US, pt_BR")
                             .contentType(MediaType.APPLICATION_JSON)

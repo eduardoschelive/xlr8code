@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping(Endpoint.Series.BASE_PATH)
+@RequestMapping(Endpoint.Categories.BASE_PATH)
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -27,7 +27,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody CategoryDTO categoryDTO) {
         var createdSeries = categoryService.create(categoryDTO);
-        return ResponseEntity.created(URI.create(Endpoint.Series.BASE_PATH + "/" + createdSeries.getId())).build();
+        return ResponseEntity.created(URI.create(Endpoint.Categories.BASE_PATH + "/" + createdSeries.getId())).build();
     }
 
     @GetMapping

@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Endpoint {
 
-    private static final String API_PREFIX = "/api";
-
     public record Authentication() {
-        public static final String BASE_PATH = API_PREFIX + "/authentication";
+        public static final String BASE_PATH = "/authentication";
 
         public static final String SIGN_IN = "/sign-in";
         public static final String SIGN_UP = "/sign-up";
@@ -25,19 +23,19 @@ public class Endpoint {
     }
 
     public record User() {
-        public static final String BASE_PATH = API_PREFIX + "/users";
+        public static final String BASE_PATH = "/users";
 
         public static final String METADATA = "/metadata";
         public static final String PREFERENCES = "/preferences";
         public static final String PASSWORD = "/password";
     }
 
-    public record Series() {
-        public static final String BASE_PATH = API_PREFIX + "/series";
+    public record Categories() {
+        public static final String BASE_PATH = "/categories";
     }
 
     public record Article() {
-        public static final String BASE_PATH = API_PREFIX + "/articles";
+        public static final String BASE_PATH = "/articles";
     }
 
 }
