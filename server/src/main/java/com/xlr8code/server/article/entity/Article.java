@@ -1,7 +1,7 @@
 package com.xlr8code.server.article.entity;
 
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.entity.AuditableEntity;
-import com.xlr8code.server.series.entity.Series;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +22,8 @@ public class Article extends AuditableEntity {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "series_id")
-    private Series series;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "position")
     private Integer position;

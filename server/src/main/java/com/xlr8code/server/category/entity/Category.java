@@ -1,4 +1,4 @@
-package com.xlr8code.server.series.entity;
+package com.xlr8code.server.category.entity;
 
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.common.entity.AuditableEntity;
@@ -11,21 +11,21 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "series")
+@Table(name = "category")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Series extends AuditableEntity {
+public class Category extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "series_id", nullable = false)
+    @Column(name = "category_id", nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL)
-    private Set<I18nSeries> i18nSeries;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private Set<I18nCategory> i18nCategories;
 
     @OneToMany
-    @JoinColumn(name = "series_id")
+    @JoinColumn(name = "category_id")
     private Set<Article> articles;
 
 }

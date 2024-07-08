@@ -61,22 +61,22 @@ CREATE TABLE IF NOT EXISTS user_codes
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE IF NOT EXISTS series
+CREATE TABLE IF NOT EXISTS category
 (
-    series_id  UUID PRIMARY KEY,
+    category_id  UUID PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS i18n_series
+CREATE TABLE IF NOT EXISTS i18n_category
 (
     id          UUID PRIMARY KEY,
-    series_id   UUID REFERENCES series (series_id),
+    category_id   UUID REFERENCES category (category_id),
     language    TEXT NOT NULL,
     title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
     description TEXT,
-    CONSTRAINT unique_series_language UNIQUE (series_id, language)
+    CONSTRAINT unique_series_language UNIQUE (category_id, language)
 );
 
 CREATE TABLE IF NOT EXISTS articles
@@ -85,11 +85,11 @@ CREATE TABLE IF NOT EXISTS articles
     previous_article_id UUID REFERENCES articles (article_id),
     next_article_id     UUID REFERENCES articles (article_id),
     parent_article_id   UUID,
-    series_id           UUID,
+    category_id           UUID,
     created_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     position            INT,
-    FOREIGN KEY (series_id) REFERENCES series (series_id),
+    FOREIGN KEY (category_id) REFERENCES category (category_id),
     FOREIGN KEY (parent_article_id) REFERENCES articles (article_id)
 );
 

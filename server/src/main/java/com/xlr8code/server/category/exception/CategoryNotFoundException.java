@@ -1,17 +1,17 @@
-package com.xlr8code.server.series.exception;
+package com.xlr8code.server.category.exception;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
-public class SeriesNotFoundException extends ApplicationException {
+public class CategoryNotFoundException extends ApplicationException {
 
-    public SeriesNotFoundException(String uuid) {
-        super("SERIES_NOT_FOUND", uuid);
+    public CategoryNotFoundException(String uuid) {
+        super("CATEGORY_NOT_FOUND", uuid);
     }
 
     @Override
     public String getMessageIdentifier() {
-        return "series.error.not_found";
+        return "category.error.not_found";
     }
 
     @Override

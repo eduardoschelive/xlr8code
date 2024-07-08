@@ -1,9 +1,9 @@
-package com.xlr8code.server.series.controller;
+package com.xlr8code.server.category.controller;
 
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
-import com.xlr8code.server.series.entity.Series;
-import com.xlr8code.server.series.service.SeriesService;
+import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
+import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.utils.UserRole;
 import com.xlr8code.server.utils.JsonTestUtils;
@@ -32,11 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @AutoConfigureMockMvc
-class SeriesControllerTest {
+class CategoryControllerTest {
 
     private final User admin = UserTestUtils.buildUserDetails(UUID.randomUUID(), Set.of(UserRole.ADMIN.toRole()));
     @MockBean
-    private SeriesService seriesService;
+    private CategoryService categoryService;
     @Autowired
     private MockMvc mockMvc;
 
@@ -49,7 +49,7 @@ class SeriesControllerTest {
             var createSeriesDTO = SeriesTestUtils.buildSeriesDTO();
             var uuidToReturn = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
             // when
-            when(seriesService.create(createSeriesDTO)).thenReturn(Series.builder().id(uuidToReturn).build());
+            when(categoryService.create(createSeriesDTO)).thenReturn(Category.builder().id(uuidToReturn).build());
             // then
             mockMvc.perform(post(Endpoint.Series.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
@@ -75,7 +75,7 @@ class SeriesControllerTest {
         @Test
         void it_should_return_series() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
-            when(seriesService.findById(UUID.fromString(uuid))).thenReturn(Series.builder().id(UUID.fromString(uuid)).build());
+            when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
             mockMvc.perform(get(Endpoint.Series.BASE_PATH + "/uuid")
                             .header("Accept-Language", "en_US, pt_BR"))
@@ -97,7 +97,7 @@ class SeriesControllerTest {
         @Test
         void it_should_return_204_no_content() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
-            when(seriesService.findById(UUID.fromString(uuid))).thenReturn(Series.builder().id(UUID.fromString(uuid)).build());
+            when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
             mockMvc.perform(delete(Endpoint.Series.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin)))
@@ -113,7 +113,7 @@ class SeriesControllerTest {
         void it_should_return_200_ok() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
             var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
-            when(seriesService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedSeriesDTO(null, null));
+            when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null, null));
 
             mockMvc.perform(put(Endpoint.Series.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))

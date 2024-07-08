@@ -1,13 +1,13 @@
-package com.xlr8code.server.series.service;
+package com.xlr8code.server.category.service;
 
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.series.dto.SeriesDTO;
-import com.xlr8code.server.series.dto.TranslatedSeriesDTO;
-import com.xlr8code.server.series.entity.Series;
-import com.xlr8code.server.series.exception.SeriesNotFoundException;
-import com.xlr8code.server.series.repository.SeriesRepository;
+import com.xlr8code.server.category.dto.CategoryDTO;
+import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
+import com.xlr8code.server.category.entity.Category;
+import com.xlr8code.server.category.exception.CategoryNotFoundException;
+import com.xlr8code.server.category.repository.CategoryRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -22,25 +22,25 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SeriesService {
+public class CategoryService {
 
-    private final SeriesRepository seriesRepository;
-    private final SeriesSlugValidator seriesSlugValidator;
+    private final CategoryRepository categoryRepository;
+    private final CategorySlugValidator seriesSlugValidator;
 
     @Resource
     @Lazy
-    private SeriesService self;
+    private CategoryService self;
 
     /**
-     * @param seriesDTO the series to be created
+     * @param categoryDTO the series to be created
      * @return the created series
      */
     @Transactional
-    public Series create(SeriesDTO seriesDTO) {
-        this.seriesSlugValidator.validateSlugs(seriesDTO.languages().values());
-        var emptySeries = new Series();
-        var series = seriesDTO.toEntity(emptySeries);
-        return this.seriesRepository.save(series);
+    public Category create(CategoryDTO categoryDTO) {
+        this.seriesSlugValidator.validateSlugs(categoryDTO.languages().values());
+        var emptySeries = new Category();
+        var series = categoryDTO.toEntity(emptySeries);
+        return this.categoryRepository.save(series);
     }
 
     /**
@@ -50,9 +50,9 @@ public class SeriesService {
      * @throws PropertyDoesNotExistsException if specified to sort in pageable does not exist
      */
     @Transactional(readOnly = true)
-    public Page<TranslatedSeriesDTO> findAll(Set<Language> languages, Pageable pageable) {
+    public Page<TranslatedCategoryDTO> findAll(Set<Language> languages, Pageable pageable) {
         try {
-            var seriesPage = seriesRepository.findAll(pageable);
+            var seriesPage = categoryRepository.findAll(pageable);
             var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, seriesPage.getContent());
 
             return new PageImpl<>(filteredTranslatedSeriesDTOs, pageable, seriesPage.getTotalElements());
@@ -69,9 +69,9 @@ public class SeriesService {
      * @apiNote this ignores the sorting and return with descending order
      */
     @Transactional(readOnly = true)
-    public Page<TranslatedSeriesDTO> search(String query, Set<Language> languages, Pageable pageable) {
+    public Page<TranslatedCategoryDTO> search(String query, Set<Language> languages, Pageable pageable) {
         var seriesPage = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.unsorted());
-        var page = seriesRepository.search(query, languages, seriesPage);
+        var page = categoryRepository.search(query, languages, seriesPage);
 
         var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, page.getContent());
 
@@ -81,23 +81,23 @@ public class SeriesService {
     /**
      * @param uuid the series id
      * @return the series with the specified id
-     * @throws SeriesNotFoundException if the series does not exist
+     * @throws CategoryNotFoundException if the series does not exist
      */
     @Transactional
-    public Series findById(UUID uuid) {
-        return seriesRepository.findById(uuid)
-                .orElseThrow(() -> new SeriesNotFoundException(uuid.toString()));
+    public Category findById(UUID uuid) {
+        return categoryRepository.findById(uuid)
+                .orElseThrow(() -> new CategoryNotFoundException(uuid.toString()));
     }
 
     /**
      * @param uuidString the series id
      * @return the series with the specified id
-     * @throws SeriesNotFoundException if the series does not exist
+     * @throws CategoryNotFoundException if the series does not exist
      */
     @Transactional
-    public Series findById(String uuidString) {
+    public Category findById(String uuidString) {
         var uuid = UUIDUtils.convertFromString(uuidString)
-                .orElseThrow(() -> new SeriesNotFoundException(uuidString));
+                .orElseThrow(() -> new CategoryNotFoundException(uuidString));
 
         return self.findById(uuid);
     }
@@ -108,35 +108,35 @@ public class SeriesService {
      * @return the series with the specified id and languages
      */
     @Transactional
-    public TranslatedSeriesDTO findById(String uuidString, Set<Language> languages) {
+    public TranslatedCategoryDTO findById(String uuidString, Set<Language> languages) {
         var entity = self.findById(uuidString);
-        return TranslatedSeriesDTO.fromEntity(entity, languages);
+        return TranslatedCategoryDTO.fromEntity(entity, languages);
     }
 
     /**
      * @param uuidString the series id
-     * @throws SeriesNotFoundException if the series does not exist
+     * @throws CategoryNotFoundException if the series does not exist
      */
     @Transactional
     public void delete(String uuidString) {
         var entity = self.findById(uuidString);
-        seriesRepository.delete(entity);
+        categoryRepository.delete(entity);
     }
 
     /**
      * @param uuidString the series id
-     * @param seriesDTO  the series to be updated
+     * @param categoryDTO  the series to be updated
      * @return the updated translated series with the specified id and languages
      */
     @Transactional
-    public TranslatedSeriesDTO update(String uuidString, SeriesDTO seriesDTO) {
+    public TranslatedCategoryDTO update(String uuidString, CategoryDTO categoryDTO) {
         var existingSeries = self.findById(uuidString);
-        this.seriesSlugValidator.validateSlugs(seriesDTO, existingSeries);
+        this.seriesSlugValidator.validateSlugs(categoryDTO, existingSeries);
 
-        var updatedSeries = seriesDTO.toEntity(existingSeries);
-        var savedEntity = seriesRepository.save(updatedSeries);
+        var updatedSeries = categoryDTO.toEntity(existingSeries);
+        var savedEntity = categoryRepository.save(updatedSeries);
 
-        return TranslatedSeriesDTO.fromEntity(savedEntity);
+        return TranslatedCategoryDTO.fromEntity(savedEntity);
     }
 
     /**
@@ -146,27 +146,27 @@ public class SeriesService {
     @Transactional
     public boolean existsById(String id) {
         var uuid = UUIDUtils.convertFromString(id);
-        return uuid.filter(this.seriesRepository::existsById).isPresent();
+        return uuid.filter(this.categoryRepository::existsById).isPresent();
     }
 
     /**
      * @param languages  the languages to filter
-     * @param seriesList the series to be mapped
+     * @param categoryList the series to be mapped
      * @return the series languages with non-empty languages
      */
-    private List<TranslatedSeriesDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Series> seriesList) {
-        var seriesLanguagesDTOList = this.mapSeriesToTranslatedSeriesDTO(languages, seriesList);
+    private List<TranslatedCategoryDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Category> categoryList) {
+        var seriesLanguagesDTOList = this.mapSeriesToTranslatedSeriesDTO(languages, categoryList);
         return this.filterEmptyLanguages(seriesLanguagesDTOList);
     }
 
     /**
      * @param languages  the languages to be filtered
-     * @param seriesList the series to be mapped
+     * @param categoryList the series to be mapped
      * @return the series languages with non-empty languages
      */
-    private List<TranslatedSeriesDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Series> seriesList) {
-        return seriesList.stream()
-                .map(s -> TranslatedSeriesDTO.fromEntity(s, languages))
+    private List<TranslatedCategoryDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Category> categoryList) {
+        return categoryList.stream()
+                .map(s -> TranslatedCategoryDTO.fromEntity(s, languages))
                 .toList();
     }
 
@@ -174,7 +174,7 @@ public class SeriesService {
      * @param seriesLanguagesDTOList the series languages to be filtered
      * @return the series languages with non-empty languages
      */
-    private List<TranslatedSeriesDTO> filterEmptyLanguages(List<TranslatedSeriesDTO> seriesLanguagesDTOList) {
+    private List<TranslatedCategoryDTO> filterEmptyLanguages(List<TranslatedCategoryDTO> seriesLanguagesDTOList) {
         return seriesLanguagesDTOList.stream()
                 .filter(dto -> !dto.languages().isEmpty())
                 .toList();

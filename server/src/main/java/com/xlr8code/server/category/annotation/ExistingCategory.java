@@ -1,7 +1,7 @@
-package com.xlr8code.server.series.annotation;
+package com.xlr8code.server.category.annotation;
 
 
-import com.xlr8code.server.series.validator.ExistingSeriesValidator;
+import com.xlr8code.server.category.validator.ExistingCategoryValidator;
 import jakarta.validation.Constraint;
 
 import java.lang.annotation.ElementType;
@@ -12,11 +12,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(
-        validatedBy = ExistingSeriesValidator.class
+        validatedBy = ExistingCategoryValidator.class
 )
-public @interface ExistingSeries {
+public @interface ExistingCategory {
 
-    String message() default "Please provide a existing series id";
+    String message() default "Please provide a existing category id";
 
     boolean optional() default false;
 

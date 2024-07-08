@@ -1,8 +1,8 @@
-package com.xlr8code.server.series.validator;
+package com.xlr8code.server.category.validator;
 
 import com.xlr8code.server.common.utils.StringUtils;
-import com.xlr8code.server.series.annotation.ExistingSeries;
-import com.xlr8code.server.series.service.SeriesService;
+import com.xlr8code.server.category.annotation.ExistingCategory;
+import com.xlr8code.server.category.service.CategoryService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ExistingSeriesValidator implements ConstraintValidator<ExistingSeries, String> {
+public class ExistingCategoryValidator implements ConstraintValidator<ExistingCategory, String> {
 
-    private final SeriesService seriesService;
+    private final CategoryService categoryService;
 
     boolean optional;
 
     @Override
-    public void initialize(ExistingSeries constraintAnnotation) {
+    public void initialize(ExistingCategory constraintAnnotation) {
         this.optional = constraintAnnotation.optional();
     }
 
@@ -28,7 +28,7 @@ public class ExistingSeriesValidator implements ConstraintValidator<ExistingSeri
             return true;
         }
 
-        return this.seriesService.existsById(s);
+        return this.categoryService.existsById(s);
     }
 
 

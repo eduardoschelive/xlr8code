@@ -1,13 +1,13 @@
-package com.xlr8code.server.series.dto;
+package com.xlr8code.server.category.dto;
 
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.entity.I18nSeries;
-import com.xlr8code.server.series.entity.Series;
+import com.xlr8code.server.category.entity.I18nCategory;
+import com.xlr8code.server.category.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Optional;
 
-public record SeriesLanguageDTO(
+public record CategoryLanguageDTO(
         @NotBlank
         String title,
         @NotBlank
@@ -16,10 +16,10 @@ public record SeriesLanguageDTO(
         String description
 ) {
 
-    public I18nSeries toEntity(Series series, Language language) {
-        var i18nSeries = findI18nSeries(series, language).orElseGet(I18nSeries::new);
+    public I18nCategory toEntity(Category category, Language language) {
+        var i18nSeries = findI18nSeries(category, language).orElseGet(I18nCategory::new);
 
-        i18nSeries.setSeries(series);
+        i18nSeries.setCategory(category);
         i18nSeries.setLanguage(language);
         i18nSeries.setTitle(this.title());
         i18nSeries.setSlug(this.slug());
@@ -28,8 +28,8 @@ public record SeriesLanguageDTO(
         return i18nSeries;
     }
 
-    private Optional<I18nSeries> findI18nSeries(Series series, Language language) {
-        return Optional.ofNullable(series.getI18nSeries())
+    private Optional<I18nCategory> findI18nSeries(Category category, Language language) {
+        return Optional.ofNullable(category.getI18nCategories())
                 .flatMap(i18nSeries -> i18nSeries.stream()
                         .filter(i18n -> i18n.getLanguage().equals(language))
                         .findFirst());

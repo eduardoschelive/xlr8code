@@ -1,9 +1,9 @@
-package com.xlr8code.server.series.service;
+package com.xlr8code.server.category.service;
 
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.entity.Series;
-import com.xlr8code.server.series.exception.SeriesNotFoundException;
-import com.xlr8code.server.series.repository.SeriesRepository;
+import com.xlr8code.server.category.entity.Category;
+import com.xlr8code.server.category.exception.CategoryNotFoundException;
+import com.xlr8code.server.category.repository.CategoryRepository;
 import com.xlr8code.server.utils.SeriesTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class SeriesServiceTest {
+class CategoryServiceTest {
 
     @Autowired
-    private SeriesService seriesService;
+    private CategoryService categoryService;
 
     @Autowired
-    private SeriesRepository seriesRepository;
+    private CategoryRepository categoryRepository;
 
 
     @Nested
@@ -30,14 +30,14 @@ class SeriesServiceTest {
 
         @AfterEach
         void tearDown() {
-            seriesRepository.deleteAll();
+            categoryRepository.deleteAll();
         }
 
         @Test
         void it_should_create_series() {
             var createSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
-            var createdSeries = seriesService.create(createSeriesDTO);
+            var createdSeries = categoryService.create(createSeriesDTO);
 
             assertNotNull(createdSeries);
         }
@@ -49,24 +49,24 @@ class SeriesServiceTest {
 
         @BeforeEach
         void setUp() {
-            seriesService.create(SeriesTestUtils.buildSeriesDTO());
+            categoryService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
         void tearDown() {
-            seriesRepository.deleteAll();
+            categoryRepository.deleteAll();
         }
 
         @Test
         void it_should_find_all_series() {
-            var result = seriesService.findAll(Set.of(Language.AMERICAN_ENGLISH), Pageable.unpaged());
+            var result = categoryService.findAll(Set.of(Language.AMERICAN_ENGLISH), Pageable.unpaged());
 
             assertNotNull(result);
         }
 
         @Test
         void it_should_find_all_series_with_brazilian_portuguese() {
-            var result = seriesService.findAll(Set.of(Language.BRAZILIAN_PORTUGUESE), Pageable.unpaged());
+            var result = categoryService.findAll(Set.of(Language.BRAZILIAN_PORTUGUESE), Pageable.unpaged());
 
             var hasBrazilianPortuguese = result.stream()
                     .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
@@ -76,9 +76,9 @@ class SeriesServiceTest {
 
         @Test
         void it_should_find_series_by_id() {
-            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            var result = seriesService.findById(series.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
+            var result = categoryService.findById(series.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertNotNull(result);
         }
@@ -86,19 +86,19 @@ class SeriesServiceTest {
         @Test
         void it_should_throw_exception_when_finding_non_existing_series() {
             var languageSet = Set.of(Language.AMERICAN_ENGLISH);
-            assertThrows(SeriesNotFoundException.class, () -> seriesService.findById("non-existing-id", languageSet));
+            assertThrows(CategoryNotFoundException.class, () -> categoryService.findById("non-existing-id", languageSet));
         }
 
         @Test
         void it_should_find_series_by_search() {
-            var result = seriesService.search("title", Set.of(Language.AMERICAN_ENGLISH), Pageable.ofSize(5));
+            var result = categoryService.search("title", Set.of(Language.AMERICAN_ENGLISH), Pageable.ofSize(5));
 
             assertNotNull(result);
         }
 
         @Test
         void it_should_find_series_by_search_with_specific_language() {
-            var result = seriesService.search("titulo", Set.of(Language.BRAZILIAN_PORTUGUESE), Pageable.ofSize(5));
+            var result = categoryService.search("titulo", Set.of(Language.BRAZILIAN_PORTUGUESE), Pageable.ofSize(5));
 
             var hasBrazilianPortuguese = result.stream()
                     .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
@@ -108,9 +108,9 @@ class SeriesServiceTest {
 
         @Test
         void it_should_check_if_series_exists() {
-            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            var result = seriesService.existsById(series.getId().toString());
+            var result = categoryService.existsById(series.getId().toString());
 
             assertTrue(result);
         }
@@ -122,37 +122,37 @@ class SeriesServiceTest {
 
         @BeforeEach
         void setUp() {
-            seriesService.create(SeriesTestUtils.buildSeriesDTO());
+            categoryService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
         void tearDown() {
-            seriesRepository.deleteAll();
+            categoryRepository.deleteAll();
         }
 
         @Test
         void it_should_delete_series() {
-            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            seriesService.delete(series.getId().toString());
-            var result = seriesRepository.findById(series.getId());
+            categoryService.delete(series.getId().toString());
+            var result = categoryRepository.findById(series.getId());
 
             assertTrue(result.isEmpty());
         }
 
         @Test
         void it_should_delete_series_with_string_id() {
-            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            seriesService.delete(series.getId().toString());
-            var result = seriesRepository.findById(series.getId());
+            categoryService.delete(series.getId().toString());
+            var result = categoryRepository.findById(series.getId());
 
             assertTrue(result.isEmpty());
         }
 
         @Test
         void it_should_throw_exception_when_deleting_non_existing_series() {
-            assertThrows(SeriesNotFoundException.class, () -> seriesService.delete("non-existing-id"));
+            assertThrows(CategoryNotFoundException.class, () -> categoryService.delete("non-existing-id"));
         }
 
     }
@@ -160,24 +160,24 @@ class SeriesServiceTest {
     @Nested
     class UpdateTests {
 
-        private Series createSeries;
+        private Category createCategory;
 
         @BeforeEach
         void setUp() {
-            createSeries = seriesService.create(SeriesTestUtils.buildSeriesDTO());
+            createCategory = categoryService.create(SeriesTestUtils.buildSeriesDTO());
         }
 
         @AfterEach
         void tearDown() {
-            seriesRepository.deleteAll();
+            categoryRepository.deleteAll();
         }
 
         @Test
         void it_should_update_series() {
-            var series = seriesRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
             var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
-            var result = seriesService.update(series.getId().toString(), updateSeriesDTO);
+            var result = categoryService.update(series.getId().toString(), updateSeriesDTO);
 
             assertNotNull(result);
         }
@@ -185,14 +185,14 @@ class SeriesServiceTest {
         @Test
         void it_should_throw_exception_when_updating_non_existing_series() {
             var updateDTO = SeriesTestUtils.buildSeriesDTO();
-            assertThrows(SeriesNotFoundException.class, () -> seriesService.update("non-existing-id", updateDTO));
+            assertThrows(CategoryNotFoundException.class, () -> categoryService.update("non-existing-id", updateDTO));
         }
 
         @Test
         void it_should_allow_repeat_slug_if_series_is_owner() {
             var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
 
-            var result = seriesService.update(createSeries.getId().toString(), updateSeriesDTO);
+            var result = categoryService.update(createCategory.getId().toString(), updateSeriesDTO);
 
             assertNotNull(result);
         }
