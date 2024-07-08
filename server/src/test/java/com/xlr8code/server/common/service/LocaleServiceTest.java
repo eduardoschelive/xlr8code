@@ -1,7 +1,7 @@
 package com.xlr8code.server.common.service;
 
-import com.xlr8code.server.common.helper.ApplicationLocaleResolver;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.helper.ApplicationLocaleResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;

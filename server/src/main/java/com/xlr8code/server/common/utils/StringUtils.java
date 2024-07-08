@@ -24,4 +24,28 @@ public class StringUtils {
     public static boolean isBlank(String s) {
         return s == null || s.isBlank();
     }
+
+    /**
+     * @param s      the string to be checked
+     * @param prefix the prefix to be stripped
+     * @return the given string with the given prefix stripped if it starts with the prefix, otherwise the given string
+     */
+    public static String stripPrefix(String s, String prefix) {
+        if (s.startsWith(prefix)) {
+            return s.substring(prefix.length());
+        }
+        return s;
+    }
+
+    /**
+     * @param s      the string to be checked
+     * @param suffix the suffix to be stripped
+     * @return the given string with the given suffix stripped if it ends with the suffix, otherwise the given string
+     */
+    public static String stripSuffix(String s, String suffix) {
+        if (s.endsWith(suffix)) {
+            return s.substring(0, s.length() - suffix.length());
+        }
+        return s;
+    }
 }

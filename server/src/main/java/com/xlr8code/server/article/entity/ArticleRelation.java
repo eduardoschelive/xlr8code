@@ -1,9 +1,10 @@
 package com.xlr8code.server.article.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.*;
-
-import java.util.Set;
 
 @Embeddable
 @Getter

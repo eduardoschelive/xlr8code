@@ -1,6 +1,5 @@
 package com.xlr8code.server.common.utils;
 
-import com.xlr8code.server.article.entity.ArticleRelation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

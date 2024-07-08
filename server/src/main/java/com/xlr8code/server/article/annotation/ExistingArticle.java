@@ -16,12 +16,12 @@ import java.lang.annotation.Target;
 )
 public @interface ExistingArticle {
 
-        String message() default "Please provide a existing article id";
+    String message() default "Please provide a existing article id";
 
-        boolean optional() default false;
+    boolean optional() default false;
 
-        Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-        Class<?>[] payload() default {};
+    Class<?>[] payload() default {};
 
 }

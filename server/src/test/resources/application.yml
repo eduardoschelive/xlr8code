@@ -50,10 +50,10 @@ mail:
   from: mail@xlr8code.com
 
 application:
-    logo-url: http://localhost:8080/logo.png
+  logo-url: http://localhost:8080/logo.png
 
 authentication:
-    cleanup-cron: 0 0 0 * * * # every day at midnight
+  cleanup-cron: 0 0 0 * * * # every day at midnight
 
 logging:
   config: classpath:log4j2.xml

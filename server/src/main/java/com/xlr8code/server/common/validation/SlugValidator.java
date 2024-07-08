@@ -15,7 +15,7 @@ public interface SlugValidator<T> {
     boolean existsBySlug(String slug);
 
     /**
-     * @param slug slug to check
+     * @param slug        slug to check
      * @param ownerEntity owner to exclude
      * @return true if slug exists in the database and owner is not the owner
      */
@@ -32,7 +32,7 @@ public interface SlugValidator<T> {
     }
 
     /**
-     * @param slug slug to validate
+     * @param slug  slug to validate
      * @param owner owner to exclude
      * @throws SlugAlreadyExistsException if slug already exists
      */
@@ -45,7 +45,7 @@ public interface SlugValidator<T> {
     /**
      * @param slugs slugs to validate
      * @throws DuplicateSlugInLanguagesException if there are duplicate slugs
-     * @throws SlugAlreadyExistsException if any slug already exists
+     * @throws SlugAlreadyExistsException        if any slug already exists
      */
     default void validateSlugInList(Collection<String> slugs) {
         this.validateDuplicateSlugs(slugs);
@@ -74,7 +74,7 @@ public interface SlugValidator<T> {
     /**
      * @param slugs slugs to validate
      * @param owner owner to exclude
-     * @throws SlugAlreadyExistsException if any slug already exists
+     * @throws SlugAlreadyExistsException        if any slug already exists
      * @throws DuplicateSlugInLanguagesException if there are duplicate slugs
      * @see #validateSlugInCollection(Collection)
      */

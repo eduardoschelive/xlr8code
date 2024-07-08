@@ -7,9 +7,12 @@ import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(Endpoint.User.BASE_PATH)
@@ -19,6 +22,12 @@ public class UserController {
     private final UserService userService;
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
+
+    @GetMapping
+    public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
+        var users = this.userService.findAll(queryParameters);
+        return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {

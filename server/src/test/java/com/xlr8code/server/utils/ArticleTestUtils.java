@@ -30,7 +30,7 @@ public class ArticleTestUtils {
     }
 
     public static ArticleDTO buildArticleDTOWithNextAndPreviousArticle(String nextArticleId, String previousArticleId) {
-            return buildArticleDTO(null, previousArticleId, nextArticleId, 1);
+        return buildArticleDTO(null, previousArticleId, nextArticleId, 1);
     }
 
     public static ArticleDTO buildArticleDTOWithSeries(String string) {

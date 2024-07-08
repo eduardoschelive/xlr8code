@@ -4,9 +4,9 @@ import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.exception.InvalidRefreshSessionTokenException;
 import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.SessionCookieUtils;
-import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
+import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
 import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.utils.UserTestUtils;
@@ -27,7 +27,6 @@ import java.util.UUID;
 
 import static com.xlr8code.server.utils.JsonTestUtils.asJsonString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

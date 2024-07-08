@@ -16,12 +16,13 @@ import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.repository.UserRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -31,7 +32,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserSessionService userSessionService;
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Lazy
     @Resource
@@ -53,6 +53,17 @@ public class UserService {
         var user = userCreateDTO.toUser(passwordEncoder);
 
         return this.userRepository.save(user);
+    }
+
+
+    /**
+     * @param queryParameters All the query parameters from the request
+     * @return {@link Page} of {@link UserDTO} with the given query parameters
+     */
+    public Page<UserDTO> findAll(Map<String, String> queryParameters) {
+        var users = this.userRepository.findAll(queryParameters, User.class);
+
+        return users.map(UserDTO::from);
     }
 
     /**

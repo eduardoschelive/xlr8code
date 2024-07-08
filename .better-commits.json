@@ -73,8 +73,8 @@
                 "label": "user"
             },
 	    {
-                "value": "series",
-                "label": "series"
+                "value": "categories",
+                "label": "categories"
 	    },
             {
 	        "value": "article",
@@ -97,9 +97,14 @@
                 "label": "documentation"
             },
             {
+                "value": "filter",
+                "label": "filter"
+            },
+	    {
                 "value": "",
                 "label": "none"
-            }
+	    } 
+
         ]
     },
     "check_ticket": {

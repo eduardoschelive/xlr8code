@@ -3,6 +3,7 @@ package com.xlr8code.server.user.entity;
 import com.xlr8code.server.authentication.entity.UserCode;
 import com.xlr8code.server.authentication.entity.UserSession;
 import com.xlr8code.server.common.entity.AuditableEntity;
+import com.xlr8code.server.filter.annotation.Filterable;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,9 +32,11 @@ public class User extends AuditableEntity implements UserDetails {
     @Column(name = "user_id", nullable = false, updatable = false)
     private UUID id;
 
+    @Filterable
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Filterable
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 

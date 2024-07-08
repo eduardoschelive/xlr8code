@@ -61,22 +61,22 @@ CREATE TABLE user_codes
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-CREATE TABLE series
+CREATE TABLE category
 (
-    series_id  UUID PRIMARY KEY,
+    category_id  UUID PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
-CREATE TABLE i18n_series
+CREATE TABLE i18n_category
 (
     id          UUID PRIMARY KEY,
-    series_id   UUID REFERENCES series (series_id),
+    category_id   UUID REFERENCES category (category_id),
     language    TEXT NOT NULL,
     title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
     description TEXT,
-    CONSTRAINT unique_series_language UNIQUE (series_id, language)
+    CONSTRAINT unique_category_language UNIQUE (category_id, language)
 );
 
 CREATE TABLE articles
@@ -84,11 +84,11 @@ CREATE TABLE articles
     article_id        UUID PRIMARY KEY,
     previous_article_id  UUID REFERENCES articles (article_id),
     next_article_id      UUID REFERENCES articles (article_id),
-    series_id         UUID,
+    category_id         UUID,
     created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     position     INT,
-    FOREIGN KEY (series_id) REFERENCES series (series_id)
+    FOREIGN KEY (category_id) REFERENCES category (category_id)
 );
 
 CREATE TABLE i18n_articles

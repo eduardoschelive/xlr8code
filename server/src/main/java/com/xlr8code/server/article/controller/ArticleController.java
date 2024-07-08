@@ -1,7 +1,6 @@
 package com.xlr8code.server.article.controller;
 
 import com.xlr8code.server.article.dto.ArticleDTO;
-import com.xlr8code.server.article.dto.ArticleTranslationDTO;
 import com.xlr8code.server.article.dto.TranslatedArticleDTO;
 import com.xlr8code.server.article.service.ArticleService;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
@@ -10,8 +9,6 @@ import com.xlr8code.server.common.utils.Endpoint;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +25,7 @@ public class ArticleController {
 
     @PostMapping
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    public ResponseEntity<Void> create(@Valid @RequestBody  ArticleDTO articleDTO) {
+    public ResponseEntity<Void> create(@Valid @RequestBody ArticleDTO articleDTO) {
         var newArticle = this.articleService.create(articleDTO);
         var createdURI = Endpoint.Article.BASE_PATH + "/" + newArticle.getId();
 

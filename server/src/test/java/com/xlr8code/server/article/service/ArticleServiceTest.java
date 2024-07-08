@@ -3,10 +3,10 @@ package com.xlr8code.server.article.service;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.entity.Series;
-import com.xlr8code.server.series.repository.SeriesRepository;
-import com.xlr8code.server.series.service.SeriesService;
+import com.xlr8code.server.category.repository.CategoryRepository;
+import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.utils.ArticleTestUtils;
 import com.xlr8code.server.utils.SeriesTestUtils;
 import org.junit.jupiter.api.*;
@@ -25,22 +25,22 @@ class ArticleServiceTest {
     private ArticleService articleService;
 
     @Autowired
-    private SeriesService seriesService;
+    private CategoryService categoryService;
 
     @Autowired
     private ArticleRepository articleRepository;
 
     @Autowired
-    private SeriesRepository seriesRepository;
+    private CategoryRepository categoryRepository;
 
-    private Series series;
+    private Category category;
     private Article nextArticle;
     private Article previousArticle;
 
 
     @BeforeEach
     void setUp() {
-        series = seriesService.create(SeriesTestUtils.buildSeriesDTO());
+        category = categoryService.create(SeriesTestUtils.buildSeriesDTO());
         nextArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
         previousArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
     }
@@ -48,7 +48,7 @@ class ArticleServiceTest {
     @AfterEach
     void tearDown() {
         articleRepository.deleteAll();
-        seriesRepository.deleteAll();
+        categoryRepository.deleteAll();
     }
 
     @Nested
@@ -77,12 +77,12 @@ class ArticleServiceTest {
 
         @Test
         void it_should_create_article_with_series() {
-            var articleDTO = ArticleTestUtils.buildArticleDTOWithSeries(series.getId().toString());
+            var articleDTO = ArticleTestUtils.buildArticleDTOWithSeries(category.getId().toString());
 
             var article = articleService.create(articleDTO);
 
             assertNotNull(article);
-            assertEquals(series.getId(), article.getSeries().getId());
+            assertEquals(category.getId(), article.getCategory().getId());
         }
 
     }

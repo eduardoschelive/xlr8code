@@ -4,8 +4,8 @@ import com.xlr8code.server.article.annotation.ExistingArticle;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.entity.ArticleRelation;
 import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.series.annotation.ExistingSeries;
-import com.xlr8code.server.series.entity.Series;
+import com.xlr8code.server.category.annotation.ExistingCategory;
+import com.xlr8code.server.category.entity.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record ArticleDTO(
-        @ExistingSeries(optional = true)
+        @ExistingCategory(optional = true)
         String seriesId,
         @ExistingArticle(optional = true)
         String previousArticleId, @ExistingArticle(optional = true)
@@ -25,9 +25,9 @@ public record ArticleDTO(
         Map<Language, @Valid ArticleLanguageDTO> languages
 ) {
 
-    public Article toEntity(Article article, Series series, ArticleRelation articleRelation) {
+    public Article toEntity(Article article, Category category, ArticleRelation articleRelation) {
         article.setPosition(this.position());
-        article.setSeries(series);
+        article.setCategory(category);
         article.setArticleRelation(articleRelation);
 
         var articleLanguages = this.languages().entrySet().stream()

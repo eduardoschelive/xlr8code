@@ -1,8 +1,8 @@
 package com.xlr8code.server.user.controller;
 
-import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
+import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
@@ -21,12 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -78,7 +81,7 @@ class UserControllerTest {
     class FindTests {
 
         @Test
-        void should_find_by_uuid() throws Exception {
+        void it_should_find_by_uuid() throws Exception {
             var expectedUserDTO = expectedUserDTO();
 
             var uuid = expectedUserDTO.id().toString();
@@ -96,7 +99,7 @@ class UserControllerTest {
         }
 
         @Test
-        void should_not_find_by_uuid() throws Exception {
+        void it_should_not_find_by_uuid() throws Exception {
             var uuid = UUID.randomUUID().toString();
 
             when(userService.findByUUID(uuid)).thenThrow(UserNotFoundException.class);
@@ -106,6 +109,23 @@ class UserControllerTest {
                     .andExpect(status().isNotFound());
 
         }
+
+        @Test
+        void it_should_find_all_users() throws Exception {
+            var expectedUserDTO = expectedUserDTO();
+
+            var mapParams = Map.of("page", "0", "size", "10");
+            var expected = new PageImpl<>(List.of(expectedUserDTO));
+
+            when(userService.findAll(mapParams)).thenReturn(expected);
+
+            mockMvc.perform(get(Endpoint.User.BASE_PATH)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+
+        }
+
+        // TODO: test for 404 when user not found
 
     }
 

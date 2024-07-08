@@ -4,8 +4,6 @@ import com.xlr8code.server.user.exception.LanguageNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Locale;
-
 @RequiredArgsConstructor
 @Getter
 public enum Language {

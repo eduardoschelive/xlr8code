@@ -3,7 +3,6 @@ package com.xlr8code.server.article.controller;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.service.ArticleService;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.series.service.SeriesService;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.utils.UserRole;
 import com.xlr8code.server.utils.ArticleTestUtils;
@@ -24,10 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -44,23 +41,23 @@ class ArticleControllerTest {
     @Nested
     class CreateTests {
 
-            @Test
-            void it_should_return_201_created() throws Exception {
-                // given
-                var createArticleDTO = ArticleTestUtils.buildArticleDTO();
-                var uuidToReturn = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-                // when
+        @Test
+        void it_should_return_201_created() throws Exception {
+            // given
+            var createArticleDTO = ArticleTestUtils.buildArticleDTO();
+            var uuidToReturn = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+            // when
 
-                when(articleService.create(createArticleDTO)).thenReturn(Article.builder().id(uuidToReturn).build());
+            when(articleService.create(createArticleDTO)).thenReturn(Article.builder().id(uuidToReturn).build());
 
-                // then
-                mockMvc.perform(post(Endpoint.Article.BASE_PATH)
-                                .with(SecurityMockMvcRequestPostProcessors.user(admin))
-                                .header("Accept-Language", "en_US, pt_BR")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(JsonTestUtils.asJsonString(createArticleDTO)))
-                        .andExpect(status().isCreated());
-            }
+            // then
+            mockMvc.perform(post(Endpoint.Article.BASE_PATH)
+                            .with(SecurityMockMvcRequestPostProcessors.user(admin))
+                            .header("Accept-Language", "en_US, pt_BR")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonTestUtils.asJsonString(createArticleDTO)))
+                    .andExpect(status().isCreated());
+        }
 
     }
 
