@@ -11,12 +11,19 @@ import java.util.Map;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.ACCEPTED_SORT_VALUES;
 
+/**
+ * A class that extracts the sorting parameters from the request parameters
+ * and creates a {@link Sort} object.
+ */
 @RequiredArgsConstructor
 public class FilterSorting {
 
     private final Map<String, String> sortingParams;
     private final Map<String, FilterFieldDetails> filterDetailsMap;
 
+    /**
+     * @return the sort object based on the request parameters
+     */
     public Sort getSort() {
         var initialSort = Sort.unsorted();
 

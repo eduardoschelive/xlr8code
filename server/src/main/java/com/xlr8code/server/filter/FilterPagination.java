@@ -11,11 +11,18 @@ import java.util.function.Function;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
+/**
+ * A class that extracts the pagination parameters from the request parameters
+ * and creates a {@link PageRequest} object.
+ */
 @RequiredArgsConstructor
 public class FilterPagination {
 
     private final Map<String, String> paginationParams;
 
+    /**
+     * @return the page request based on the request parameters
+     */
     public PageRequest getPageRequest() {
         var page = parseIntegerParameter(PAGE_PARAM, DEFAULT_PAGE, PageNumberFormatException::new);
         validatePageNumber(page);

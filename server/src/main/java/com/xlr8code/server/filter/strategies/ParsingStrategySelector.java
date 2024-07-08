@@ -26,6 +26,10 @@ public class ParsingStrategySelector {
         return MethodType.methodType(expectedType).wrap().returnType();
     }
 
+    /**
+     * @param expectedType the expected field type
+     * @return the parsing strategy for the expected type
+     */
     public static ParsingStrategy getStrategy(Class<?> expectedType) {
         var wrapper = getWrapper(expectedType);
         var strategy = STRATEGIES.get(wrapper);

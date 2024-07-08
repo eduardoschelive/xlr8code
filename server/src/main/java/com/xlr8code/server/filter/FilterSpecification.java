@@ -22,6 +22,14 @@ import java.util.Map;
 import static com.xlr8code.server.filter.utils.FilterConstants.CASE_INSENSITIVE_SUFFIX;
 import static com.xlr8code.server.filter.utils.FilterConstants.NEGATION_PREFIX;
 
+/**
+ * @param <E> the entity type
+ *            <p>
+ *            A class that extracts the filter parameters from the request parameters
+ *            and creates a {@link Specification} object.
+ *            The filter parameters are used to filter the results of a query.
+ *            </p>
+ */
 @RequiredArgsConstructor
 public class FilterSpecification<E> implements Specification<E> {
 

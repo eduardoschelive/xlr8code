@@ -11,8 +11,16 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Map;
 
+/**
+ * @param <E> the entity type
+ */
 public interface FilterRepository<E> extends JpaSpecificationExecutor<E> {
 
+    /**
+     * @param queryParameters all the request parameters
+     * @param entityClass the target entity class
+     * @return the page of entities that match the query parameters
+     */
     default Page<E> findAll(Map<String, String> queryParameters, Class<E> entityClass) {
         var queryParamDetails = new QueryParameterDetails(queryParameters);
         var filterDetailsMap = FilterUtils.extractFilterableFields(entityClass);

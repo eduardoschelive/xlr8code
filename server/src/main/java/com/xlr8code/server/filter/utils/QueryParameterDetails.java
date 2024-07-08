@@ -8,6 +8,18 @@ import java.util.Map;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
+/**
+ * A class to hold the details of the query parameters.
+ * <p>
+ *     The query parameters are split into three categories:
+ *     <ul>
+ *         <li>Pagination parameters (page and size)</li>
+ *         <li>Sort parameters (sort)</li>
+ *          <li>Filter parameters: The parameters that are not pagination or sort parameters</li>
+ *     </ul>
+ * </p>
+ *
+ */
 @Getter
 public class QueryParameterDetails {
 
@@ -17,6 +29,9 @@ public class QueryParameterDetails {
     private final Map<String, String> paginationParameters = new HashMap<>();
     private final Map<String, String> sortParameters = new HashMap<>();
 
+    /**
+     * @param parameters all the query parameters of the request
+     */
     public QueryParameterDetails(Map<String, String> parameters) {
         splitParameters(parameters);
     }

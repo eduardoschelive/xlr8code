@@ -17,6 +17,10 @@ import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPA
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterUtils {
 
+    /**
+     * @param targetClass the class to extract the filterable fields from
+     * @return a map of filterable fields and their details
+     */
     public static Map<String, FilterFieldDetails> extractFilterableFields(Class<?> targetClass) {
         Map<String, FilterFieldDetails> fieldDetailsHashMap = new HashMap<>();
         var fieldPathStack = new ArrayDeque<String>();
@@ -57,11 +61,19 @@ public class FilterUtils {
         return (Class<?>) type;
     }
 
+    /**
+     * @param key the key to extract the field path from
+     * @return the field path extracted from the key
+     */
     public static String extractFieldPath(String key) {
         int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
     }
 
+    /**
+     * @param key the key to extract the operation from
+     * @return the operation extracted from the key
+     */
     public static String extractOperation(String key) {
         int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
