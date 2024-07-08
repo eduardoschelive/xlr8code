@@ -26,15 +26,10 @@ class FilterSpecificationTest {
     @Autowired
     private FilterTestRepository testRepository;
 
-    private static final int TEST_SIZE = 5;
-    private static final int AMOUNT_OF_DUPLICATES = 2;
-    private static final int TOTAL_SIZE = TEST_SIZE * AMOUNT_OF_DUPLICATES;
-    private static final String BASE_STRING = "stringField";
-
     @BeforeAll
     static void setup(@Autowired FilterTestUtils filterTestUtils) {
-        filterTestUtils.createNEntities(TEST_SIZE , BASE_STRING, true);
-        filterTestUtils.createNEntities(TEST_SIZE, BASE_STRING, false);
+        filterTestUtils.createTestEntityWithRelation("stringField", true, null);
+        filterTestUtils.createTestEntityWithRelation("stringField", false, null);
     }
 
     @AfterAll
@@ -45,7 +40,7 @@ class FilterSpecificationTest {
     @Test
     void it_should_find_all() {
         List<FilterTestEntity> all = testRepository.findAll();
-        assertEquals(TOTAL_SIZE, all.size());
+        assertEquals(2, all.size());
     }
 
     @Test
@@ -57,7 +52,7 @@ class FilterSpecificationTest {
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(TEST_SIZE, results.getTotalElements());
+        assertEquals(1, results.getTotalElements());
     }
 
     @Test
@@ -69,33 +64,33 @@ class FilterSpecificationTest {
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
 
-        assertEquals(TEST_SIZE, results.getTotalElements());
+        assertEquals(1, results.getTotalElements());
     }
 
     @Test
     void it_should_filter_with_nested_relation() {
         var params = Map.of(
-                "testRelationEntity.stringRelationField_eq", BASE_STRING + "00"
+                "testRelationEntity.stringRelationField_eq", "stringField"
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(AMOUNT_OF_DUPLICATES, results.getTotalElements());
+        assertEquals(2, results.getTotalElements());
     }
 
     @Test
     void it_should_filter_with_nested_one_to_one_relation() {
         var params = Map.of(
-                "testOneToOneRelationEntity.stringRelationField_eq", BASE_STRING + "0"
+                "testOneToOneRelationEntity.stringRelationField_eq", "stringField"
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(AMOUNT_OF_DUPLICATES, results.getTotalElements());
+        assertEquals(2, results.getTotalElements());
     }
 
     @Test
     void it_should_throw_error_if_operation_not_supported_on_field() {
         var params = Map.of(
-                "stringField_gt", "stringField0"
+                "stringField_gt", "stringField"
         );
 
         assertThrows(UnsupportedFilterOperationOnFieldException.class, () ->

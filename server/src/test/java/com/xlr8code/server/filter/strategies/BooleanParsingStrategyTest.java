@@ -18,15 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class BooleanParsingStrategyTest {
 
-    private static final int TEST_SIZE = 5;
-
     @Autowired
     private FilterTestRepository testRepository;
 
     @BeforeAll
     static void setup(@Autowired FilterTestUtils filterTestUtils) {
-        filterTestUtils.createNEntities(TEST_SIZE, "stringField", true);
-        filterTestUtils.createNEntities(TEST_SIZE, "stringField", false);
+        filterTestUtils.createTestEntity("stringField", true, null);
+        filterTestUtils.createTestEntity("stringField", false, null);
     }
 
     @AfterAll
@@ -41,7 +39,7 @@ class BooleanParsingStrategyTest {
         );
 
         var results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(TEST_SIZE, results.getTotalElements());
+        assertEquals(1, results.getTotalElements());
     }
 
     @Test
@@ -51,7 +49,7 @@ class BooleanParsingStrategyTest {
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(TEST_SIZE, results.getTotalElements());
+        assertEquals(1, results.getTotalElements());
     }
 
     @Test
