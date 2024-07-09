@@ -1,8 +1,8 @@
 package com.xlr8code.server.category.dto;
 
-import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.category.entity.I18nCategory;
 import com.xlr8code.server.category.entity.Category;
+import com.xlr8code.server.category.entity.I18nCategory;
+import com.xlr8code.server.common.enums.Language;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Optional;

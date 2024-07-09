@@ -1,8 +1,8 @@
 package com.xlr8code.server.category.validator;
 
-import com.xlr8code.server.common.utils.StringUtils;
 import com.xlr8code.server.category.annotation.ExistingCategory;
 import com.xlr8code.server.category.service.CategoryService;
+import com.xlr8code.server.common.utils.StringUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;

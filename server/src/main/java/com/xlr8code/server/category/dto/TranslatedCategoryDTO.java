@@ -1,9 +1,10 @@
 package com.xlr8code.server.category.dto;
 
-import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.category.entity.I18nCategory;
 import com.xlr8code.server.category.entity.Category;
+import com.xlr8code.server.category.entity.I18nCategory;
+import com.xlr8code.server.common.enums.Language;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 
 public record TranslatedCategoryDTO(
         UUID id,
+        Instant createdAt,
+        Instant updatedAt,
         Map<Language, CategoryTranslationDTO> languages
 ) {
 
@@ -23,7 +26,7 @@ public record TranslatedCategoryDTO(
                         (existing, replacement) -> existing
                 ));
 
-        return new TranslatedCategoryDTO(category.getId(), seriesLanguages);
+        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), seriesLanguages);
     }
 
     public static TranslatedCategoryDTO fromEntity(Category category) {
@@ -34,7 +37,7 @@ public record TranslatedCategoryDTO(
                         (existing, replacement) -> existing
                 ));
 
-        return new TranslatedCategoryDTO(category.getId(), seriesLanguages);
+        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), seriesLanguages);
     }
 
 }

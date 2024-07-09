@@ -1,20 +1,20 @@
 package com.xlr8code.server.category.controller;
 
-import com.xlr8code.server.common.annotation.MultiLanguageContent;
-import com.xlr8code.server.common.service.LocaleService;
-import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.category.dto.CategoryDTO;
 import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
 import com.xlr8code.server.category.service.CategoryService;
+import com.xlr8code.server.common.annotation.MultiLanguageContent;
+import com.xlr8code.server.common.service.LocaleService;
+import com.xlr8code.server.common.utils.Endpoint;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping(Endpoint.Categories.BASE_PATH)
@@ -32,9 +32,9 @@ public class CategoryController {
 
     @GetMapping
     @MultiLanguageContent
-    public ResponseEntity<Page<TranslatedCategoryDTO>> findAll(Pageable pageable, HttpServletRequest request) {
+    public ResponseEntity<Page<TranslatedCategoryDTO>> findAll(@RequestParam Map<String, String> requestParams, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
-        var result = categoryService.findAll(languages, pageable);
+        var result = categoryService.findAll(requestParams, languages);
         return ResponseEntity.ok(result);
     }
 
@@ -43,14 +43,6 @@ public class CategoryController {
     public ResponseEntity<TranslatedCategoryDTO> findById(@PathVariable String id, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
         var result = categoryService.findById(id, languages);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/search")
-    @MultiLanguageContent
-    public ResponseEntity<Page<TranslatedCategoryDTO>> search(@RequestParam String query, Pageable pageable, HttpServletRequest request) {
-        var languages = localeService.getAllAcceptedLanguages(request);
-        var result = categoryService.search(query, languages, pageable);
         return ResponseEntity.ok(result);
     }
 

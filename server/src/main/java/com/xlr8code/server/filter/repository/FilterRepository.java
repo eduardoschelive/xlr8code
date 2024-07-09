@@ -1,11 +1,6 @@
 package com.xlr8code.server.filter.repository;
 
-import com.xlr8code.server.filter.FilterPagination;
-import com.xlr8code.server.filter.FilterSorting;
-import com.xlr8code.server.filter.FilterSpecification;
-import com.xlr8code.server.filter.utils.FilterFieldDetails;
-import com.xlr8code.server.filter.utils.FilterUtils;
-import com.xlr8code.server.filter.utils.QueryParameterDetails;
+import com.xlr8code.server.filter.Filter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -18,31 +13,13 @@ public interface FilterRepository<E> extends JpaSpecificationExecutor<E> {
 
     /**
      * @param queryParameters all the request parameters
-     * @param entityClass the target entity class
+     * @param entityClass     the target entity class
      * @return the page of entities that match the query parameters
      */
     default Page<E> findAll(Map<String, String> queryParameters, Class<E> entityClass) {
-        var queryParamDetails = new QueryParameterDetails(queryParameters);
-        var filterDetailsMap = FilterUtils.extractFilterableFields(entityClass);
-
-        var query = createFilterSpecification(queryParamDetails, filterDetailsMap);
-        var sort = createFilterSorting(queryParamDetails, filterDetailsMap);
-        var pagination = createFilterPagination(queryParamDetails);
-
-        var pageRequestWithSort = pagination.getPageRequest().withSort(sort.getSort());
-
-        return findAll(query, pageRequestWithSort);
-    }
-
-    private FilterSpecification<E> createFilterSpecification(QueryParameterDetails queryParamDetails, Map<String, FilterFieldDetails> filterDetailsMap) {
-        return new FilterSpecification<>(queryParamDetails.getFilterParameters(), filterDetailsMap);
-    }
-
-    private FilterSorting createFilterSorting(QueryParameterDetails queryParamDetails, Map<String, FilterFieldDetails> filterDetailsMap) {
-        return new FilterSorting(queryParamDetails.getSortParameters(), filterDetailsMap);
-    }
-
-    private FilterPagination createFilterPagination(QueryParameterDetails queryParamDetails) {
-        return new FilterPagination(queryParamDetails.getPaginationParameters());
+        var filter = new Filter<>(queryParameters, entityClass);
+        var specification = filter.getSpecification();
+        var pageRequest = filter.getPageRequest();
+        return findAll(specification, pageRequest);
     }
 }

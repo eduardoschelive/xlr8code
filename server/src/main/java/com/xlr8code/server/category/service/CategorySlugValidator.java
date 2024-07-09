@@ -1,10 +1,10 @@
 package com.xlr8code.server.category.service;
 
-import com.xlr8code.server.category.entity.Category;
-import com.xlr8code.server.common.validation.SlugValidator;
 import com.xlr8code.server.category.dto.CategoryDTO;
 import com.xlr8code.server.category.dto.CategoryLanguageDTO;
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.category.repository.I18nCategoryRepository;
+import com.xlr8code.server.common.validation.SlugValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

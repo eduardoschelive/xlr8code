@@ -21,7 +21,7 @@ public class Category extends AuditableEntity {
     @Column(name = "category_id", nullable = false)
     private UUID id;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<I18nCategory> i18nCategories;
 
     @OneToMany

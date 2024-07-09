@@ -1,22 +1,21 @@
 package com.xlr8code.server.category.service;
 
-import com.xlr8code.server.common.enums.Language;
-import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
-import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.category.dto.CategoryDTO;
 import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
 import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.category.exception.CategoryNotFoundException;
 import com.xlr8code.server.category.repository.CategoryRepository;
+import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.exception.PropertyDoesNotExistsException;
+import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.*;
-import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,37 +44,13 @@ public class CategoryService {
 
     /**
      * @param languages the languages to filter
-     * @param pageable  the page to be returned
      * @return the series with the specified languages
      * @throws PropertyDoesNotExistsException if specified to sort in pageable does not exist
      */
     @Transactional(readOnly = true)
-    public Page<TranslatedCategoryDTO> findAll(Set<Language> languages, Pageable pageable) {
-        try {
-            var seriesPage = categoryRepository.findAll(pageable);
-            var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, seriesPage.getContent());
-
-            return new PageImpl<>(filteredTranslatedSeriesDTOs, pageable, seriesPage.getTotalElements());
-        } catch (PropertyReferenceException e) {
-            throw new PropertyDoesNotExistsException(e.getPropertyName());
-        }
-    }
-
-    /**
-     * @param query     the query to be searched
-     * @param languages the languages to filter
-     * @param pageable  the page to be returned
-     * @return the series with the specified languages
-     * @apiNote this ignores the sorting and return with descending order
-     */
-    @Transactional(readOnly = true)
-    public Page<TranslatedCategoryDTO> search(String query, Set<Language> languages, Pageable pageable) {
-        var seriesPage = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.unsorted());
-        var page = categoryRepository.search(query, languages, seriesPage);
-
-        var filteredTranslatedSeriesDTOs = this.mapAndFilterEmptyLanguages(languages, page.getContent());
-
-        return new PageImpl<>(filteredTranslatedSeriesDTOs, pageable, page.getTotalElements());
+    public Page<TranslatedCategoryDTO> findAll(Map<String, String> requestParams, Set<Language> languages) {
+        var page = this.categoryRepository.findAll(requestParams, Category.class);
+        return page.map(category -> TranslatedCategoryDTO.fromEntity(category, languages));
     }
 
     /**
@@ -124,8 +99,8 @@ public class CategoryService {
     }
 
     /**
-     * @param uuidString the series id
-     * @param categoryDTO  the series to be updated
+     * @param uuidString  the series id
+     * @param categoryDTO the series to be updated
      * @return the updated translated series with the specified id and languages
      */
     @Transactional
@@ -147,37 +122,6 @@ public class CategoryService {
     public boolean existsById(String id) {
         var uuid = UUIDUtils.convertFromString(id);
         return uuid.filter(this.categoryRepository::existsById).isPresent();
-    }
-
-    /**
-     * @param languages  the languages to filter
-     * @param categoryList the series to be mapped
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedCategoryDTO> mapAndFilterEmptyLanguages(Set<Language> languages, List<Category> categoryList) {
-        var seriesLanguagesDTOList = this.mapSeriesToTranslatedSeriesDTO(languages, categoryList);
-        return this.filterEmptyLanguages(seriesLanguagesDTOList);
-    }
-
-    /**
-     * @param languages  the languages to be filtered
-     * @param categoryList the series to be mapped
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedCategoryDTO> mapSeriesToTranslatedSeriesDTO(Set<Language> languages, List<Category> categoryList) {
-        return categoryList.stream()
-                .map(s -> TranslatedCategoryDTO.fromEntity(s, languages))
-                .toList();
-    }
-
-    /**
-     * @param seriesLanguagesDTOList the series languages to be filtered
-     * @return the series languages with non-empty languages
-     */
-    private List<TranslatedCategoryDTO> filterEmptyLanguages(List<TranslatedCategoryDTO> seriesLanguagesDTOList) {
-        return seriesLanguagesDTOList.stream()
-                .filter(dto -> !dto.languages().isEmpty())
-                .toList();
     }
 
 }

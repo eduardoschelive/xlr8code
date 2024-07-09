@@ -6,11 +6,11 @@ import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.entity.ArticleRelation;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
+import com.xlr8code.server.category.exception.CategoryNotFoundException;
+import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.ObjectUtils;
 import com.xlr8code.server.common.utils.UUIDUtils;
-import com.xlr8code.server.category.exception.CategoryNotFoundException;
-import com.xlr8code.server.category.service.CategoryService;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -118,8 +118,8 @@ public class ArticleService {
     /**
      * @param articleDTO the article to be converted
      * @return the converted article
-     * @throws ArticleNotFoundException if the article with the specified id does not exist
-     * @throws CategoryNotFoundException  if the series with the specified id does not exist
+     * @throws ArticleNotFoundException  if the article with the specified id does not exist
+     * @throws CategoryNotFoundException if the series with the specified id does not exist
      */
     private Article convertToEntity(Article article, ArticleDTO articleDTO) {
         var series = ObjectUtils.executeIfNotNull(articleDTO.seriesId(), categoryService::findById);

@@ -8,13 +8,13 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 /**
- *  Abstract class that defines the parsing strategy for a filter operation.
- *  <p>
- *      This class is used to define the parsing strategy for a filter operation. The parsing strategy is used to build
- *      the predicate for a filter operation.
- *      The class defines the method {@link #buildPredicate(CriteriaBuilder, Root, String, FilterOperationDetails, Object)}
- *      that is used to build the predicate for a filter operation.
- *  </p>
+ * Abstract class that defines the parsing strategy for a filter operation.
+ * <p>
+ * This class is used to define the parsing strategy for a filter operation. The parsing strategy is used to build
+ * the predicate for a filter operation.
+ * The class defines the method {@link #buildPredicate(CriteriaBuilder, Root, String, FilterOperationDetails, Object)}
+ * that is used to build the predicate for a filter operation.
+ * </p>
  */
 public abstract class ParsingStrategy {
 
