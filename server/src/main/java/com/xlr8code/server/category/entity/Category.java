@@ -4,6 +4,9 @@ import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.common.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +25,7 @@ public class Category extends AuditableEntity {
     private UUID id;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private Set<I18nCategory> i18nCategories;
 
     @OneToMany
