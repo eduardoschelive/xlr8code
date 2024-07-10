@@ -4,15 +4,22 @@ import com.xlr8code.server.user.exception.LanguageNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Getter
 public enum Language {
 
-    AMERICAN_ENGLISH("en_US"),
-    BRAZILIAN_PORTUGUESE("pt_BR");
+    AMERICAN_ENGLISH("en-US"),
+    BRAZILIAN_PORTUGUESE("pt-BR");
 
     private static final Language DEFAULT = AMERICAN_ENGLISH;
     private final String code;
+
+    public static final Map<String, String> VARIANT_MAP = Map.of(
+            "en", AMERICAN_ENGLISH.getCode(),
+            "pt", BRAZILIAN_PORTUGUESE.getCode()
+    );
 
 
     /**

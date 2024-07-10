@@ -106,13 +106,26 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
         for (var language : acceptLanguageHeader.split(LOCALE_SEPARATOR)) {
             var languageTag = this.sanitizeLanguage(language);
             var parts = languageTag.split(LOCALE_QUALITY_SEPARATOR);
-            var localeString = parts[localePosition];
-            double qualityScore = this.getQualityScore(parts);
+            var localeString = getLocaleString(parts[localePosition]);
+            var qualityScore = this.getQualityScore(parts);
 
-            Locale locale = Locale.of(localeString);
+            var locale = Locale.of(localeString);
             acceptedLanguages.add(new LocaleWithQualityScore(locale, qualityScore));
         }
         return acceptedLanguages;
+    }
+
+    /**
+     * @param parts the parts of the language tag
+     * @return the locale string of the given language tag
+     * @see Language#VARIANT_MAP
+     * <p>
+     *     If the given language tag is not present in the variant map, the given language tag will be returned.
+     *     Otherwise, the locale string corresponding to the given language tag will be returned.
+     *     It is needed because of variants like "pt-BR" and "pt".
+     */
+    private static String getLocaleString(String parts) {
+        return Language.VARIANT_MAP.getOrDefault(parts, parts);
     }
 
     /**
