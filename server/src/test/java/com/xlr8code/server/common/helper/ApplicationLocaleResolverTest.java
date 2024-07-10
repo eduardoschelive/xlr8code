@@ -27,7 +27,9 @@ class ApplicationLocaleResolverTest {
                 arguments("invalid_locale_format", Locale.of("en_US")), // Test case for invalid locale format
                 arguments("pt_BR", Locale.of("pt_BR")), // Test case for resolving locale with header
                 arguments("en_US;q=0.8,pt_BR;q=0.9", Locale.of("pt_BR")), // Test case for resolving locale with quality score
-                arguments("en_US;q=0.8,pt_BR", Locale.of("pt_BR")) // Test case for resolving locale with quality score and default
+                arguments("en_US;q=0.8,pt_BR", Locale.of("pt_BR")), // Test case for resolving locale with quality score and default
+                arguments("en-US", Locale.of("en_US")), // Test case for resolving locale with dash
+                arguments("pt-BR", Locale.of("pt_BR")) // Test case for resolving locale with dash
         );
     }
 
