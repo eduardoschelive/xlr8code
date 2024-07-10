@@ -24,7 +24,7 @@ import java.util.UUID;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategorySlugValidator seriesSlugValidator;
+    private final CategorySlugValidator categorySlugValidator;
 
     @Resource
     @Lazy
@@ -36,10 +36,10 @@ public class CategoryService {
      */
     @Transactional
     public Category create(CategoryDTO categoryDTO) {
-        this.seriesSlugValidator.validateSlugs(categoryDTO.languages().values());
-        var emptySeries = new Category();
-        var series = categoryDTO.toEntity(emptySeries);
-        return this.categoryRepository.save(series);
+        this.categorySlugValidator.validateSlugs(categoryDTO.languages().values());
+        var emptyCategory = new Category();
+        var category = categoryDTO.toEntity(emptyCategory);
+        return this.categoryRepository.save(category);
     }
 
     /**
@@ -105,10 +105,10 @@ public class CategoryService {
      */
     @Transactional
     public TranslatedCategoryDTO update(String uuidString, CategoryDTO categoryDTO) {
-        var existingSeries = self.findById(uuidString);
-        this.seriesSlugValidator.validateSlugs(categoryDTO, existingSeries);
+        var existingCategory = self.findById(uuidString);
+        this.categorySlugValidator.validateSlugs(categoryDTO, existingCategory);
 
-        var updatedSeries = categoryDTO.toEntity(existingSeries);
+        var updatedSeries = categoryDTO.toEntity(existingCategory);
         var savedEntity = categoryRepository.save(updatedSeries);
 
         return TranslatedCategoryDTO.fromEntity(savedEntity);

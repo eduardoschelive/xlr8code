@@ -18,7 +18,7 @@ public record TranslatedCategoryDTO(
 ) {
 
     public static TranslatedCategoryDTO fromEntity(Category category, Set<Language> languages) {
-        var seriesLanguages = category.getI18nCategories().stream()
+        var categoryLanguages = category.getI18nCategories().stream()
                 .filter(i18n -> languages.contains(i18n.getLanguage()))
                 .collect(Collectors.toMap(
                         I18nCategory::getLanguage,
@@ -26,18 +26,18 @@ public record TranslatedCategoryDTO(
                         (existing, replacement) -> existing
                 ));
 
-        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), seriesLanguages);
+        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), categoryLanguages);
     }
 
     public static TranslatedCategoryDTO fromEntity(Category category) {
-        var seriesLanguages = category.getI18nCategories().stream()
+        var categoryLanguages = category.getI18nCategories().stream()
                 .collect(Collectors.toMap(
                         I18nCategory::getLanguage,
                         CategoryTranslationDTO::fromEntity,
                         (existing, replacement) -> existing
                 ));
 
-        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), seriesLanguages);
+        return new TranslatedCategoryDTO(category.getId(), category.getCreatedAt(), category.getUpdatedAt(), categoryLanguages);
     }
 
 }

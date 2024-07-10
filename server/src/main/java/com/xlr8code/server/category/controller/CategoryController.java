@@ -26,8 +26,8 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody CategoryDTO categoryDTO) {
-        var createdSeries = categoryService.create(categoryDTO);
-        return ResponseEntity.created(URI.create(Endpoint.Categories.BASE_PATH + "/" + createdSeries.getId())).build();
+        var category = categoryService.create(categoryDTO);
+        return ResponseEntity.created(URI.create(Endpoint.Categories.BASE_PATH + "/" + category.getId())).build();
     }
 
     @GetMapping

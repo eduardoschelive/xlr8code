@@ -7,7 +7,7 @@ import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.utils.UserRole;
 import com.xlr8code.server.utils.JsonTestUtils;
-import com.xlr8code.server.utils.SeriesTestUtils;
+import com.xlr8code.server.utils.CategoryTestUtils;
 import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -46,16 +46,16 @@ class CategoryControllerTest {
         @Test
         void it_should_return_201_created() throws Exception {
             // given
-            var createSeriesDTO = SeriesTestUtils.buildSeriesDTO();
+            var categoryDTO = CategoryTestUtils.buildCategoryDTO();
             var uuidToReturn = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
             // when
-            when(categoryService.create(createSeriesDTO)).thenReturn(Category.builder().id(uuidToReturn).build());
+            when(categoryService.create(categoryDTO)).thenReturn(Category.builder().id(uuidToReturn).build());
             // then
             mockMvc.perform(post(Endpoint.Categories.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
                             .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(JsonTestUtils.asJsonString(createSeriesDTO)))
+                            .content(JsonTestUtils.asJsonString(categoryDTO)))
                     .andExpect(status().isCreated())
                     .andExpect(header().string("Location", Endpoint.Categories.BASE_PATH + "/" + uuidToReturn));
         }
@@ -112,7 +112,7 @@ class CategoryControllerTest {
         @Test
         void it_should_return_200_ok() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
-            var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
+            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
             when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null,  null, null, null));
 
             mockMvc.perform(put(Endpoint.Categories.BASE_PATH + "/uuid")

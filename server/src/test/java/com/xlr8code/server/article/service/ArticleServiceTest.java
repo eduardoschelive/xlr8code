@@ -8,7 +8,7 @@ import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.category.repository.CategoryRepository;
 import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.utils.ArticleTestUtils;
-import com.xlr8code.server.utils.SeriesTestUtils;
+import com.xlr8code.server.utils.CategoryTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,7 +40,7 @@ class ArticleServiceTest {
 
     @BeforeEach
     void setUp() {
-        category = categoryService.create(SeriesTestUtils.buildSeriesDTO());
+        category = categoryService.create(CategoryTestUtils.buildCategoryDTO());
         nextArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
         previousArticle = articleService.create(ArticleTestUtils.buildArticleDTO());
     }
@@ -76,8 +76,8 @@ class ArticleServiceTest {
         }
 
         @Test
-        void it_should_create_article_with_series() {
-            var articleDTO = ArticleTestUtils.buildArticleDTOWithSeries(category.getId().toString());
+        void it_should_create_article_with_category() {
+            var articleDTO = ArticleTestUtils.buildArticleDTOWithCategory(category.getId().toString());
 
             var article = articleService.create(articleDTO);
 

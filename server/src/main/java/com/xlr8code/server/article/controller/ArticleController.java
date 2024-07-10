@@ -9,11 +9,13 @@ import com.xlr8code.server.common.utils.Endpoint;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,9 +50,17 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     @MultiLanguageContent
-    public ResponseEntity<TranslatedArticleDTO> get(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<TranslatedArticleDTO> find(@PathVariable String id, HttpServletRequest request) {
         var languages = this.localeService.getAllAcceptedLanguages(request);
         var result = this.articleService.findById(id, languages);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping
+    @MultiLanguageContent
+    public ResponseEntity<Page<TranslatedArticleDTO>> findAll(@RequestParam Map<String, String> queryParams, HttpServletRequest request) {
+        var languages = this.localeService.getAllAcceptedLanguages(request);
+        var result = this.articleService.findAll(queryParams, languages);
         return ResponseEntity.ok(result);
     }
 

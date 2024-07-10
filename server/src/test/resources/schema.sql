@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS i18n_category
     title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
     description TEXT,
-    CONSTRAINT unique_series_language UNIQUE (category_id, language)
+    CONSTRAINT unique_category_language UNIQUE (category_id, language)
 );
 
 CREATE TABLE IF NOT EXISTS articles

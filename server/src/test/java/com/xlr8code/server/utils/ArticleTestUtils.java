@@ -9,16 +9,16 @@ import java.util.UUID;
 
 public class ArticleTestUtils {
 
-    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, Integer position, Map<Language, ArticleLanguageDTO> languages) {
-        return new ArticleDTO(seriesId, previousArticleId, nextArticleId, position, languages);
+    public static ArticleDTO buildArticleDTO(String categoryId, String previousArticleId, String nextArticleId, Integer position, Map<Language, ArticleLanguageDTO> languages) {
+        return new ArticleDTO(categoryId, previousArticleId, nextArticleId, position, languages);
     }
 
-    public static ArticleDTO buildArticleDTO(String seriesId, String previousArticleId, String nextArticleId, Integer position) {
+    public static ArticleDTO buildArticleDTO(String categoryId, String previousArticleId, String nextArticleId, Integer position) {
         var languages = Map.of(
                 Language.AMERICAN_ENGLISH, buildArticleLanguageDTO("title", UUID.randomUUID().toString(), "content")
         );
 
-        return buildArticleDTO(seriesId, previousArticleId, nextArticleId, position, languages);
+        return buildArticleDTO(categoryId, previousArticleId, nextArticleId, position, languages);
     }
 
     public static ArticleDTO buildArticleDTO() {
@@ -33,7 +33,7 @@ public class ArticleTestUtils {
         return buildArticleDTO(null, previousArticleId, nextArticleId, 1);
     }
 
-    public static ArticleDTO buildArticleDTOWithSeries(String string) {
+    public static ArticleDTO buildArticleDTOWithCategory(String string) {
         return buildArticleDTO(string, null, null, 1);
     }
 

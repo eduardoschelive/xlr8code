@@ -21,44 +21,44 @@ class ExistingCategoryValidatorTest {
     private CategoryService categoryService;
 
     @Test
-    void it_should_return_true_when_series_exists() {
-        var existingSeriesValidator = new ExistingCategoryValidator(categoryService);
+    void it_should_return_true_when_category_exists() {
+        var existingCategoryValidator = new ExistingCategoryValidator(categoryService);
 
-        var seriesId = "seriesId";
+        var categoryId = "categoryId";
 
-        when(categoryService.existsById(seriesId)).thenReturn(true);
+        when(categoryService.existsById(categoryId)).thenReturn(true);
 
-        assertTrue(existingSeriesValidator.isValid(seriesId, null));
+        assertTrue(existingCategoryValidator.isValid(categoryId, null));
     }
 
     @Test
-    void it_should_return_false_when_series_does_not_exists() {
-        var existingSeriesValidator = new ExistingCategoryValidator(categoryService);
-        var seriesId = "";
+    void it_should_return_false_when_category_does_not_exists() {
+        var existingCategoryValidator = new ExistingCategoryValidator(categoryService);
+        var categoryId = "";
 
-        when(categoryService.existsById(seriesId)).thenReturn(false);
+        when(categoryService.existsById(categoryId)).thenReturn(false);
 
-        assertFalse(existingSeriesValidator.isValid(seriesId, null));
+        assertFalse(existingCategoryValidator.isValid(categoryId, null));
     }
 
     @Test
-    void it_should_return_true_when_series_is_optional_and_blank() {
+    void it_should_return_true_when_category_is_optional_and_blank() {
+        var existingCategoryValidator = new ExistingCategoryValidator(categoryService);
+        var categoryId = "";
+        existingCategoryValidator.optional = true;
+
+        assertTrue(existingCategoryValidator.isValid(categoryId, null));
+    }
+
+    @Test
+    void it_should_return_false_when_category_is_optional_and_not_blank() {
         var existingSeriesValidator = new ExistingCategoryValidator(categoryService);
-        var seriesId = "";
+        var categoryId = "categoryId";
         existingSeriesValidator.optional = true;
 
-        assertTrue(existingSeriesValidator.isValid(seriesId, null));
-    }
+        when(categoryService.existsById(categoryId)).thenReturn(true);
 
-    @Test
-    void it_should_return_false_when_series_is_optional_and_not_blank() {
-        var existingSeriesValidator = new ExistingCategoryValidator(categoryService);
-        var seriesId = "seriesId";
-        existingSeriesValidator.optional = true;
-
-        when(categoryService.existsById(seriesId)).thenReturn(true);
-
-        assertTrue(existingSeriesValidator.isValid(seriesId, null));
+        assertTrue(existingSeriesValidator.isValid(categoryId, null));
     }
 
 }

@@ -14,27 +14,27 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CategorySlugValidator implements SlugValidator<Category> {
 
-    private final I18nCategoryRepository i18nSeriesRepository;
+    private final I18nCategoryRepository i18nCategoryRepository;
 
 
     @Override
     public boolean existsBySlug(String slug) {
-        return i18nSeriesRepository.existsBySlug(slug);
+        return i18nCategoryRepository.existsBySlug(slug);
     }
 
     @Override
     public boolean existsBySlugAndOwnerNot(String slug, Category ownerEntity) {
-        return i18nSeriesRepository.existsBySlugAndCategoryNot(slug, ownerEntity);
+        return i18nCategoryRepository.existsBySlugAndCategoryNot(slug, ownerEntity);
     }
 
-    public void validateSlugs(Collection<CategoryLanguageDTO> seriesLanguageDTOs) {
-        var slugs = seriesLanguageDTOs.stream().map(CategoryLanguageDTO::slug).toList();
+    public void validateSlugs(Collection<CategoryLanguageDTO> categoryLanguageDTOs) {
+        var slugs = categoryLanguageDTOs.stream().map(CategoryLanguageDTO::slug).toList();
         this.validateSlugInList(slugs);
     }
 
     public void validateSlugs(CategoryDTO categoryDTO, Category category) {
-        var seriesLanguageDTOs = categoryDTO.languages().values();
-        var slugs = seriesLanguageDTOs.stream().map(CategoryLanguageDTO::slug).toList();
+        var categoryLanguagesDTOs = categoryDTO.languages().values();
+        var slugs = categoryLanguagesDTOs.stream().map(CategoryLanguageDTO::slug).toList();
         this.validateSlugInList(slugs, category);
     }
 

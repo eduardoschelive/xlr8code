@@ -14,11 +14,11 @@ public record CategoryDTO(
 ) {
 
     public Category toEntity(Category category) {
-        var seriesLanguages = this.languages().entrySet().stream()
+        var categoryLanguage = this.languages().entrySet().stream()
                 .map(entry -> entry.getValue().toEntity(category, entry.getKey()))
                 .collect(Collectors.toSet());
 
-        category.setI18nCategories(seriesLanguages);
+        category.setI18nCategories(categoryLanguage);
 
         return category;
     }

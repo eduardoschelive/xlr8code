@@ -4,7 +4,7 @@ import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.category.exception.CategoryNotFoundException;
 import com.xlr8code.server.category.repository.CategoryRepository;
-import com.xlr8code.server.utils.SeriesTestUtils;
+import com.xlr8code.server.utils.CategoryTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,12 +35,12 @@ class CategoryServiceTest {
         }
 
         @Test
-        void it_should_create_series() {
-            var createSeriesDTO = SeriesTestUtils.buildSeriesDTO();
+        void it_should_create_category() {
+            var categoryDTO = CategoryTestUtils.buildCategoryDTO();
 
-            var createdSeries = categoryService.create(createSeriesDTO);
+            var category = categoryService.create(categoryDTO);
 
-            assertNotNull(createdSeries);
+            assertNotNull(category);
         }
 
     }
@@ -50,7 +50,7 @@ class CategoryServiceTest {
 
         @BeforeEach
         void setUp() {
-            categoryService.create(SeriesTestUtils.buildSeriesDTO());
+            categoryService.create(CategoryTestUtils.buildCategoryDTO());
         }
 
         @AfterEach
@@ -59,39 +59,39 @@ class CategoryServiceTest {
         }
 
         @Test
-        void it_should_find_all_series() {
+        void it_should_find_all_category() {
             var result = categoryService.findAll(Map.of(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertNotNull(result);
         }
 
         @Test
-        void it_should_find_all_series_with_brazilian_portuguese() {
+        void it_should_find_all_categories_with_brazilian_portuguese() {
             var result = categoryService.findAll(Map.of(), Set.of(Language.BRAZILIAN_PORTUGUESE));
 
             var hasBrazilianPortuguese = result.stream()
-                    .allMatch(series -> series.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
+                    .allMatch(translatedCategoryDTO -> translatedCategoryDTO.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));
 
             assertTrue(hasBrazilianPortuguese);
         }
 
         @Test
-        void it_should_find_series_by_id() {
-            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+        void it_should_find_category_by_id() {
+            var category = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            var result = categoryService.findById(series.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
+            var result = categoryService.findById(category.getId().toString(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertNotNull(result);
         }
 
         @Test
-        void it_should_throw_exception_when_finding_non_existing_series() {
+        void it_should_throw_exception_when_finding_non_existing_category() {
             var languageSet = Set.of(Language.AMERICAN_ENGLISH);
             assertThrows(CategoryNotFoundException.class, () -> categoryService.findById("non-existing-id", languageSet));
         }
 
         @Test
-        void it_should_check_if_series_exists() {
+        void it_should_check_if_category_exists() {
             var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
             var result = categoryService.existsById(series.getId().toString());
@@ -106,7 +106,7 @@ class CategoryServiceTest {
 
         @BeforeEach
         void setUp() {
-            categoryService.create(SeriesTestUtils.buildSeriesDTO());
+            categoryService.create(CategoryTestUtils.buildCategoryDTO());
         }
 
         @AfterEach
@@ -138,7 +138,7 @@ class CategoryServiceTest {
 
         @BeforeEach
         void setUp() {
-            createCategory = categoryService.create(SeriesTestUtils.buildSeriesDTO());
+            createCategory = categoryService.create(CategoryTestUtils.buildCategoryDTO());
         }
 
         @AfterEach
@@ -149,7 +149,7 @@ class CategoryServiceTest {
         @Test
         void it_should_update_series() {
             var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
-            var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
+            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
 
             var result = categoryService.update(series.getId().toString(), updateSeriesDTO);
 
@@ -158,13 +158,13 @@ class CategoryServiceTest {
 
         @Test
         void it_should_throw_exception_when_updating_non_existing_series() {
-            var updateDTO = SeriesTestUtils.buildSeriesDTO();
+            var updateDTO = CategoryTestUtils.buildCategoryDTO();
             assertThrows(CategoryNotFoundException.class, () -> categoryService.update("non-existing-id", updateDTO));
         }
 
         @Test
         void it_should_allow_repeat_slug_if_series_is_owner() {
-            var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
+            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
 
             var result = categoryService.update(createCategory.getId().toString(), updateSeriesDTO);
 

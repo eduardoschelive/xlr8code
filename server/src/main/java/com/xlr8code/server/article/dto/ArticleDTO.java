@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public record ArticleDTO(
         @ExistingCategory(optional = true)
-        String seriesId,
+        String categoryId,
         @ExistingArticle(optional = true)
         String previousArticleId, @ExistingArticle(optional = true)
         String nextArticleId,

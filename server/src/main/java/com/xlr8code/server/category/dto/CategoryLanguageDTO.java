@@ -17,20 +17,20 @@ public record CategoryLanguageDTO(
 ) {
 
     public I18nCategory toEntity(Category category, Language language) {
-        var i18nSeries = findI18nSeries(category, language).orElseGet(I18nCategory::new);
+        var i18nCategory = findI18nCategory(category, language).orElseGet(I18nCategory::new);
 
-        i18nSeries.setCategory(category);
-        i18nSeries.setLanguage(language);
-        i18nSeries.setTitle(this.title());
-        i18nSeries.setSlug(this.slug());
-        i18nSeries.setDescription(this.description());
+        i18nCategory.setCategory(category);
+        i18nCategory.setLanguage(language);
+        i18nCategory.setTitle(this.title());
+        i18nCategory.setSlug(this.slug());
+        i18nCategory.setDescription(this.description());
 
-        return i18nSeries;
+        return i18nCategory;
     }
 
-    private Optional<I18nCategory> findI18nSeries(Category category, Language language) {
+    private Optional<I18nCategory> findI18nCategory(Category category, Language language) {
         return Optional.ofNullable(category.getI18nCategories())
-                .flatMap(i18nSeries -> i18nSeries.stream()
+                .flatMap(i18nCategories -> i18nCategories.stream()
                         .filter(i18n -> i18n.getLanguage().equals(language))
                         .findFirst());
     }

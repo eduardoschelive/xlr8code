@@ -14,9 +14,11 @@ import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -85,6 +87,12 @@ public class ArticleService {
         return TranslatedArticleDTO.fromEntity(article, languages);
     }
 
+    @Transactional(readOnly = true)
+    public Page<TranslatedArticleDTO> findAll(Map<String, String> queryParams, Set<Language> languages) {
+        var page = this.articleRepository.findAll(queryParams, Article.class);
+        return page.map(article -> TranslatedArticleDTO.fromEntity(article, languages));
+    }
+
     /**
      * @param id the id of the article
      */
@@ -119,10 +127,10 @@ public class ArticleService {
      * @param articleDTO the article to be converted
      * @return the converted article
      * @throws ArticleNotFoundException  if the article with the specified id does not exist
-     * @throws CategoryNotFoundException if the series with the specified id does not exist
+     * @throws CategoryNotFoundException if the category with the specified id does not exist
      */
     private Article convertToEntity(Article article, ArticleDTO articleDTO) {
-        var series = ObjectUtils.executeIfNotNull(articleDTO.seriesId(), categoryService::findById);
+        var category = ObjectUtils.executeIfNotNull(articleDTO.categoryId(), categoryService::findById);
         var nextArticle = ObjectUtils.executeIfNotNull(articleDTO.nextArticleId(), self::findById);
         var previousArticle = ObjectUtils.executeIfNotNull(articleDTO.previousArticleId(), self::findById);
 
@@ -131,7 +139,7 @@ public class ArticleService {
                 .previousArticle(previousArticle)
                 .build();
 
-        return articleDTO.toEntity(article, series, articleRelation);
+        return articleDTO.toEntity(article, category, articleRelation);
     }
 
 }
