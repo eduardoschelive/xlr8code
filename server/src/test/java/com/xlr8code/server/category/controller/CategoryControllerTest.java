@@ -53,7 +53,7 @@ class CategoryControllerTest {
             // then
             mockMvc.perform(post(Endpoint.Categories.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
-                            .header("Accept-Language", "en_US, pt_BR")
+                            .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(createSeriesDTO)))
                     .andExpect(status().isCreated())
@@ -68,7 +68,7 @@ class CategoryControllerTest {
         @Test
         void it_should_return_page_of_series() throws Exception {
             mockMvc.perform(get(Endpoint.Categories.BASE_PATH)
-                            .header("Accept-Language", "en_US, pt_BR"))
+                            .header("Accept-Language", "en-US, pt-BR"))
                     .andExpect(status().isOk());
         }
 
@@ -78,14 +78,14 @@ class CategoryControllerTest {
             when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
             mockMvc.perform(get(Endpoint.Categories.BASE_PATH + "/uuid")
-                            .header("Accept-Language", "en_US, pt_BR"))
+                            .header("Accept-Language", "en-US, pt-BR"))
                     .andExpect(status().isOk());
         }
 
         @Test
         void it_should_return_page_of_series_when_searching() throws Exception {
             mockMvc.perform(get(Endpoint.Categories.BASE_PATH + "/search?query=test")
-                            .header("Accept-Language", "en_US, pt_BR"))
+                            .header("Accept-Language", "en-US, pt-BR"))
                     .andExpect(status().isOk());
         }
 
@@ -113,11 +113,11 @@ class CategoryControllerTest {
         void it_should_return_200_ok() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
             var updateSeriesDTO = SeriesTestUtils.buildSeriesDTO();
-            when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null, null));
+            when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null,  null, null, null));
 
             mockMvc.perform(put(Endpoint.Categories.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
-                            .header("Accept-Language", "en_US, pt_BR")
+                            .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(updateSeriesDTO)))
                     .andExpect(status().isOk());

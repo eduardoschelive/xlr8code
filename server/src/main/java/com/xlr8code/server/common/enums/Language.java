@@ -10,24 +10,22 @@ import java.util.Map;
 @Getter
 public enum Language {
 
-    AMERICAN_ENGLISH("en-US"),
-    BRAZILIAN_PORTUGUESE("pt-BR");
-
-    private static final Language DEFAULT = AMERICAN_ENGLISH;
-    private final String code;
+    AMERICAN_ENGLISH("en_US"),
+    BRAZILIAN_PORTUGUESE("pt_BR");
 
     public static final Map<String, String> VARIANT_MAP = Map.of(
             "en", AMERICAN_ENGLISH.getCode(),
             "pt", BRAZILIAN_PORTUGUESE.getCode()
     );
-
+    private static final Language DEFAULT = AMERICAN_ENGLISH;
+    private final String code;
 
     /**
      * <p>
      * Converts a language code to a {@link Language} object. it´s case insensitive.
      * </p>
      *
-     * @param languageCode the language code to be converted to a {@link Language} object (e.g. "pt_BR")
+     * @param languageCode the language code to be converted to a {@link Language} object (e.g. "pt-BR")
      * @return the {@link Language} object corresponding to the given language code
      * @throws LanguageNotFoundException if the given language code does not correspond to any {@link Language} object
      * @see Language#DEFAULT

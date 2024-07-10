@@ -53,7 +53,7 @@ class ArticleControllerTest {
             // then
             mockMvc.perform(post(Endpoint.Article.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
-                            .header("Accept-Language", "en_US, pt_BR")
+                            .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(createArticleDTO)))
                     .andExpect(status().isCreated());
@@ -85,7 +85,7 @@ class ArticleControllerTest {
 
             mockMvc.perform(put(Endpoint.Article.BASE_PATH + "/" + articleId)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
-                            .header("Accept-Language", "en_US, pt_BR")
+                            .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(updateArticleDTO)))
                     .andExpect(status().isNoContent());

@@ -39,22 +39,22 @@ class ApplicationLocaleResolverTest {
     @ParameterizedTest
     @MethodSource("provideTestData")
     void it_should_resolve_locale(String acceptLanguageHeader, Locale expectedLocale) {
-        MockHttpServletRequest request = new MockHttpServletRequest();
+        var request = new MockHttpServletRequest();
         if (acceptLanguageHeader != null) {
             request.addHeader("Accept-Language", acceptLanguageHeader);
         }
 
-        Locale resolvedLocale = localeResolver.resolveLocale(request);
+        var resolvedLocale = localeResolver.resolveLocale(request);
 
         assertEquals(expectedLocale, resolvedLocale);
     }
 
     @Test
     void it_should_resolve_all_accepted_locales() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
+        var request = new MockHttpServletRequest();
         request.addHeader("Accept-Language", "en_US;q=0.8,pt_BR;q=0.9");
 
-        Set<Locale> resolvedLocales = localeResolver.getAllAcceptedLocales(request);
+        var resolvedLocales = localeResolver.getAllAcceptedLocales(request);
 
         assertEquals(Set.of(Locale.of("en_US"), Locale.of("pt_BR")), resolvedLocales);
     }

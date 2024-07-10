@@ -21,6 +21,28 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private static final Double DEFAULT_QUALITY_SCORE = 1.0;
 
     /**
+     * @param parts the parts of the language tag
+     * @return the locale string of the given language tag
+     * @see Language#VARIANT_MAP
+     * <p>
+     * If the given language tag is not present in the variant map, the given language tag will be returned.
+     * Otherwise, the locale string corresponding to the given language tag will be returned.
+     * It is needed because of variants like "pt-BR" and "pt".
+     */
+    private static String getLocaleString(String parts) {
+        // pt_BR -> pt-BR
+        var replacedParts = parts.replace("-", "_");
+        var splitLanguageCountry = replacedParts.split("_");
+
+        if (splitLanguageCountry.length == 1) {
+            return Language.VARIANT_MAP.getOrDefault(splitLanguageCountry[0], parts);
+        }
+
+        var transformedCode = splitLanguageCountry[0].toUpperCase() + "_" + splitLanguageCountry[1].toUpperCase();
+        return Language.VARIANT_MAP.getOrDefault(transformedCode, transformedCode);
+    }
+
+    /**
      * <p>
      * Resolves the locale of the given request.
      * If the locale is not supported, the default locale will be returned.
@@ -113,19 +135,6 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
             acceptedLanguages.add(new LocaleWithQualityScore(locale, qualityScore));
         }
         return acceptedLanguages;
-    }
-
-    /**
-     * @param parts the parts of the language tag
-     * @return the locale string of the given language tag
-     * @see Language#VARIANT_MAP
-     * <p>
-     *     If the given language tag is not present in the variant map, the given language tag will be returned.
-     *     Otherwise, the locale string corresponding to the given language tag will be returned.
-     *     It is needed because of variants like "pt-BR" and "pt".
-     */
-    private static String getLocaleString(String parts) {
-        return Language.VARIANT_MAP.getOrDefault(parts, parts);
     }
 
     /**
