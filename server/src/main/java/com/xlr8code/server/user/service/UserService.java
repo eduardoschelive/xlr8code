@@ -62,7 +62,6 @@ public class UserService {
      */
     public Page<UserDTO> findAll(Map<String, String> queryParameters) {
         var users = this.userRepository.findAll(queryParameters, User.class);
-
         return users.map(UserDTO::from);
     }
 

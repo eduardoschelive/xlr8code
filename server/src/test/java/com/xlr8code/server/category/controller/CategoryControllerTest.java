@@ -66,14 +66,14 @@ class CategoryControllerTest {
     class FindTests {
 
         @Test
-        void it_should_return_page_of_series() throws Exception {
+        void it_should_return_page_of_category() throws Exception {
             mockMvc.perform(get(Endpoint.Categories.BASE_PATH)
                             .header("Accept-Language", "en-US, pt-BR"))
                     .andExpect(status().isOk());
         }
 
         @Test
-        void it_should_return_series() throws Exception {
+        void it_should_return_category() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
             when(categoryService.findById(UUID.fromString(uuid))).thenReturn(Category.builder().id(UUID.fromString(uuid)).build());
 
@@ -83,7 +83,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void it_should_return_page_of_series_when_searching() throws Exception {
+        void it_should_return_page_of_category_when_searching() throws Exception {
             mockMvc.perform(get(Endpoint.Categories.BASE_PATH + "/search?query=test")
                             .header("Accept-Language", "en-US, pt-BR"))
                     .andExpect(status().isOk());
@@ -112,14 +112,14 @@ class CategoryControllerTest {
         @Test
         void it_should_return_200_ok() throws Exception {
             String uuid = "123e4567-e89b-12d3-a456-426614174000";
-            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
-            when(categoryService.update(uuid, updateSeriesDTO)).thenReturn(new TranslatedCategoryDTO(null,  null, null, null));
+            var categoryDTO = CategoryTestUtils.buildCategoryDTO();
+            when(categoryService.update(uuid, categoryDTO)).thenReturn(new TranslatedCategoryDTO(null,  null, null, null));
 
             mockMvc.perform(put(Endpoint.Categories.BASE_PATH + "/uuid")
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
                             .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(JsonTestUtils.asJsonString(updateSeriesDTO)))
+                            .content(JsonTestUtils.asJsonString(categoryDTO)))
                     .andExpect(status().isOk());
         }
 

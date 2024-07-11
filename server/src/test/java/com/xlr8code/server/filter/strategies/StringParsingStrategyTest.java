@@ -50,8 +50,6 @@ class StringParsingStrategyTest {
         return Stream.of(
                 Arguments.of(Map.of("stringField_eq", "stringField"), 1),
                 Arguments.of(Map.of("stringField_eq-i", "STRINGFIELD"), 1),
-                Arguments.of(Map.of("stringField_n-eq", "stringField"), 0),
-                Arguments.of(Map.of("stringField_n-eq-i", "STRINGFIELD"), 0),
                 Arguments.of(Map.of("stringField_sw", "stringFie"), 1),
                 Arguments.of(Map.of("stringField_sw-i", "STRINGFIE"), 1),
                 Arguments.of(Map.of("stringField_ew", "eld"), 1),

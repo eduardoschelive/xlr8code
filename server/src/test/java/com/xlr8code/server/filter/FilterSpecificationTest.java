@@ -144,4 +144,15 @@ class FilterSpecificationTest {
         assertThrows(BadFilterFormatException.class, () ->
                 testRepository.findAll(params, FilterTestEntity.class));
     }
+
+    @Test
+    void it_should_throw_error_when_no_result_found() {
+        var params = Map.of(
+                "stringField_eq", "stringField0"
+        );
+
+        assertThrows(NoMatchingEntitiesFoundException.class, () ->
+                testRepository.findAll(params, FilterTestEntity.class));
+    }
+
 }

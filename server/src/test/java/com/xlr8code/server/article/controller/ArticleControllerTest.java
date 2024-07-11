@@ -104,6 +104,12 @@ class ArticleControllerTest {
                     .andExpect(status().isOk());
         }
 
+        @Test
+        void it_should_return_200_ok_when_finding_all() throws Exception {
+            mockMvc.perform(get(Endpoint.Article.BASE_PATH))
+                    .andExpect(status().isOk());
+        }
+
     }
 
 

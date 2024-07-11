@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS filter_test_table
 (
     id            SERIAL PRIMARY KEY,
     string_field  TEXT    NOT NULL,
-    boolean_field BOOLEAN NOT NULL,
+    boolean_field BOOLEAN,
     enum_theme_field    TEXT
 );
 

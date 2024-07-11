@@ -92,9 +92,9 @@ class CategoryServiceTest {
 
         @Test
         void it_should_check_if_category_exists() {
-            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var category = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            var result = categoryService.existsById(series.getId().toString());
+            var result = categoryService.existsById(category.getId().toString());
 
             assertTrue(result);
         }
@@ -115,17 +115,17 @@ class CategoryServiceTest {
         }
 
         @Test
-        void it_should_delete_series() {
-            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+        void it_should_delete_category() {
+            var category = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
 
-            categoryService.delete(series.getId().toString());
-            var result = categoryRepository.findById(series.getId());
+            categoryService.delete(category.getId().toString());
+            var result = categoryRepository.findById(category.getId());
 
             assertTrue(result.isEmpty());
         }
 
         @Test
-        void it_should_throw_exception_when_deleting_non_existing_series() {
+        void it_should_throw_exception_when_deleting_non_existing_category() {
             assertThrows(CategoryNotFoundException.class, () -> categoryService.delete("non-existing-id"));
         }
 
@@ -147,26 +147,26 @@ class CategoryServiceTest {
         }
 
         @Test
-        void it_should_update_series() {
-            var series = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
-            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
+        void it_should_update_category() {
+            var category = categoryRepository.findAll(Pageable.unpaged()).getContent().getFirst();
+            var categoryDTO = CategoryTestUtils.buildCategoryDTO();
 
-            var result = categoryService.update(series.getId().toString(), updateSeriesDTO);
+            var result = categoryService.update(category.getId().toString(), categoryDTO);
 
             assertNotNull(result);
         }
 
         @Test
-        void it_should_throw_exception_when_updating_non_existing_series() {
+        void it_should_throw_exception_when_updating_non_existing_category() {
             var updateDTO = CategoryTestUtils.buildCategoryDTO();
             assertThrows(CategoryNotFoundException.class, () -> categoryService.update("non-existing-id", updateDTO));
         }
 
         @Test
-        void it_should_allow_repeat_slug_if_series_is_owner() {
-            var updateSeriesDTO = CategoryTestUtils.buildCategoryDTO();
+        void it_should_allow_repeat_slug_if_category_is_owner() {
+            var categoryDTO = CategoryTestUtils.buildCategoryDTO();
 
-            var result = categoryService.update(createCategory.getId().toString(), updateSeriesDTO);
+            var result = categoryService.update(createCategory.getId().toString(), categoryDTO);
 
             assertNotNull(result);
         }

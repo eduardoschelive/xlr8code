@@ -3,6 +3,7 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.filter.exception.NoMatchingEntitiesFoundException;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
@@ -125,7 +126,15 @@ class UserControllerTest {
 
         }
 
-        // TODO: test for 404 when user not found
+        @Test
+        void it_should_receive_error_when_page_is_empty() throws Exception {
+            when(userService.findAll(Map.of())).thenThrow(NoMatchingEntitiesFoundException.class);
+
+            mockMvc.perform(get(Endpoint.User.BASE_PATH)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+
+        }
 
     }
 

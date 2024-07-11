@@ -7,6 +7,7 @@ import com.xlr8code.server.filter.annotation.Filterable;
 import com.xlr8code.server.user.utils.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,10 +52,12 @@ public class User extends AuditableEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @BatchSize(size = 10)
     private UserMetadata metadata;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @BatchSize(size = 10)
     private UserPreferences preferences;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -63,12 +66,13 @@ public class User extends AuditableEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     )
+    @BatchSize(size = 10)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserSession> userSessions;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserCode> userCodes;
 
     public void activate() {

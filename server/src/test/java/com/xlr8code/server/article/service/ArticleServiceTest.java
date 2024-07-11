@@ -13,6 +13,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -165,6 +166,13 @@ class ArticleServiceTest {
 
             assertNotNull(result);
             assertEquals(article.getId(), result.id());
+        }
+
+        @Test
+        void it_should_return_all_articles() {
+            var result = articleService.findAll(Map.of(), Set.of(Language.AMERICAN_ENGLISH));
+
+            assertFalse(result.isEmpty());
         }
 
     }

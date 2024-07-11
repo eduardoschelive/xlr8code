@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -129,6 +131,12 @@ class UserServiceTest {
             var id = "not_a_uuid";
 
             assertThrows(UserNotFoundException.class, () -> userService.findByUUID(id));
+        }
+
+        @Test
+        void it_should_find_all_users() {
+            var users = userService.findAll(Map.of());
+            assertFalse(users.isEmpty());
         }
 
     }

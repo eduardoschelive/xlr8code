@@ -52,13 +52,13 @@ class ExistingCategoryValidatorTest {
 
     @Test
     void it_should_return_false_when_category_is_optional_and_not_blank() {
-        var existingSeriesValidator = new ExistingCategoryValidator(categoryService);
+        var existingCategoryValidator = new ExistingCategoryValidator(categoryService);
         var categoryId = "categoryId";
-        existingSeriesValidator.optional = true;
+        existingCategoryValidator.optional = true;
 
         when(categoryService.existsById(categoryId)).thenReturn(true);
 
-        assertTrue(existingSeriesValidator.isValid(categoryId, null));
+        assertTrue(existingCategoryValidator.isValid(categoryId, null));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.xlr8code.server.filter.repository;
 
 import com.xlr8code.server.filter.Filter;
+import com.xlr8code.server.filter.exception.NoMatchingEntitiesFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -20,6 +21,13 @@ public interface FilterRepository<E> extends JpaSpecificationExecutor<E> {
         var filter = new Filter<>(queryParameters, entityClass);
         var specification = filter.getSpecification();
         var pageRequest = filter.getPageRequest();
-        return findAll(specification, pageRequest);
+
+        var result = findAll(specification, pageRequest);
+
+        if (result.isEmpty()) {
+            throw new NoMatchingEntitiesFoundException();
+        }
+
+        return result;
     }
 }

@@ -27,7 +27,7 @@ public class FilterTestEntity {
 
     @Filterable
     @Column(name = "booleanField", nullable = false)
-    private boolean booleanField;
+    private Boolean booleanField;
 
     @Filterable
     @Column(name = "enumThemeField", nullable = false)

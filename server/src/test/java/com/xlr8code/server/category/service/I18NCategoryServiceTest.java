@@ -73,9 +73,9 @@ class I18NCategoryServiceTest {
 
         @Test
         void it_should_validate_slug_in_list() {
-            var createI18nSeriesDTO = new CategoryLanguageDTO("title", "slug", "description");
+            var categoryLanguageDTO = new CategoryLanguageDTO("title", "slug", "description");
 
-            var createCollection = Set.of(createI18nSeriesDTO);
+            var createCollection = Set.of(categoryLanguageDTO);
             var slugs = createCollection.stream().map(CategoryLanguageDTO::slug).toList();
 
             assertThrows(SlugAlreadyExistsException.class, () -> categorySlugValidator.validateSlugInList(slugs));
@@ -83,21 +83,21 @@ class I18NCategoryServiceTest {
 
         @Test
         void it_should_validate_slug_in_list_with_owner() {
-            var createI18nSeriesDTO = new CategoryLanguageDTO("title", "slug", "description");
-            var randomSeries = categoryRepository.save(new Category());
+            var categoryLanguageDTO = new CategoryLanguageDTO("title", "slug", "description");
+            var randomCategory = categoryRepository.save(new Category());
 
-            Collection<CategoryLanguageDTO> createCollection = Set.of(createI18nSeriesDTO);
+            Collection<CategoryLanguageDTO> createCollection = Set.of(categoryLanguageDTO);
             var slugs = createCollection.stream().map(CategoryLanguageDTO::slug).toList();
 
-            assertThrows(SlugAlreadyExistsException.class, () -> categorySlugValidator.validateSlugInList(slugs, randomSeries));
+            assertThrows(SlugAlreadyExistsException.class, () -> categorySlugValidator.validateSlugInList(slugs, randomCategory));
         }
 
         @Test
         void it_should_validate_duplicate_slugs_in_same_collection() {
-            var createI18nSeriesDTO = new CategoryLanguageDTO("title", "slug", "description");
-            var createI18nSeriesDTO2 = new CategoryLanguageDTO("title2", "slug", "description");
+            var categoryLanguageDTO = new CategoryLanguageDTO("title", "slug", "description");
+            var categoryLanguageDTO2 = new CategoryLanguageDTO("title2", "slug", "description");
 
-            var createCollection = Set.of(createI18nSeriesDTO, createI18nSeriesDTO2);
+            var createCollection = Set.of(categoryLanguageDTO, categoryLanguageDTO2);
             var slugs = createCollection.stream().map(CategoryLanguageDTO::slug).toList();
 
             assertThrows(DuplicateSlugInLanguagesException.class, () -> categorySlugValidator.validateSlugInList(slugs));

@@ -10,8 +10,6 @@ import com.xlr8code.server.filter.repository.FilterTestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.IntStream;
-
 @Service
 @RequiredArgsConstructor
 public class FilterTestUtils {
@@ -20,7 +18,7 @@ public class FilterTestUtils {
     private final FilterRelationTestRepository relationTestRepository;
     private final FilterOneToOneRelationRepository oneToOneRelationRepository;
 
-    public void createTestEntity(String stringField, boolean booleanField, Theme themeField) {
+    public void createTestEntity(String stringField, Boolean booleanField, Theme themeField) {
         var entity = FilterTestEntity.builder()
                 .stringField(stringField)
                 .booleanField(booleanField)

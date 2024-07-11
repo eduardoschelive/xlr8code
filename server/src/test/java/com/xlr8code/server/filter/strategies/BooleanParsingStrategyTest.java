@@ -25,6 +25,7 @@ class BooleanParsingStrategyTest {
     static void setup(@Autowired FilterTestUtils filterTestUtils) {
         filterTestUtils.createTestEntity("stringField", true, null);
         filterTestUtils.createTestEntity("stringField", false, null);
+        filterTestUtils.createTestEntity("stringField", null, null);
     }
 
     @AfterAll
@@ -66,11 +67,11 @@ class BooleanParsingStrategyTest {
     @Test
     void it_should_filter_null_boolean_field() {
         var params = Map.of(
-                "booleanField_null", "true"
+                "booleanField_null",  ""
         );
 
         Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
-        assertEquals(0, results.getTotalElements());
+        assertEquals(1, results.getTotalElements());
     }
 
 
