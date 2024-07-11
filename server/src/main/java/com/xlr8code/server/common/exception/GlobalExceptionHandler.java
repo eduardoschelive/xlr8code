@@ -23,6 +23,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @Log4j2
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final String INVALID_REQUEST_CONTENT = "INVALID_REQUEST_CONTENT";
+
     private final ApplicationExceptionHelper applicationExceptionHelper;
 
     @ExceptionHandler(ApplicationException.class)
@@ -42,9 +44,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         var httpStatus = HttpStatus.BAD_REQUEST;
         var messageIdentifier = "error.invalid_request_content";
-        var errorMessage = "INVALID_REQUEST_CONTENT";
 
-        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, errorMessage);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, INVALID_REQUEST_CONTENT);
     }
 
     @ExceptionHandler(MissingRequestCookieException.class)
@@ -76,7 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 headers,
                 "error.invalid_request_content",
-                "INVALID_REQUEST_CONTENT",
+                INVALID_REQUEST_CONTENT,
                 ex.getBindingResult().getFieldErrors()
         );
     }
@@ -111,7 +112,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 headers,
                 "error.missing_request_parameter",
-                "INVALID_REQUEST_CONTENT",
+                INVALID_REQUEST_CONTENT,
                 ex.getParameterName()
         );
     }
