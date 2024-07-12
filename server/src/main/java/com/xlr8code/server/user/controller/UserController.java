@@ -1,13 +1,21 @@
 package com.xlr8code.server.user.controller;
 
+import com.xlr8code.server.common.dto.ApplicationExceptionResponseDTO;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.user.dto.*;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +37,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User has been found in the database"),
+            @ApiResponse(responseCode = "404", description = "User has not been found in the database", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApplicationExceptionResponseDTO.class), examples = {
+                    @ExampleObject(name = "User not found", value = "{\"status\": 404, \"error\": \"USER_NOT_FOUND\", \"message\": \"User not found\", \"timestamp\": \"2021-09-01T12:00:00Z\", \"path\": \"/api/v1/users/123\"}")
+            }))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);

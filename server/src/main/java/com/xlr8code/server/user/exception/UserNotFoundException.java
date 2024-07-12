@@ -19,5 +19,7 @@ public class UserNotFoundException extends ApplicationException {
         return HttpStatus.NOT_FOUND;
     }
 
+    public static final String DOCUMENTATION_EXAMPLE = "USER_NOT_FOUND";
+
 }
 

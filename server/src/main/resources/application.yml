@@ -28,6 +28,11 @@ spring:
           enable: true
           required: true
 
+springdoc:
+  swagger-ui:
+    path: /documentation
+    disable-swagger-default-url: true
+
 logging:
   config: classpath:log4j2.xml
 
