@@ -2,6 +2,7 @@ package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.dto.ApplicationExceptionResponseDTO;
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.swagger.annotation.ErrorResponse;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserMetadataService;
@@ -44,6 +45,7 @@ public class UserController {
             }))
     })
     @GetMapping("/{id}")
+    @ErrorResponse(exception = UserNotFoundException.class)
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
 
