@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ErrorResponse {
 
-    Class<? extends ApplicationException> exception() default ApplicationException.class;
+    Class<? extends ApplicationException>[] value() default ApplicationException.class;
 
 }

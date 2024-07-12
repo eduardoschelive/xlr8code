@@ -1,67 +1,66 @@
 package com.xlr8code.server.swagger.customizer;
 
 import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.common.helper.ApplicationExceptionHelper;
 import com.xlr8code.server.swagger.annotation.ErrorResponse;
+import com.xlr8code.server.swagger.utils.SwaggerUtils;
 import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.examples.Example;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
-import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ExampleObjectCustomizer implements OperationCustomizer {
+
+    private final ApplicationExceptionHelper applicationExceptionHelper;
+
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         var annotation = handlerMethod.getMethodAnnotation(ErrorResponse.class);
         if (annotation != null) {
-            var exception = getExceptionMock(annotation.exception());
-            addErrorAnnotations(operation, exception);
+            var exceptions = annotation.value();
+            var exceptionsGroupByStatusCode = Arrays.stream(exceptions)
+                    .map(SwaggerUtils::getExceptionMock)
+                    .collect(Collectors.groupingBy(ApplicationException::getHttpStatus));
+            exceptionsGroupByStatusCode.forEach((httpStatus, applicationExceptions) -> {
+                var apiResponse = createApiResponse(httpStatus, applicationExceptions);
+                operation.getResponses().addApiResponse(String.valueOf(httpStatus.value()), apiResponse);
+            });
         }
-
         return operation;
     }
 
-    private ApplicationException getExceptionMock(Class<? extends ApplicationException> exception) {
-        try {
-            var constructor = exception.getDeclaredConstructor();
-            var arguments = constructor.getParameters();
-            var args = getArgs(arguments);
-            return exception.getDeclaredConstructor().newInstance(args);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not create exception mock", e);
-        }
+    private ApiResponse createApiResponse(HttpStatus httpStatus, List<ApplicationException> applicationExceptions) {
+        var content = createContent(applicationExceptions);
+        return new ApiResponse().description(httpStatus.getReasonPhrase()).content(content);
     }
 
-    private Object[] getArgs(Parameter[] arguments) {
-        if (arguments.length == 0) {
-            return new Object[0];
-        }
-
-        var args = new Object[arguments.length];
-        for (int i = 0; i < arguments.length; i++) {
-            args[i] = getMockArg(arguments[i]);
-        }
-
-        return args;
+    private Content createContent(List<ApplicationException> applicationExceptions) {
+        var mediaType = createMediaType(applicationExceptions);
+        return new Content().addMediaType("application/json", mediaType);
     }
 
-    private Object getMockArg(Parameter argument) {
-        return switch (argument.getType().getName()) {
-            case "java.lang.String" -> "example value";
-            case "java.lang.Integer" -> 1;
-            case "java.lang.Long" -> 1L;
-            case "java.lang.Double" -> 1.0;
-            case "java.lang.Float" -> 1.0f;
-            case "java.lang.Boolean" -> true;
-            default -> null;
-        };
+    private MediaType createMediaType(List<ApplicationException> applicationExceptions) {
+        var mediaType = new MediaType();
+        applicationExceptions.forEach(applicationException ->
+                mediaType.addExamples(applicationException.getMessage(), createExample(applicationException))
+        );
+        return mediaType;
     }
 
-    private void addErrorAnnotations(Operation operation, ApplicationException exception) {
-        System.out.println(exception.getHttpStatus());
-        System.out.println(exception.getMessageIdentifier());
-        System.out.println(exception.getMessage());
+    private Example createExample(ApplicationException exception) {
+        var exampleObject = applicationExceptionHelper.buildApplicationResponseFromApplicationException(exception);
+        return new Example().value(exampleObject);
     }
-
 }
