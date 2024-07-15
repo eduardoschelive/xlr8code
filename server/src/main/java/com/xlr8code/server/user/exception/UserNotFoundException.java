@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class UserNotFoundException extends ApplicationException {
 
     public UserNotFoundException() {
-        super("USER_NOT_FOUND");
+        super("The specified user was not found");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class UserNotFoundException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "USER_NOT_FOUND";
     }
 
 }

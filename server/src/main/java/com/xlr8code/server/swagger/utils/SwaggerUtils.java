@@ -11,10 +11,10 @@ public class SwaggerUtils {
 
     public static ApplicationException getExceptionMock(Class<? extends ApplicationException> exception) {
         try {
-            var constructor = exception.getDeclaredConstructor();
+            var constructor = exception.getDeclaredConstructors()[0];
             var arguments = constructor.getParameters();
             var args = getArgs(arguments);
-            return exception.getDeclaredConstructor().newInstance(args);
+            return exception.cast(constructor.newInstance(args));
         } catch (Exception e) {
             throw new RuntimeException("Could not create exception mock", e);
         }

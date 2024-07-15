@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class UserMetadataNotFoundException extends ApplicationException {
 
     public UserMetadataNotFoundException() {
-        super("USER_METADATA_NOT_FOUND");
+        super("The user metadata was not found for the specified user");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class UserMetadataNotFoundException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "USER_METADATA_NOT_FOUND";
     }
 
 }

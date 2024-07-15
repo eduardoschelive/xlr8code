@@ -42,7 +42,9 @@ public class UserController {
             UserNotFoundException.class,
             UserMetadataNotFoundException.class,
             UsernameAlreadyTakenException.class
-    })
+    },
+        useFilterExceptions = true
+    )
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);

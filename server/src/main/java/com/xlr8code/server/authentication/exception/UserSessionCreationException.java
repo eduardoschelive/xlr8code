@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class UserSessionCreationException extends ApplicationException {
 
     public UserSessionCreationException() {
-        super("USER_SESSION_CREATION_ERROR");
+        super("An error occurred in the server while creating the user session");
     }
 
     @Override
@@ -18,4 +18,10 @@ public class UserSessionCreationException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "USER_SESSION_CREATION_ERROR";
+    }
+
 }

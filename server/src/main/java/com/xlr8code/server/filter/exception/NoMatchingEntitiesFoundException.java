@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class NoMatchingEntitiesFoundException extends ApplicationException {
 
     public NoMatchingEntitiesFoundException() {
-        super("NO_MATCHING_ENTITIES_FOUND");
+        super("No entities were found that matched the specified filter");
     }
 
     @Override
@@ -18,4 +18,10 @@ public class NoMatchingEntitiesFoundException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "NO_MATCHING_ENTITIES_FOUND";
+    }
+
 }

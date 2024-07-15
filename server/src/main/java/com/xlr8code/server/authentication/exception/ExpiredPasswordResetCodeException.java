@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class ExpiredPasswordResetCodeException extends ApplicationException {
 
     public ExpiredPasswordResetCodeException() {
-        super("EXPIRED_PASSWORD_RESET_CODE");
+        super("The password reset code has expired and cannot be used for password reset");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class ExpiredPasswordResetCodeException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "EXPIRED_PASSWORD_RESET_CODE";
     }
 
 }

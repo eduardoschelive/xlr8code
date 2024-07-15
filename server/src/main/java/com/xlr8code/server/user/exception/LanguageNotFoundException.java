@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class LanguageNotFoundException extends ApplicationException {
 
     public LanguageNotFoundException(String languageCode) {
-        super("LANGUAGE_NOT_FOUND", languageCode);
+        super("The specified language code was not found or is not supported", languageCode);
     }
 
     @Override
@@ -17,6 +17,11 @@ public class LanguageNotFoundException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "LANGUAGE_NOT_FOUND";
     }
 
 }

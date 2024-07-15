@@ -13,4 +13,6 @@ public @interface ErrorResponse {
 
     Class<? extends ApplicationException>[] value() default ApplicationException.class;
 
+    boolean useFilterExceptions() default false;
+
 }

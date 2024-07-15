@@ -20,6 +20,8 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private static final String LOCALE_SEPARATOR = ",";
     private static final Double DEFAULT_QUALITY_SCORE = 1.0;
 
+    private static final List<String> IGNORE_PATHS = List.of("/v3/api-docs", "/swagger-ui.html", "/swagger-ui/**", "/swagger-ui.html/**", "/swagger-ui/**/**", "/swagger-ui.html/**/**");
+
     /**
      * @param parts the parts of the language tag
      * @return the locale string of the given language tag
@@ -57,6 +59,10 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
      */
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
+        if (IGNORE_PATHS.contains(request.getRequestURI())) {
+            return DEFAULT_LOCALE;
+        }
+
         var acceptLanguageHeader = request.getHeader(ACCEPT_LANGUAGE_HEADER);
         var acceptedLanguages = parseAcceptLanguageHeader(acceptLanguageHeader);
 

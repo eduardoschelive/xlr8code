@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class NoSuchFilterableFieldException extends ApplicationException {
 
     public NoSuchFilterableFieldException(String field) {
-        super("NO_SUCH_FILTERABLE_FIELD", field);
+        super("The specified field is not filterable", field);
     }
 
     @Override
@@ -17,6 +17,11 @@ public class NoSuchFilterableFieldException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "NO_SUCH_FILTERABLE_FIELD";
     }
 
 }

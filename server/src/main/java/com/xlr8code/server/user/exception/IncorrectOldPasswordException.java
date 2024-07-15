@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class IncorrectOldPasswordException extends ApplicationException {
 
     public IncorrectOldPasswordException() {
-        super("INCORRECT_OLD_PASSWORD");
+        super("The old password provided is incorrect so the password cannot be changed");
     }
 
     @Override
@@ -18,5 +18,11 @@ public class IncorrectOldPasswordException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "INCORRECT_OLD_PASSWORD";
+    }
+
 }
 

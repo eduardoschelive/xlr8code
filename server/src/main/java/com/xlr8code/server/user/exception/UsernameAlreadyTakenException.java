@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class UsernameAlreadyTakenException extends ApplicationException {
 
     public UsernameAlreadyTakenException() {
-        super("USERNAME_ALREADY_TAKEN");
+        super("The specified username is already taken by another user account");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class UsernameAlreadyTakenException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.CONFLICT;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "USERNAME_ALREADY_TAKEN";
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidPasswordResetCodeException extends ApplicationException {
 
     public InvalidPasswordResetCodeException() {
-        super("INVALID_PASSWORD_RESET_CODE");
+        super("The password reset code provided is invalid");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class InvalidPasswordResetCodeException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_PASSWORD_RESET_CODE";
     }
 
 }

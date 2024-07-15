@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class EmailAlreadyInUseException extends ApplicationException {
 
     public EmailAlreadyInUseException() {
-        super("EMAIL_ALREADY_IN_USE");
+        super("The email provided is already in use by another user account");
     }
 
     @Override
@@ -18,4 +18,10 @@ public class EmailAlreadyInUseException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.CONFLICT;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "EMAIL_ALREADY_IN_USE";
+    }
+
 }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class ThemeNotFoundException extends ApplicationException {
 
     public ThemeNotFoundException(String themeCode) {
-        super("THEME_NOT_FOUND", themeCode);
+        super("The specified theme code was not found or is not supported", themeCode);
     }
 
     @Override
@@ -17,6 +17,11 @@ public class ThemeNotFoundException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "THEME_NOT_FOUND";
     }
 
 }

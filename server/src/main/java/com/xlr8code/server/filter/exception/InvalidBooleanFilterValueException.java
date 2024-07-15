@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidBooleanFilterValueException extends ApplicationException {
 
     public InvalidBooleanFilterValueException(String value) {
-        super("INVALID_BOOLEAN_FILTER_VALUE", value);
+        super("The specified value is not a valid boolean value", value);
     }
 
     @Override
@@ -18,4 +18,10 @@ public class InvalidBooleanFilterValueException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_BOOLEAN_FILTER_VALUE";
+    }
+
 }

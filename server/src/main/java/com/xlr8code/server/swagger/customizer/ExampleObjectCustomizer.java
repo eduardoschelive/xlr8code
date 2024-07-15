@@ -2,6 +2,7 @@ package com.xlr8code.server.swagger.customizer;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 import com.xlr8code.server.common.helper.ApplicationExceptionHelper;
+import com.xlr8code.server.swagger.utils.FilterExceptions;
 import com.xlr8code.server.swagger.annotation.ErrorResponse;
 import com.xlr8code.server.swagger.utils.SwaggerUtils;
 import io.swagger.v3.oas.models.Operation;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,8 +31,8 @@ public class ExampleObjectCustomizer implements OperationCustomizer {
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         var annotation = handlerMethod.getMethodAnnotation(ErrorResponse.class);
         if (annotation != null) {
-            var exceptions = annotation.value();
-            var exceptionsGroupByStatusCode = Arrays.stream(exceptions)
+            var exceptions = getExceptions(annotation);
+            var exceptionsGroupByStatusCode = exceptions.stream()
                     .map(SwaggerUtils::getExceptionMock)
                     .collect(Collectors.groupingBy(ApplicationException::getHttpStatus));
             exceptionsGroupByStatusCode.forEach((httpStatus, applicationExceptions) -> {
@@ -39,6 +41,16 @@ public class ExampleObjectCustomizer implements OperationCustomizer {
             });
         }
         return operation;
+    }
+
+    private List<Class<? extends ApplicationException>>  getExceptions(ErrorResponse annotation) {
+        var exceptions = new ArrayList<>(Arrays.asList(annotation.value()));
+
+        if (annotation.useFilterExceptions()) {
+            var filterExceptions = FilterExceptions.getAllFilterExceptions();
+            exceptions.addAll(filterExceptions);
+        }
+        return  exceptions;
     }
 
     private ApiResponse createApiResponse(HttpStatus httpStatus, List<ApplicationException> applicationExceptions) {
@@ -54,13 +66,13 @@ public class ExampleObjectCustomizer implements OperationCustomizer {
     private MediaType createMediaType(List<ApplicationException> applicationExceptions) {
         var mediaType = new MediaType();
         applicationExceptions.forEach(applicationException ->
-                mediaType.addExamples(applicationException.getMessage(), createExample(applicationException))
+                mediaType.addExamples(applicationException.getErrorCode(), createExample(applicationException))
         );
         return mediaType;
     }
 
     private Example createExample(ApplicationException exception) {
         var exampleObject = applicationExceptionHelper.buildApplicationResponseFromApplicationException(exception);
-        return new Example().value(exampleObject);
+        return new Example().value(exampleObject).description(exception.getMessage());
     }
 }

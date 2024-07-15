@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class BadFilterFormatException extends ApplicationException {
 
     public BadFilterFormatException() {
-        super("BAD_FILTER_FORMAT");
+        super("The specified filter is not in the correct format");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class BadFilterFormatException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "BAD_FILTER_FORMAT";
     }
 
 }

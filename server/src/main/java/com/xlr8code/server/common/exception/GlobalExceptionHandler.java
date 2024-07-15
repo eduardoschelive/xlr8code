@@ -52,19 +52,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleMissingRequestCookieException(MissingRequestCookieException ex) {
         var httpStatus = HttpStatus.BAD_REQUEST;
         var messageIdentifier = "error.cookie_not_present";
-        var errorMessage = "COOKIE_NOT_PRESENT";
+        var errorCode = "COOKIE_NOT_PRESENT";
         var cookieName = ex.getCookieName();
 
-        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorMessage, cookieName);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorCode, cookieName);
     }
 
     @Override
     protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         var httpStatus = HttpStatus.NOT_FOUND;
         var messageIdentifier = "error.resource_not_found";
-        var errorMessage = "RESOURCE_NOT_FOUND";
+        var errorCode = "RESOURCE_NOT_FOUND";
 
-        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, errorMessage);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, headers, messageIdentifier, errorCode);
     }
 
     @Override
@@ -101,9 +101,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleInsufficientAuthenticationException() {
         var httpStatus = HttpStatus.FORBIDDEN;
         var messageIdentifier = "authentication.error.unauthorized";
-        var errorMessage = "UNAUTHORIZED";
+        var errorCode = "UNAUTHORIZED";
 
-        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorMessage);
+        return this.applicationExceptionHelper.buildApplicationExceptionResponseEntity(httpStatus, null, messageIdentifier, errorCode);
     }
 
     @Override

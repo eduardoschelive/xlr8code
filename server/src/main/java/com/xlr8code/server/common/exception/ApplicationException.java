@@ -21,6 +21,11 @@ public abstract class ApplicationException extends RuntimeException {
     }
 
     /**
+     * @return the error code of the exception (e.g. "AUTHENTICATION_ERROR")
+     */
+    public abstract String getErrorCode();
+
+    /**
      * @return the message identifier of the exception (e.g. "authentication.error.session_expired")
      */
     public abstract String getMessageIdentifier();

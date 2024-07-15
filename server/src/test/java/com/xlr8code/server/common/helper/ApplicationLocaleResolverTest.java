@@ -61,4 +61,14 @@ class ApplicationLocaleResolverTest {
         assertEquals(Set.of(Locale.of("en_US"), Locale.of("pt_BR")), resolvedLocales);
     }
 
+    @Test
+    void it_should_resolve_to_default_locale_when_request_uri_is_in_ignore_paths() {
+        var request = new MockHttpServletRequest();
+        request.setRequestURI("/v3/api-docs");
+
+        var resolvedLocale = localeResolver.resolveLocale(request);
+
+        assertEquals(Locale.of("en_US"), resolvedLocale);
+    }
+
 }

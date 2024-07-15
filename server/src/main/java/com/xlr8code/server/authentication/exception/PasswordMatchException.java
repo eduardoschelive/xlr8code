@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class PasswordMatchException extends ApplicationException {
 
     public PasswordMatchException() {
-        super("PASSWORDS_DO_NOT_MATCH");
+        super("The passwords provided do not match each other");
     }
 
     @Override
@@ -18,4 +18,10 @@ public class PasswordMatchException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "PASSWORDS_DO_NOT_MATCH";
+    }
+
 }

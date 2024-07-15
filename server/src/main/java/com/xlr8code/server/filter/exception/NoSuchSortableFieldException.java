@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class NoSuchSortableFieldException extends ApplicationException {
 
     public NoSuchSortableFieldException(String fieldName) {
-        super("NO_SUCH_SORTABLE_FIELD", fieldName);
+        super("The specified field is not sortable", fieldName);
     }
 
     @Override
@@ -18,4 +18,10 @@ public class NoSuchSortableFieldException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "NO_SUCH_SORTABLE_FIELD";
+    }
+
 }

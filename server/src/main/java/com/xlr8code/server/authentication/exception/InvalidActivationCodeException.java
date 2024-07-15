@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidActivationCodeException extends ApplicationException {
 
     public InvalidActivationCodeException() {
-        super("INVALID_ACTIVATION_CODE");
+        super("The activation code provided is invalid");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class InvalidActivationCodeException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_ACTIVATION_CODE";
     }
 
 }
