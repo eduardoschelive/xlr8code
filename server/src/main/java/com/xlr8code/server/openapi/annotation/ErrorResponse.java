@@ -1,4 +1,4 @@
-package com.xlr8code.server.swagger.annotation;
+package com.xlr8code.server.openapi.annotation;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 
@@ -12,7 +12,5 @@ import java.lang.annotation.Target;
 public @interface ErrorResponse {
 
     Class<? extends ApplicationException>[] value() default ApplicationException.class;
-
-    boolean useFilterExceptions() default false;
 
 }

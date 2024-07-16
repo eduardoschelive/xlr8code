@@ -1,4 +1,4 @@
-package com.xlr8code.server.swagger.utils;
+package com.xlr8code.server.openapi.utils;
 
 import com.xlr8code.server.common.exception.ApplicationException;
 import lombok.AccessLevel;
@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import java.lang.reflect.Parameter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SwaggerUtils {
+public class OpenAPIUtils {
+
+    public static final String FILTER_DOC_ANCHOR = "filter";
 
     public static ApplicationException getExceptionMock(Class<? extends ApplicationException> exception) {
         try {

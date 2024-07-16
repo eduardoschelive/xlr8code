@@ -1,11 +1,11 @@
 package com.xlr8code.server.user.controller;
 
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.swagger.annotation.ErrorResponse;
+import com.xlr8code.server.openapi.annotation.ErrorResponse;
+import com.xlr8code.server.openapi.annotation.FilterEndpoint;
 import com.xlr8code.server.user.dto.*;
-import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
+import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
@@ -29,6 +29,7 @@ public class UserController {
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
 
+    @FilterEndpoint(User.class)
     @GetMapping
     public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
         var users = this.userService.findAll(queryParameters);
@@ -40,11 +41,7 @@ public class UserController {
     )
     @ErrorResponse(value = {
             UserNotFoundException.class,
-            UserMetadataNotFoundException.class,
-            UsernameAlreadyTakenException.class
-    },
-        useFilterExceptions = true
-    )
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
