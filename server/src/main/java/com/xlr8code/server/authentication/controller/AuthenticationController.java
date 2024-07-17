@@ -4,6 +4,7 @@ import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.service.AuthenticationService;
 import com.xlr8code.server.authentication.utils.SessionCookieUtils;
 import com.xlr8code.server.common.utils.Endpoint;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(Endpoint.Authentication.BASE_PATH)
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

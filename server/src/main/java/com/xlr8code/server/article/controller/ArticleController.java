@@ -22,6 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(Endpoint.Article.BASE_PATH)
+@Tag(name = "Article")
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -29,7 +30,7 @@ public class ArticleController {
 
     @PostMapping
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    public ResponseEntity<Void> create(@Valid @RequestBody ArticleDTO articleDTO) {
+    public ResponseEntity<Void> createArticle(@Valid @RequestBody ArticleDTO articleDTO) {
         var newArticle = this.articleService.create(articleDTO);
         var createdURI = Endpoint.Article.BASE_PATH + "/" + newArticle.getId();
 
@@ -38,7 +39,7 @@ public class ArticleController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable String id) {
         this.articleService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -52,7 +53,7 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     @MultiLanguageContent
-    public ResponseEntity<TranslatedArticleDTO> find(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<TranslatedArticleDTO> findArticle(@PathVariable String id, HttpServletRequest request) {
         var languages = this.localeService.getAllAcceptedLanguages(request);
         var result = this.articleService.findById(id, languages);
         return ResponseEntity.ok(result);
@@ -60,7 +61,7 @@ public class ArticleController {
 
     @GetMapping
     @MultiLanguageContent
-    public ResponseEntity<Page<TranslatedArticleDTO>> findAll(@RequestParam Map<String, String> queryParams, HttpServletRequest request) {
+    public ResponseEntity<Page<TranslatedArticleDTO>> listArticles(@RequestParam Map<String, String> queryParams, HttpServletRequest request) {
         var languages = this.localeService.getAllAcceptedLanguages(request);
         var result = this.articleService.findAll(queryParams, languages);
         return ResponseEntity.ok(result);

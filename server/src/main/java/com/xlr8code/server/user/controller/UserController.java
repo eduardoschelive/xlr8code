@@ -9,8 +9,10 @@ import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(Endpoint.User.BASE_PATH)
 @RequiredArgsConstructor
+@Tag(name = "User")
 public class UserController {
 
     private final UserService userService;
@@ -31,7 +34,7 @@ public class UserController {
 
     @FilterEndpoint(User.class)
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> findAllUsers(@RequestParam Map<String, String> queryParameters) {
+    public ResponseEntity<Page<UserDTO>> listUsers(@RequestParam Map<String, String> queryParameters) {
         var users = this.userService.findAll(queryParameters);
         return ResponseEntity.ok(users);
     }
@@ -43,7 +46,7 @@ public class UserController {
             UserNotFoundException.class,
     })
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findUserById(@PathVariable String id) {
+    public ResponseEntity<UserDTO> findUser(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
 
         return ResponseEntity.ok(userDTO);
@@ -51,7 +54,7 @@ public class UserController {
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         this.userService.deleteByUUID(id);
 
         return ResponseEntity.noContent().build();
@@ -59,7 +62,7 @@ public class UserController {
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
         var updatedUserDTO = this.userService.updateByUUID(id, updateUserDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -67,7 +70,7 @@ public class UserController {
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}" + Endpoint.User.METADATA)
-    public ResponseEntity<UserMetadataDTO> updateUserMetadataById(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
+    public ResponseEntity<UserMetadataDTO> updateUserMetadata(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
         var updatedUserDTO = this.userMetadataService.updateMetadataByUserUUID(id, updateUserMetadataDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -75,7 +78,7 @@ public class UserController {
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
-    public ResponseEntity<UserPreferencesDTO> updateUserPreferencesByUserId(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
+    public ResponseEntity<UserPreferencesDTO> updateUserPreferences(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
         var updatedUserDTO = this.userPreferencesService.updateUserPreferencesByUserUUID(id, updateUserPreferencesDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -83,7 +86,7 @@ public class UserController {
 
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
-    public ResponseEntity<Void> updateUserPasswordById(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+    public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         this.userService.updateUserPassword(id, updatePasswordDTO);
 
         return ResponseEntity.noContent().build();
