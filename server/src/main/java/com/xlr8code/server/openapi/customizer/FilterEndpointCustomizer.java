@@ -1,5 +1,7 @@
 package com.xlr8code.server.openapi.customizer;
 
+import com.xlr8code.server.filter.enums.FilterOperation;
+import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
 import com.xlr8code.server.filter.utils.FilterFieldDetails;
 import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.openapi.annotation.FilterEndpoint;
@@ -15,8 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
 import java.util.Map;
-
-import static com.xlr8code.server.openapi.utils.OpenAPIUtils.FILTER_DOC_ANCHOR;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -64,14 +66,27 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
     private String generateDescription(Map<String, FilterFieldDetails> filterFields) {
         var descriptionMarkdown = new StringBuilder();
 
-        descriptionMarkdown.append("\n### [Filterable](#").append(FILTER_DOC_ANCHOR).append(") fields\n\n")
+        descriptionMarkdown.append("\n### Filterable fields\n\n")
                 .append("The following fields can be used to filter the data.\n\n")
-                .append("| Field | Type |\n")
-                .append("| --- | --- |\n");
+                .append("| Field | Available operations | Type |\n")
+                .append("| --- | --- | --- |\n");
 
-        filterFields.forEach((field, details) ->
-                descriptionMarkdown.append("| ").append(field).append(" | ").append(details.fieldType().getSimpleName()).append(" |\n"));
+        filterFields.forEach(buildFieldDetails(descriptionMarkdown));
 
         return descriptionMarkdown.toString();
+    }
+
+    private static BiConsumer<String, FilterFieldDetails> buildFieldDetails(StringBuilder descriptionMarkdown) {
+        return (field, details) -> {
+            var strategy = ParsingStrategySelector.getStrategy(details.fieldType());
+            String supportedOperations = strategy.getSupportedFilterOperations().stream()
+                    .map(FilterOperation::getSuffix)
+                    .collect(Collectors.joining(", "));
+
+            descriptionMarkdown.append("| ")
+                    .append(field).append(" | ")
+                    .append(supportedOperations).append(" | ")
+                    .append(details.fieldType().getSimpleName()).append(" |\n");
+        };
     }
 }

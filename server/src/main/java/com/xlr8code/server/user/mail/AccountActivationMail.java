@@ -12,8 +12,8 @@ import java.util.Locale;
 @Getter
 @Builder
 public class AccountActivationMail implements Mail {
-    private static final String TEMPLATE = "user-activation";
-    private static final String SUBJECT_KEY = "mail.account.activation.subject";
+    private final String template = getMailPath("account-activation");
+    private final String subjectKey = "mail.account.activation.subject";
 
     private final String[] to;
 
@@ -25,7 +25,7 @@ public class AccountActivationMail implements Mail {
 
     @Override
     public String getSubject(MessageSource messageSource) {
-        return messageSource.getMessage(SUBJECT_KEY, null, locale);
+        return messageSource.getMessage(subjectKey, null, locale);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class AccountActivationMail implements Mail {
         context.setVariable("username", username);
         context.setVariable("activationCode", activationCode);
         context.setVariable("activationUrl", activationUrl);
-        return templateEngine.process(TEMPLATE, context);
+        return templateEngine.process(template, context);
     }
 
 }

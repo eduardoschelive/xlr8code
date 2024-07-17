@@ -12,8 +12,8 @@ import java.util.Locale;
 @Getter
 @Builder
 public class PasswordResetMail implements Mail {
-    private static final String TEMPLATE = "password-recovery";
-    private static final String SUBJECT_KEY = "mail.account.recovery.subject";
+    private final String template = getMailPath("password-recovery");
+    private final String subjectKey = "mail.account.recovery.subject";
 
     private final String[] to;
 
@@ -25,14 +25,14 @@ public class PasswordResetMail implements Mail {
 
     @Override
     public String getSubject(MessageSource messageSource) {
-        return messageSource.getMessage(SUBJECT_KEY, null, locale);
+        return messageSource.getMessage(subjectKey, null, locale);
     }
 
     public String getBody(TemplateEngine templateEngine, Context context) {
         context.setVariable("username", username);
         context.setVariable("passwordResetCode", passwordResetCode);
         context.setVariable("passwordResetUrl", passwordResetUrl);
-        return templateEngine.process(TEMPLATE, context);
+        return templateEngine.process(template, context);
     }
 
 }

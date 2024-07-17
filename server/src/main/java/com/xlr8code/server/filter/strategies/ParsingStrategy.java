@@ -1,11 +1,14 @@
 package com.xlr8code.server.filter.strategies;
 
+import com.xlr8code.server.filter.enums.FilterOperation;
 import com.xlr8code.server.filter.exception.UnsupportedFilterOperationOnFieldException;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
+import java.util.List;
 
 /**
  * Abstract class that defines the parsing strategy for a filter operation.
@@ -26,11 +29,11 @@ public abstract class ParsingStrategy {
     ) {
         var isNegated = filterOperationDetails.negated();
 
-        var predicate = getPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, value);
+        var predicate = createPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, value);
         return isNegated ? criteriaBuilder.not(predicate) : predicate;
     }
 
-    private Predicate getPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
+    private Predicate createPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
         var path = getPath(root, fieldName);
         return switch (filterOperationDetails.filterOperation()) {
             case EQUALITY -> criteriaBuilder.equal(path, value);
@@ -51,6 +54,10 @@ public abstract class ParsingStrategy {
         } else {
             return root.get(fieldName);
         }
+    }
+
+    public List<FilterOperation> getSupportedFilterOperations() {
+        return List.of(FilterOperation.EQUALITY, FilterOperation.NULL);
     }
 
 }

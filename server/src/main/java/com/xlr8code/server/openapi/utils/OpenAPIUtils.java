@@ -9,8 +9,6 @@ import java.lang.reflect.Parameter;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenAPIUtils {
 
-    public static final String FILTER_DOC_ANCHOR = "filter";
-
     public static ApplicationException getExceptionMock(Class<? extends ApplicationException> exception) {
         try {
             var constructor = exception.getDeclaredConstructors()[0];
