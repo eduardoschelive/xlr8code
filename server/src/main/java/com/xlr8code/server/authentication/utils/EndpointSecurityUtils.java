@@ -33,6 +33,9 @@ public class EndpointSecurityUtils {
             ),
             Endpoint.Authentication.BASE_PATH + "/**", List.of(
                     new EndpointSecurityDetails(HttpMethod.POST, null)
+            ),
+            Endpoint.Documentation.BASE_PATH + "/**", List.of(
+                    new EndpointSecurityDetails(HttpMethod.GET, null)
             )
     );
 
