@@ -63,15 +63,15 @@ CREATE TABLE user_codes
 
 CREATE TABLE category
 (
-    category_id  UUID PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    category_id UUID PRIMARY KEY,
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE i18n_category
 (
     id          UUID PRIMARY KEY,
-    category_id   UUID REFERENCES category (category_id),
+    category_id UUID REFERENCES category (category_id),
     language    TEXT NOT NULL,
     title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
@@ -81,13 +81,13 @@ CREATE TABLE i18n_category
 
 CREATE TABLE articles
 (
-    article_id        UUID PRIMARY KEY,
-    previous_article_id  UUID REFERENCES articles (article_id),
-    next_article_id      UUID REFERENCES articles (article_id),
+    article_id          UUID PRIMARY KEY,
+    previous_article_id UUID REFERENCES articles (article_id),
+    next_article_id     UUID REFERENCES articles (article_id),
     category_id         UUID,
-    created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    position     INT,
+    created_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    position            INT,
     FOREIGN KEY (category_id) REFERENCES category (category_id)
 );
 

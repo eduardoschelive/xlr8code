@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * Base class for all application exceptions.
+ *
  * @implNote All classes that extends this, should have a static string field named "DOCUMENTATION_EXAMPLE" that contains a string in json format that represents the exception
  */
 public abstract class ApplicationException extends RuntimeException {

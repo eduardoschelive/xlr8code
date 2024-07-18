@@ -2,22 +2,33 @@ package com.xlr8code.server.openapi.configuration;
 
 import com.xlr8code.server.filter.enums.FilterOperation;
 import com.xlr8code.server.filter.utils.FilterConstants;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static com.xlr8code.server.authentication.utils.SessionCookieUtils.SESSION_TOKEN_COOKIE_NAME;
 
 @Configuration
+@SecurityScheme(type = SecuritySchemeType.APIKEY, name = SESSION_TOKEN_COOKIE_NAME, in = SecuritySchemeIn.COOKIE)
 public class OpenAPIConfig {
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI xlr8codeOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("xlr8code")
                         .description(buildDescription())
-                        .version("v0.0.1"));
+                        .version("v0.0.1"))
+                .security(List.of(
+                        new SecurityRequirement().addList(SESSION_TOKEN_COOKIE_NAME)
+                ));
     }
 
     private String buildDescription() {

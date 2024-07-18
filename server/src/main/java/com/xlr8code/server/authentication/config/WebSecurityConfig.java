@@ -1,12 +1,12 @@
 package com.xlr8code.server.authentication.config;
 
 import com.xlr8code.server.authentication.filter.SecurityFilter;
-import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.authentication.utils.EndpointSecurityDetails;
+import com.xlr8code.server.authentication.utils.EndpointSecurityUtils;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,22 +30,24 @@ public class WebSecurityConfig {
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
-        // USER
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-        authorizeRequests.requestMatchers(HttpMethod.PATCH, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+        EndpointSecurityUtils.ENDPOINT_SECURITY.forEach((path, securityDetails) ->
+                securityDetails.forEach(detail ->
+                        configureSecurity(authorizeRequests, detail, path)
+                )
+        );
 
-        // CATEGORIES
-        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.anyRequest().denyAll();
+    }
 
-        // ARTICLE
-        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+    private static void configureSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests, EndpointSecurityDetails detail, String path) {
+        var configurer = authorizeRequests.requestMatchers(detail.methods(), path);
+        var minimumRole = detail.minimumRole();
 
-        authorizeRequests.anyRequest().permitAll();
+        if (minimumRole != null) {
+            configurer.hasRole(minimumRole.name());
+            return;
+        }
+        configurer.permitAll();
     }
 
     @Bean

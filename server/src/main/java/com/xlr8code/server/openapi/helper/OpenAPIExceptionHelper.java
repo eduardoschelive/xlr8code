@@ -33,8 +33,8 @@ public class OpenAPIExceptionHelper {
     }
 
     /**
-     * @param operation            Operation to add the exception response to
-     * @param httpStatus          HttpStatus of the exception
+     * @param operation             Operation to add the exception response to
+     * @param httpStatus            HttpStatus of the exception
      * @param applicationExceptions List of exceptions to add to the operation as a response
      */
     public void addExceptionResponse(Operation operation, HttpStatus httpStatus, List<ApplicationException> applicationExceptions) {
@@ -56,7 +56,7 @@ public class OpenAPIExceptionHelper {
 
     /**
      * @param applicationException Exception to add to the MediaType
-     * @param mediaType MediaType to add the exception to as an example
+     * @param mediaType            MediaType to add the exception to as an example
      */
     private void addExceptionExample(ApplicationException applicationException, MediaType mediaType) {
         var applicationResponse = applicationExceptionHelper.buildApplicationResponseFromApplicationException(applicationException);

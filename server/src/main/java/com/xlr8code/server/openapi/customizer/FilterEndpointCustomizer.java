@@ -26,6 +26,20 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
 
     private final OpenAPIExceptionHelper openAPIExceptionHelper;
 
+    private static BiConsumer<String, FilterFieldDetails> buildFieldDetails(StringBuilder descriptionMarkdown) {
+        return (field, details) -> {
+            var strategy = ParsingStrategySelector.getStrategy(details.fieldType());
+            String supportedOperations = strategy.getSupportedFilterOperations().stream()
+                    .map(FilterOperation::getSuffix)
+                    .collect(Collectors.joining(", "));
+
+            descriptionMarkdown.append("| ")
+                    .append(field).append(" | ")
+                    .append(supportedOperations).append(" | ")
+                    .append(details.fieldType().getSimpleName()).append(" |\n");
+        };
+    }
+
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         var annotation = handlerMethod.getMethodAnnotation(FilterEndpoint.class);
@@ -74,19 +88,5 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
         filterFields.forEach(buildFieldDetails(descriptionMarkdown));
 
         return descriptionMarkdown.toString();
-    }
-
-    private static BiConsumer<String, FilterFieldDetails> buildFieldDetails(StringBuilder descriptionMarkdown) {
-        return (field, details) -> {
-            var strategy = ParsingStrategySelector.getStrategy(details.fieldType());
-            String supportedOperations = strategy.getSupportedFilterOperations().stream()
-                    .map(FilterOperation::getSuffix)
-                    .collect(Collectors.joining(", "));
-
-            descriptionMarkdown.append("| ")
-                    .append(field).append(" | ")
-                    .append(supportedOperations).append(" | ")
-                    .append(details.fieldType().getSimpleName()).append(" |\n");
-        };
     }
 }

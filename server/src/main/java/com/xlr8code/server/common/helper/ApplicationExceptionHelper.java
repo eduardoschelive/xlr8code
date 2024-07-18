@@ -41,7 +41,7 @@ public class ApplicationExceptionHelper {
     /**
      * @param httpStatus        The http status to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorCode      The error code to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param placeholders      The placeholders to be used in the message
      * @return {@link ApplicationExceptionResponseDTO} to be sent to the client
      */
@@ -66,7 +66,7 @@ public class ApplicationExceptionHelper {
 
     /**
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorCode      The error message to be sent to the client
+     * @param errorCode         The error message to be sent to the client
      * @param fieldErrors       The field errors to be sent to the client
      * @return {@link ApplicationFieldExceptionDTO} to be sent to the client
      */
@@ -103,7 +103,7 @@ public class ApplicationExceptionHelper {
     /**
      * @param httpStatus        The http status to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorCode      The error code to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param placeholders      The placeholders to be used in the message
      * @return {@link ResponseEntity} to be sent to the client
      */
@@ -117,7 +117,7 @@ public class ApplicationExceptionHelper {
      * @param httpStatus        The http status to be sent to the client
      * @param headers           The headers to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorCode        The error code to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param fieldErrors       The field errors to be sent to the client
      * @return {@link ResponseEntity} to be sent to the client
      */
