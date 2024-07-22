@@ -6,8 +6,6 @@ import com.xlr8code.server.article.service.ArticleService;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.openapi.annotation.SecuredEndpoint;
-import com.xlr8code.server.user.utils.UserRole;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,7 +29,6 @@ public class ArticleController {
 
     @PostMapping
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<Void> createArticle(@Valid @RequestBody ArticleDTO articleDTO) {
         var newArticle = this.articleService.create(articleDTO);
         var createdURI = Endpoint.Article.BASE_PATH + "/" + newArticle.getId();
@@ -41,7 +38,6 @@ public class ArticleController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<Void> deleteArticle(@PathVariable String id) {
         this.articleService.delete(id);
         return ResponseEntity.noContent().build();
@@ -49,7 +45,6 @@ public class ArticleController {
 
     @PutMapping("/{id}")
     @PreAuthorize("@articleSecurityService.canModifyResource(principal)")
-    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<Void> update(@PathVariable String id, @Valid @RequestBody ArticleDTO articleDTO) {
         this.articleService.update(id, articleDTO);
         return ResponseEntity.noContent().build();

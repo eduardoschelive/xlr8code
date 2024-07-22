@@ -40,7 +40,7 @@ public class WebSecurityConfig {
     }
 
     private static void configureSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests, EndpointSecurityDetails detail, String path) {
-        var configurer = authorizeRequests.requestMatchers(detail.methods(), path);
+        var configurer = authorizeRequests.requestMatchers(detail.method(), path);
         var minimumRole = detail.minimumRole();
 
         if (minimumRole != null) {

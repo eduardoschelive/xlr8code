@@ -39,4 +39,12 @@ public class EndpointSecurityUtils {
             )
     );
 
+    public static List<EndpointSecurityDetails> getSecurityDetailsStartingWith(String endpoint) {
+        return ENDPOINT_SECURITY.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(endpoint))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(List.of());
+    }
+
 }

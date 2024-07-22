@@ -5,6 +5,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 
 public record EndpointSecurityDetails(
-        HttpMethod methods, @Nullable UserRole minimumRole
+        HttpMethod method, @Nullable UserRole minimumRole
 ) {
 }
