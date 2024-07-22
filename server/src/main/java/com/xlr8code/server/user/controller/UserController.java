@@ -3,12 +3,14 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.openapi.annotation.ErrorResponse;
 import com.xlr8code.server.openapi.annotation.FilterEndpoint;
+import com.xlr8code.server.openapi.annotation.SecuredEndpoint;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
+import com.xlr8code.server.user.utils.UserRole;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,40 +53,46 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @DeleteMapping("/{id}")
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @SecuredEndpoint(UserRole.MEMBER)
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         this.userService.deleteByUUID(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+
     @PutMapping("/{id}")
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @SecuredEndpoint(UserRole.MEMBER)
     public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
         var updatedUserDTO = this.userService.updateByUUID(id, updateUserDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}" + Endpoint.User.METADATA)
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @SecuredEndpoint(UserRole.MEMBER)
     public ResponseEntity<UserMetadataDTO> updateUserMetadata(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
         var updatedUserDTO = this.userMetadataService.updateMetadataByUserUUID(id, updateUserMetadataDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @SecuredEndpoint(UserRole.MEMBER)
     public ResponseEntity<UserPreferencesDTO> updateUserPreferences(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
         var updatedUserDTO = this.userPreferencesService.updateUserPreferencesByUserUUID(id, updateUserPreferencesDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
+    @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    @SecuredEndpoint(UserRole.MEMBER)
     public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         this.userService.updateUserPassword(id, updatePasswordDTO);
 

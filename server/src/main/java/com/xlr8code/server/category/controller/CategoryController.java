@@ -6,6 +6,8 @@ import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.openapi.annotation.SecuredEndpoint;
+import com.xlr8code.server.user.utils.UserRole;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,6 +29,7 @@ public class CategoryController {
     private final LocaleService localeService;
 
     @PostMapping
+    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         var category = categoryService.create(categoryDTO);
         return ResponseEntity.created(URI.create(Endpoint.Categories.BASE_PATH + "/" + category.getId())).build();
@@ -49,12 +52,14 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
+    @SecuredEndpoint(UserRole.ADMIN)
     public ResponseEntity<TranslatedCategoryDTO> updateCategory(@PathVariable String id, @Valid @RequestBody CategoryDTO categoryDTO) {
         var updated = categoryService.update(id, categoryDTO);
         return ResponseEntity.ok(updated);
