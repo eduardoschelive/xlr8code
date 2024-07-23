@@ -1,16 +1,21 @@
 package com.xlr8code.server.category.controller;
 
+import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.category.dto.CategoryDTO;
 import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +39,10 @@ public class CategoryController {
 
     @GetMapping
     @MultiLanguageContent
-    public ResponseEntity<Page<TranslatedCategoryDTO>> listCategories(@RequestParam Map<String, String> requestParams, HttpServletRequest request) {
+    @FilterEndpoint(Category.class)
+    public ResponseEntity<Page<TranslatedCategoryDTO>> listCategories(Specification<Category> specification, Pageable pageable, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
-        var result = categoryService.findAll(requestParams, languages);
+        var result = categoryService.findAll(specification, pageable, languages);
         return ResponseEntity.ok(result);
     }
 

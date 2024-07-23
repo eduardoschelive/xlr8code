@@ -7,6 +7,7 @@ import com.xlr8code.server.filter.utils.FilterTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
@@ -20,6 +21,9 @@ class EnumParsingStrategyTest {
 
     @Autowired
     private FilterTestRepository testRepository;
+
+    @Autowired
+    private FilterTestUtils filterTestUtils;
 
     @BeforeAll
     static void setup(@Autowired FilterTestRepository repository) {
@@ -39,7 +43,14 @@ class EnumParsingStrategyTest {
 
     @Test
     void it_should_filter_with_enum_field() {
-        var results = testRepository.findAll(Map.of("enumThemeField_eq", THEME.toString()), FilterTestEntity.class);
+        var params = Map.of(
+                "enumThemeField_eq", THEME.toString()
+        );
+
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        var results = testRepository.findAll(spec, pageable);
         assertEquals(1, results.getTotalElements());
     }
 

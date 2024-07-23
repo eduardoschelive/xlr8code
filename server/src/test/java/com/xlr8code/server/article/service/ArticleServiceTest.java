@@ -12,6 +12,8 @@ import com.xlr8code.server.utils.CategoryTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Map;
 import java.util.Set;
@@ -170,7 +172,7 @@ class ArticleServiceTest {
 
         @Test
         void it_should_return_all_articles() {
-            var result = articleService.findAll(Map.of(), Set.of(Language.AMERICAN_ENGLISH));
+            var result = articleService.findAll(Specification.where(null), Pageable.unpaged(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertFalse(result.isEmpty());
         }

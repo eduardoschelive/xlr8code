@@ -1,8 +1,9 @@
 package com.xlr8code.server.user.controller;
 
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.openapi.annotation.ErrorResponse;
-import com.xlr8code.server.openapi.annotation.FilterEndpoint;
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +36,11 @@ public class UserController {
 
     @FilterEndpoint(User.class)
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> listUsers(@RequestParam Map<String, String> queryParameters) {
-        var users = this.userService.findAll(queryParameters);
+    public ResponseEntity<Page<UserDTO>> listUsers(Specification<User> specification, Pageable pageable) {
+        var users = this.userService.findAll(specification, pageable);
         return ResponseEntity.ok(users);
     }
+
 
     @ApiResponses(
             @ApiResponse(responseCode = "200")

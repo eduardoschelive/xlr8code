@@ -11,6 +11,8 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +45,13 @@ public class CategoryService {
 
     /**
      * @param languages the languages to filter
+     * @param specification the specification to filter
+     * @param pageable the pageable to filter
      * @return the categories with the specified languages
      */
     @Transactional(readOnly = true)
-    public Page<TranslatedCategoryDTO> findAll(Map<String, String> requestParams, Set<Language> languages) {
-        var page = this.categoryRepository.findAll(requestParams, Category.class);
+    public Page<TranslatedCategoryDTO> findAll(Specification<Category> specification, Pageable pageable, Set<Language> languages) {
+        var page = this.categoryRepository.findAll(specification, pageable);
         return page.map(category -> TranslatedCategoryDTO.fromEntity(category, languages));
     }
 

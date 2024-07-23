@@ -9,6 +9,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Map;
 import java.util.Set;
@@ -60,14 +61,14 @@ class CategoryServiceTest {
 
         @Test
         void it_should_find_all_category() {
-            var result = categoryService.findAll(Map.of(), Set.of(Language.AMERICAN_ENGLISH));
+            var result = categoryService.findAll(Specification.where(null), Pageable.unpaged(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertNotNull(result);
         }
 
         @Test
         void it_should_find_all_categories_with_brazilian_portuguese() {
-            var result = categoryService.findAll(Map.of(), Set.of(Language.BRAZILIAN_PORTUGUESE));
+            var result = categoryService.findAll(Specification.where(null), Pageable.unpaged(), Set.of(Language.BRAZILIAN_PORTUGUESE));
 
             var hasBrazilianPortuguese = result.stream()
                     .allMatch(translatedCategoryDTO -> translatedCategoryDTO.languages().containsKey(Language.BRAZILIAN_PORTUGUESE));

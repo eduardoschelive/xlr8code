@@ -14,6 +14,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
@@ -135,7 +137,7 @@ class UserServiceTest {
 
         @Test
         void it_should_find_all_users() {
-            var users = userService.findAll(Map.of());
+            var users = userService.findAll(Specification.where(null), Pageable.unpaged());
             assertFalse(users.isEmpty());
         }
 

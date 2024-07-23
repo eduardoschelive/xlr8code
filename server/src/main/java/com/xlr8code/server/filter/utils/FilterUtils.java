@@ -1,9 +1,13 @@
 package com.xlr8code.server.filter.utils;
 
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.filter.annotation.Filterable;
 import com.xlr8code.server.filter.annotation.NestedFilterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.core.MethodParameter;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.HandlerMethod;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -77,6 +81,22 @@ public class FilterUtils {
     public static String extractOperation(String key) {
         int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
+    }
+
+    public static Map<String, FilterFieldDetails> extractFilterableFieldsFromMethod(MethodParameter method) {
+        var annotation = method.getMethodAnnotation(FilterEndpoint.class);
+
+        if (annotation == null) {
+            throw new IllegalArgumentException("Method must be annotated with @FilterEndpoint");
+        }
+
+        return extractFilterableFields(annotation.value());
+    }
+
+    public static QueryParameterDetails extractQueryParameters(WebRequest webRequest) {
+        var queryParamsMap = new HashMap<String, String>();
+        webRequest.getParameterNames().forEachRemaining(name -> queryParamsMap.put(name, webRequest.getParameter(name)));
+        return new QueryParameterDetails(queryParamsMap);
     }
 
 }

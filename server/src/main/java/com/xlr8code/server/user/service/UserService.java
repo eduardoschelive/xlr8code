@@ -3,6 +3,7 @@ package com.xlr8code.server.user.service;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
+import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
@@ -18,6 +19,8 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,11 +60,12 @@ public class UserService {
 
 
     /**
-     * @param queryParameters All the query parameters from the request
+     * @param specification {@link Specification} of {@link User}
+     * @param pageable      {@link Pageable} of the query
      * @return {@link Page} of {@link UserDTO} with the given query parameters
      */
-    public Page<UserDTO> findAll(Map<String, String> queryParameters) {
-        var users = this.userRepository.findAll(queryParameters, User.class);
+    public Page<UserDTO> findAll(Specification<User> specification, Pageable pageable) {
+        var users = this.userRepository.findAll(specification, pageable);
         return users.map(UserDTO::from);
     }
 

@@ -2,15 +2,19 @@ package com.xlr8code.server.article.controller;
 
 import com.xlr8code.server.article.dto.ArticleDTO;
 import com.xlr8code.server.article.dto.TranslatedArticleDTO;
+import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.service.ArticleService;
 import com.xlr8code.server.common.annotation.MultiLanguageContent;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -60,9 +64,10 @@ public class ArticleController {
 
     @GetMapping
     @MultiLanguageContent
-    public ResponseEntity<Page<TranslatedArticleDTO>> listArticles(@RequestParam Map<String, String> queryParams, HttpServletRequest request) {
+    @FilterEndpoint(Article.class)
+    public ResponseEntity<Page<TranslatedArticleDTO>> listArticles(Specification<Article> specification, Pageable pageable, HttpServletRequest request) {
         var languages = this.localeService.getAllAcceptedLanguages(request);
-        var result = this.articleService.findAll(queryParams, languages);
+        var result = this.articleService.findAll(specification, pageable, languages);
         return ResponseEntity.ok(result);
     }
 

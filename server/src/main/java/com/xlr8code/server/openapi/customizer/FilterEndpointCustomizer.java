@@ -4,7 +4,7 @@ import com.xlr8code.server.filter.enums.FilterOperation;
 import com.xlr8code.server.filter.strategies.ParsingStrategySelector;
 import com.xlr8code.server.filter.utils.FilterFieldDetails;
 import com.xlr8code.server.filter.utils.FilterUtils;
-import com.xlr8code.server.openapi.annotation.FilterEndpoint;
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.openapi.helper.OpenAPIExceptionHelper;
 import com.xlr8code.server.openapi.utils.FilterExceptionsUtils;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -26,6 +26,16 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
 
     private final OpenAPIExceptionHelper openAPIExceptionHelper;
 
+    @Override
+    public Operation customize(Operation operation, HandlerMethod handlerMethod) {
+        var annotation = handlerMethod.getMethodAnnotation(FilterEndpoint.class);
+        if (annotation != null) {
+            addFilterExceptions(operation);
+            addFilterDetails(operation, annotation);
+        }
+        return operation;
+    }
+
     private static BiConsumer<String, FilterFieldDetails> buildFieldDetails(StringBuilder descriptionMarkdown) {
         return (field, details) -> {
             var strategy = ParsingStrategySelector.getStrategy(details.fieldType());
@@ -38,16 +48,6 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
                     .append(supportedOperations).append(" | ")
                     .append(details.fieldType().getSimpleName()).append(" |\n");
         };
-    }
-
-    @Override
-    public Operation customize(Operation operation, HandlerMethod handlerMethod) {
-        var annotation = handlerMethod.getMethodAnnotation(FilterEndpoint.class);
-        if (annotation != null) {
-            addFilterExceptions(operation);
-            addFilterDetails(operation, annotation);
-        }
-        return operation;
     }
 
     private void addFilterExceptions(Operation operation) {

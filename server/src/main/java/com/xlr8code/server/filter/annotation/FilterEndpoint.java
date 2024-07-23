@@ -1,4 +1,4 @@
-package com.xlr8code.server.openapi.annotation;
+package com.xlr8code.server.filter.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -22,6 +23,9 @@ class StringParsingStrategyTest {
 
     @Autowired
     private FilterTestRepository testRepository;
+
+    @Autowired
+    private FilterTestUtils filterTestUtils;
 
     @BeforeAll
     static void setup(@Autowired FilterTestRepository repository) {
@@ -42,7 +46,10 @@ class StringParsingStrategyTest {
     @ParameterizedTest
     @MethodSource("provideFilterParameters")
     void it_should_filter_with_string_field(Map<String, String> params, long expectedSize) {
-        var results = testRepository.findAll(params, FilterTestEntity.class);
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        var results = testRepository.findAll(spec, pageable);
         assertEquals(expectedSize, results.getTotalElements());
     }
 
