@@ -1,11 +1,15 @@
 package com.xlr8code.server.user.controller;
 
+import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.openapi.annotation.ErrorResponse;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
+import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
@@ -17,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +47,7 @@ public class UserController {
     @ApiResponses(
             @ApiResponse(responseCode = "200")
     )
-    @ErrorResponse(value = {
-            UserNotFoundException.class,
-    })
+    @ErrorResponse(UserNotFoundException.class)
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUser(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
@@ -52,6 +55,12 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @ApiResponses(
+            @ApiResponse(responseCode = "204")
+    )
+    @ErrorResponse(value = {
+            UserNotFoundException.class
+    })
     @DeleteMapping("/{id}")
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
@@ -60,7 +69,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @ApiResponses(
+            @ApiResponse(responseCode = "200")
+    )
+    @ErrorResponse(value = {
+            UserNotFoundException.class,
+            UsernameAlreadyTakenException.class,
+            EmailAlreadyInUseException.class
+    })
     @PutMapping("/{id}")
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
@@ -69,6 +85,12 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
+    @ApiResponses(
+            @ApiResponse(responseCode = "200")
+    )
+    @ErrorResponse(value = {
+            UserNotFoundException.class
+    })
     @PutMapping("/{id}" + Endpoint.User.METADATA)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<UserMetadataDTO> updateUserMetadata(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
@@ -77,6 +99,12 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
+    @ApiResponses(
+            @ApiResponse(responseCode = "200")
+    )
+    @ErrorResponse(value = {
+            UserNotFoundException.class
+    })
     @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<UserPreferencesDTO> updateUserPreferences(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
@@ -85,6 +113,14 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
+    @ApiResponses(
+            @ApiResponse(responseCode = "200")
+    )
+    @ErrorResponse(value = {
+            UserNotFoundException.class,
+            IncorrectOldPasswordException.class,
+            PasswordMatchException.class
+    })
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {

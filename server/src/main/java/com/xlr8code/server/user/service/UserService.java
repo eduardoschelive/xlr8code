@@ -183,6 +183,9 @@ public class UserService {
     /**
      * @param userId            UUID of the user
      * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
+     * @throws UserNotFoundException if the user is not found
+     * @throws IncorrectOldPasswordException if the old currentPassword is incorrect
+     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
@@ -207,10 +210,6 @@ public class UserService {
 
     /**
      * @param user User to have the currentPassword changed
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
-     *                                <p>
-     *                                This will end all user sessions and save the user to the database. The user will need to log in again.a
-     *                                </p>
      */
     @Transactional
     public void changeUserPassword(User user, String newPassword) {
