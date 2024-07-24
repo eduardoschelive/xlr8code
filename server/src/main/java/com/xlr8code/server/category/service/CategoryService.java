@@ -6,6 +6,8 @@ import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.category.exception.CategoryNotFoundException;
 import com.xlr8code.server.category.repository.CategoryRepository;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
+import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,8 @@ public class CategoryService {
     /**
      * @param categoryDTO the category to be created
      * @return the created category
+     * @throws DuplicateSlugInLanguagesException if there are duplicate slugs
+     * @throws SlugAlreadyExistsException        if any slug already exists
      */
     @Transactional
     public Category create(CategoryDTO categoryDTO) {
@@ -61,7 +65,7 @@ public class CategoryService {
      */
     @Transactional
     public Category findById(UUID uuid) {
-        return categoryRepository.findById(uuid)
+        return this.categoryRepository.findById(uuid)
                 .orElseThrow(() -> new CategoryNotFoundException(uuid.toString()));
     }
 
@@ -82,6 +86,7 @@ public class CategoryService {
      * @param uuidString the category id
      * @param languages  the languages to filter
      * @return the category with the specified id and languages
+     * @throws CategoryNotFoundException if the category does not exist
      */
     @Transactional
     public TranslatedCategoryDTO findById(String uuidString, Set<Language> languages) {
@@ -96,13 +101,16 @@ public class CategoryService {
     @Transactional
     public void delete(String uuidString) {
         var entity = self.findById(uuidString);
-        categoryRepository.delete(entity);
+        this.categoryRepository.delete(entity);
     }
 
     /**
      * @param uuidString  the category id
      * @param categoryDTO the category to be updated
      * @return the updated translated category with the specified id and languages
+     * @throws CategoryNotFoundException           if the category does not exist
+     * @throws DuplicateSlugInLanguagesException if there are duplicate slugs
+     * @throws SlugAlreadyExistsException        if any slug already exists
      */
     @Transactional
     public TranslatedCategoryDTO update(String uuidString, CategoryDTO categoryDTO) {
@@ -110,7 +118,7 @@ public class CategoryService {
         this.categorySlugValidator.validateSlugs(categoryDTO, existingCategory);
 
         var category = categoryDTO.toEntity(existingCategory);
-        var savedEntity = categoryRepository.save(category);
+        var savedEntity = this.categoryRepository.save(category);
 
         return TranslatedCategoryDTO.fromEntity(savedEntity);
     }
