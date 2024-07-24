@@ -9,6 +9,8 @@ import com.xlr8code.server.article.repository.ArticleRepository;
 import com.xlr8code.server.category.exception.CategoryNotFoundException;
 import com.xlr8code.server.category.service.CategoryService;
 import com.xlr8code.server.common.enums.Language;
+import com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException;
+import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
 import com.xlr8code.server.common.utils.ObjectUtils;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import jakarta.annotation.Resource;
@@ -109,25 +111,36 @@ public class ArticleService {
         this.articleRepository.deleteById(uuid);
     }
 
+    /**
+     * @param id        the id of the article
+     * @param articleDTO the article to be updated
+     * @return the updated article
+     * @throws ArticleNotFoundException  if the article with the specified id does not exist
+     * @throws CategoryNotFoundException if the category with the specified id does not exist
+     * @throws DuplicateSlugInLanguagesException if the slug is duplicated in the languages
+     * @throws SlugAlreadyExistsException if the slug already exists
+     */
     @Transactional
-    public Article update(String id, ArticleDTO articleDTO) {
-        var article = self.findById(id);
+    public TranslatedArticleDTO update(String id, ArticleDTO articleDTO) {
+        var articleToUpdate = self.findById(id);
 
-        this.articleSlugValidator.validateSlugs(articleDTO.languages().values(), article);
+        this.articleSlugValidator.validateSlugs(articleDTO.languages().values(), articleToUpdate);
 
-        var updatedArticle = convertToEntity(article, articleDTO);
+        var articleToUpdateEntity = convertToEntity(articleToUpdate, articleDTO);
 
         // set id for the i18n articles
-        updatedArticle.getI18nArticles().forEach(i18nArticle -> {
-            i18nArticle.setArticle(updatedArticle);
-            i18nArticle.setId(article.getI18nArticles().stream()
+        articleToUpdateEntity.getI18nArticles().forEach(i18nArticle -> {
+            i18nArticle.setArticle(articleToUpdateEntity);
+            i18nArticle.setId(articleToUpdate.getI18nArticles().stream()
                     .filter(i18nArticle1 -> i18nArticle1.getLanguage().equals(i18nArticle.getLanguage()))
                     .findFirst()
                     .orElse(i18nArticle)
                     .getId());
         });
 
-        return this.articleRepository.save(updatedArticle);
+        var updatedArticle = this.articleRepository.save(articleToUpdateEntity);
+
+        return TranslatedArticleDTO.fromEntity(updatedArticle, articleDTO.languages().keySet());
     }
 
     /**

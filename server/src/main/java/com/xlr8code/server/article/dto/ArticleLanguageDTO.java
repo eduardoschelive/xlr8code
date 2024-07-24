@@ -3,15 +3,20 @@ package com.xlr8code.server.article.dto;
 import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.entity.I18nArticle;
 import com.xlr8code.server.common.enums.Language;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Optional;
 
+@Schema(name = "ArticleLanguage")
 public record ArticleLanguageDTO(
+        @Schema(description = "The article title")
         @NotBlank
         String title,
+        @Schema(description = "The article slug")
         @NotBlank
         String slug,
+        @Schema(description = "The article content")
         @NotBlank
         String content
 ) {
