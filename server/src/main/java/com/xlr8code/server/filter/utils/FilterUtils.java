@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.HandlerMethod;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -16,7 +15,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPARATOR;
+import static com.xlr8code.server.filter.utils.FilterConstants.FILTER_PARAM_SEPARATOR;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterUtils {
@@ -70,7 +69,7 @@ public class FilterUtils {
      * @return the field path extracted from the key
      */
     public static String extractFieldPath(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        int separatorIndex = key.lastIndexOf(FILTER_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
     }
 
@@ -79,7 +78,7 @@ public class FilterUtils {
      * @return the operation extracted from the key
      */
     public static String extractOperation(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        int separatorIndex = key.lastIndexOf(FILTER_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
     }
 

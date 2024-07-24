@@ -3,7 +3,6 @@ package com.xlr8code.server.user.service;
 import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.service.UserSessionService;
-import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.utils.UUIDUtils;
 import com.xlr8code.server.user.dto.CreateUserDTO;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
@@ -25,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Service

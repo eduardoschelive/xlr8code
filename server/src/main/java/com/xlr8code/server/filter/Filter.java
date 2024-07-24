@@ -4,7 +4,6 @@ import com.xlr8code.server.filter.utils.FilterFieldDetails;
 import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.filter.utils.QueryParameterDetails;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 

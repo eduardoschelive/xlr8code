@@ -23,7 +23,7 @@ import static com.xlr8code.server.filter.utils.FilterConstants.*;
 public class QueryParameterDetails {
 
     private static final List<String> PAGINATION_PARAMS = List.of(PAGE_PARAM, SIZE_PARAM);
-    private static final String SORT_SUFFIX = SEARCH_PARAM_SEPARATOR + SORT_PARAM;
+    private static final String SORT_SUFFIX = FILTER_PARAM_SEPARATOR + SORT_PARAM;
     private final Map<String, String> filterParameters = new HashMap<>();
     private final Map<String, String> paginationParameters = new HashMap<>();
     private final Map<String, String> sortParameters = new HashMap<>();

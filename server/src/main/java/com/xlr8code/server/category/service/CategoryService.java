@@ -16,7 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,9 +43,9 @@ public class CategoryService {
     }
 
     /**
-     * @param languages the languages to filter
+     * @param languages     the languages to filter
      * @param specification the specification to filter
-     * @param pageable the pageable to filter
+     * @param pageable      the pageable to filter
      * @return the categories with the specified languages
      */
     @Transactional(readOnly = true)

@@ -4,15 +4,12 @@ import com.xlr8code.server.filter.FilterPagination;
 import com.xlr8code.server.filter.FilterSorting;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.filter.utils.FilterUtils;
-import com.xlr8code.server.filter.utils.QueryParameterDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.HashMap;
 
 public class FilterEndpointPageableResolver implements HandlerMethodArgumentResolver {
     @Override

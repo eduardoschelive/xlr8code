@@ -1,6 +1,5 @@
 package com.xlr8code.server.category.controller;
 
-import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.category.dto.CategoryDTO;
 import com.xlr8code.server.category.dto.TranslatedCategoryDTO;
 import com.xlr8code.server.category.entity.Category;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Map;
 
 @RestController
 @RequestMapping(Endpoint.Categories.BASE_PATH)

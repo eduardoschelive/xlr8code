@@ -20,7 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -91,8 +90,8 @@ public class ArticleService {
 
     /**
      * @param specification the specification to filter for the articles
-     * @param pageable     the pageable to filter
-     * @param languages   the languages to filter
+     * @param pageable      the pageable to filter
+     * @param languages     the languages to filter
      * @return the articles with the specified languages and filters
      */
     @Transactional(readOnly = true)

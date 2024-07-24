@@ -1,9 +1,8 @@
 package com.xlr8code.server.user.controller;
 
-import com.xlr8code.server.category.entity.Category;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.openapi.annotation.ErrorResponse;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
+import com.xlr8code.server.openapi.annotation.ErrorResponse;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserNotFoundException;
@@ -21,8 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping(Endpoint.User.BASE_PATH)
