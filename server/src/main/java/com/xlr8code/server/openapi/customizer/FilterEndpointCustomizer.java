@@ -128,7 +128,9 @@ public class FilterEndpointCustomizer implements OperationCustomizer {
         var filterFields = FilterUtils.extractFilterableFields(annotation.value());
         var sortDescription = new StringBuilder()
                 .append("The sorting order for the data. The format is `field_direction`.\n\n")
-                .append("The available directions are `asc` and `desc`.\n\n")
+                .append("The available directions are: ")
+                .append(String.join(", ", ACCEPTED_SORT_VALUES))
+                .append(".\n\n")
                 .append("The available fields are:\n\n")
                 .append("| Field | Direction |\n")
                 .append("| --- | --- |\n");
