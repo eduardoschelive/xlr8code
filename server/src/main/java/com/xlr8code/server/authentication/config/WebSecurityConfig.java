@@ -5,6 +5,7 @@ import com.xlr8code.server.authentication.utils.EndpointSecurityDetails;
 import com.xlr8code.server.authentication.utils.EndpointSecurityUtils;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -29,17 +30,22 @@ public class WebSecurityConfig {
     private final SecurityFilter securityFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
+    @Value("${application.documentation-endpoint}")
+    private String documentationEndpoint;
+
+    private void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
         EndpointSecurityUtils.ENDPOINT_SECURITY.forEach((path, securityDetails) ->
                 securityDetails.forEach(detail ->
                         configureSecurity(authorizeRequests, detail, path)
                 )
         );
 
+        authorizeRequests.requestMatchers(documentationEndpoint + "/**").permitAll();
+
         authorizeRequests.anyRequest().denyAll();
     }
 
-    private static void configureSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests, EndpointSecurityDetails detail, String path) {
+    private void configureSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests, EndpointSecurityDetails detail, String path) {
         var configurer = authorizeRequests.requestMatchers(detail.method(), path);
         var minimumRole = detail.minimumRole();
 
@@ -69,7 +75,7 @@ public class WebSecurityConfig {
 
     private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeHttpRequests(WebSecurityConfig::configureEndpointSecurity);
+                .authorizeHttpRequests(this::configureEndpointSecurity);
     }
 
     private void configureFilters(HttpSecurity httpSecurity) {

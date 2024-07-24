@@ -6,6 +6,7 @@ import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.filter.resolver.FilterEndpointPageableResolver;
 import com.xlr8code.server.filter.resolver.FilterEndpointSpecificationResolver;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -42,11 +43,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(localeChangeInterceptor());
         interceptorRegistry.addInterceptor(contentLanguageInterceptor());
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/documentation").setViewName("documentation/index");
     }
 
     @Override

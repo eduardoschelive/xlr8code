@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,10 +19,16 @@ import static com.xlr8code.server.authentication.utils.SessionCookieUtils.SESSIO
 @SecurityScheme(type = SecuritySchemeType.APIKEY, name = SESSION_TOKEN_COOKIE_NAME, in = SecuritySchemeIn.COOKIE)
 public class OpenAPIConfig {
 
+    @Value("${application.name}")
+    private String applicationName;
+
+    @Value("${application.url}")
+    private String applicationUrl;
+
     @Bean
-    public OpenAPI xlr8codeOpenAPI() {
+    public OpenAPI api() {
         return new OpenAPI()
-                .info(new Info().title("xlr8code")
+                .info(new Info().title(this.applicationName)
                         .description(buildDescription())
                         .version("v0.0.1"));
     }
@@ -31,7 +38,7 @@ public class OpenAPIConfig {
         var descriptionMarkdown = new StringBuilder();
 
         descriptionMarkdown.append("# Introduction\n\n")
-                .append("This is the API for the website [xlr8code](https://xlr8code.com)\n\n")
+                .append("This is the API for the website [").append(this.applicationName).append("](").append(this.applicationUrl).append(")").append("\n\n")
                 .append("# How to properly filter data on the API endpoints\n\n")
                 .append("This API allows you to filter and paginated data by passing query parameters to the endpoints with a specific format.\n\n")
                 .append("### Syntax\n\n")

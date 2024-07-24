@@ -6,9 +6,8 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
-    <link href="https://cdn.xlr8code.com/filters:quality(70)/fit-in/96x96/xlr8logo.png" rel="shortcut icon"
-          type="image/x-icon">
-    <title>API Documentation</title>
+    <link th:href="${@environment.getProperty('application.logo-url')}" rel="shortcut icon" type="image/x-icon">
+    <title th:text="${@environment.getProperty('application.name')} + ' documentation'">xl8code</title>
 
     <!--
     Redoc doesn't change outer page styles
@@ -23,7 +22,7 @@
 <body>
 <redoc
         hide-download-button
-        spec-url='http://localhost:8080/documentation/open-api'
+        th:attr="spec-url=${@environment.getProperty('springdoc.api-docs.path')}"
 ></redoc>
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 </body>
