@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ErrorResponse {
+public @interface ErrorResponses {
 
     Class<? extends ApplicationException>[] value() default ApplicationException.class;
 

@@ -3,7 +3,7 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
-import com.xlr8code.server.openapi.annotation.ErrorResponse;
+import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
@@ -13,6 +13,7 @@ import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +36,10 @@ public class UserController {
     private final UserMetadataService userMetadataService;
     private final UserPreferencesService userPreferencesService;
 
+    @Operation(
+            summary = "List users",
+            description = "Use this endpoint to list users and filter user by their fields."
+    )
     @FilterEndpoint(User.class)
     @GetMapping
     public ResponseEntity<Page<UserDTO>> listUsers(Specification<User> specification, Pageable pageable) {
@@ -43,11 +47,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
+    @Operation(
+            summary = "Find user",
+            description = "Use this endpoint to find a user by its UUID."
     )
-    @ErrorResponse(UserNotFoundException.class)
+    @ErrorResponses(UserNotFoundException.class)
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUser(@PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
@@ -55,12 +59,12 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "204")
+    @Operation(
+            summary = "Delete user",
+            description = "Use this endpoint to delete a user. Non-admin users can only delete their own user.",
+            responses = @ApiResponse(responseCode = "204")
     )
-    @ErrorResponse(value = {
-            UserNotFoundException.class
-    })
+    @ErrorResponses(value = UserNotFoundException.class)
     @DeleteMapping("/{id}")
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
@@ -69,10 +73,11 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
+    @Operation(
+            summary = "Update user",
+            description = "Use this endpoint to update a user. Non-admin users can only update their own user."
     )
-    @ErrorResponse(value = {
+    @ErrorResponses(value = {
             UserNotFoundException.class,
             UsernameAlreadyTakenException.class,
             EmailAlreadyInUseException.class
@@ -85,12 +90,11 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
+    @Operation(
+            summary = "Update user metadata",
+            description = "Use this endpoint to update the metadata of a user. Non-admin users can only update their own metadata."
     )
-    @ErrorResponse(value = {
-            UserNotFoundException.class
-    })
+    @ErrorResponses(value = UserNotFoundException.class)
     @PutMapping("/{id}" + Endpoint.User.METADATA)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<UserMetadataDTO> updateUserMetadata(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
@@ -99,12 +103,11 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
+    @Operation(
+            summary = "Update user preferences",
+            description = "Use this endpoint to update the preferences of a user. Non-admin users can only update their own preferences."
     )
-    @ErrorResponse(value = {
-            UserNotFoundException.class
-    })
+    @ErrorResponses(value = UserNotFoundException.class)
     @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
     public ResponseEntity<UserPreferencesDTO> updateUserPreferences(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
@@ -113,16 +116,20 @@ public class UserController {
         return ResponseEntity.ok(updatedUserDTO);
     }
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
+
+    @Operation(
+            summary = "Update user password",
+            description = "Use this endpoint to update the password of a user. The user must provide the old password to update the password. Non-admin users can only update their own password.",
+            responses = @ApiResponse(responseCode = "204")
     )
-    @ErrorResponse(value = {
+    @ErrorResponses(value = {
             UserNotFoundException.class,
             IncorrectOldPasswordException.class,
             PasswordMatchException.class
     })
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
+    // TODO: Add a validation that checks if the new password is different from the old password
     public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         this.userService.updateUserPassword(id, updatePasswordDTO);
 

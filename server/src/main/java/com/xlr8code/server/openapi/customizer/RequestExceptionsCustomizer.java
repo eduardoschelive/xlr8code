@@ -1,6 +1,6 @@
 package com.xlr8code.server.openapi.customizer;
 
-import com.xlr8code.server.openapi.annotation.ErrorResponse;
+import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import com.xlr8code.server.openapi.helper.OpenAPIExceptionHelper;
 import io.swagger.v3.oas.models.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class RequestExceptionsCustomizer implements OperationCustomizer {
 
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
-        var annotation = handlerMethod.getMethodAnnotation(ErrorResponse.class);
+        var annotation = handlerMethod.getMethodAnnotation(ErrorResponses.class);
         if (annotation != null) {
             var exceptions = Arrays.stream(annotation.value()).toList();
 
