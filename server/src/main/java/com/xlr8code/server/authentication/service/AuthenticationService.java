@@ -131,7 +131,7 @@ public class AuthenticationService {
     @Transactional
     public void resendActivationCode(ResendCodeDTO resendCodeDTO) {
         var login = resendCodeDTO.login();
-        var user = this.userService.findByLogin(login);
+        var user = this.userService.findByLogin(login).orElseThrow(UserNotFoundException::new);
 
         this.sendActivationMail(user);
     }
@@ -142,13 +142,13 @@ public class AuthenticationService {
      * </p>
      *
      * @param forgotPasswordDTO the forgot currentPassword request body
-     * @throws IncorrectUsernameOrPasswordException if the user is not found
+     * @throws UserNotFoundException if the user is not found
      * @see UserPasswordResetCodeService#generate(User)
      */
     @Transactional
     public void forgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
         var login = forgotPasswordDTO.login();
-        var user = this.userService.findByLogin(login);
+        var user = this.userService.findByLogin(login).orElseThrow(UserNotFoundException::new);
 
         var passwordResetCode = this.userPasswordResetCodeService.generate(user);
 

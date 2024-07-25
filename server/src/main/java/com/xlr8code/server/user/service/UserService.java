@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,9 +74,8 @@ public class UserService {
      * @throws IncorrectUsernameOrPasswordException if the username or currentPassword is incorrect
      */
     @Transactional(readOnly = true)
-    public User findByLogin(String login) {
-        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login)
-                .orElseThrow(IncorrectUsernameOrPasswordException::new);
+    public Optional<User> findByLogin(String login) {
+        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login);
     }
 
     /**
