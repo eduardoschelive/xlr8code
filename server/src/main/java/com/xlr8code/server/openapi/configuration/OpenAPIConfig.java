@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
 
 import static com.xlr8code.server.authentication.utils.SessionCookieUtils.SESSION_TOKEN_COOKIE_NAME;
+import static com.xlr8code.server.filter.utils.FilterConstants.*;
 
 @Configuration
 @SecurityScheme(type = SecuritySchemeType.APIKEY, name = SESSION_TOKEN_COOKIE_NAME, in = SecuritySchemeIn.COOKIE)
@@ -59,18 +60,42 @@ public class OpenAPIConfig {
                 .append("Some operations have modifiers that change the behavior of the operation.\n\n")
                 .append("| Modifier | Description | Type | \n")
                 .append("| --- | --- | --- |\n")
-                .append("| `").append(FilterConstants.CASE_INSENSITIVE_SUFFIX).append("` | Makes the operation case-insensitive | ").append("OPERATION SUFFIX | \n")
-                .append("| `").append(FilterConstants.NEGATION_PREFIX).append("` | Negates the operation | ").append("OPERATION SUFFIX | \n\n");
+                .append("| `").append(CASE_INSENSITIVE_SUFFIX).append("` | Makes the operation case-insensitive | ").append("OPERATION SUFFIX | \n")
+                .append("| `").append(NEGATION_PREFIX).append("` | Negates the operation | ").append("OPERATION SUFFIX | \n\n");
 
         descriptionMarkdown.append("\n### Examples\n\n")
                 .append("1. To filter all entities where the `name` field is equal to `John`, use the following query parameter:\n")
-                .append("`name_eq=John`\n\n")
+                .append("`name").append(FILTER_PARAM_SEPARATOR).append("eq=John`\n\n")
                 .append("2. To filter all entities where the `age` field is greater than `18`, use the following query parameter:\n")
-                .append("`age_gt=18`\n\n")
+                .append("`age").append(FILTER_PARAM_SEPARATOR).append("gt=18`\n\n")
                 .append("3. To filter all entities where the `name` field is not equal to `John`, use the following query parameter:\n")
-                .append("`name").append(FilterConstants.NEGATION_PREFIX).append("eq=John`\n\n")
+                .append("`name").append(FILTER_PARAM_SEPARATOR).append(NEGATION_PREFIX).append("eq=John`\n\n")
                 .append("4. To filter all entities where the `name` field is not equal to `John` in a case-insensitive manner, use the following query parameter:\n")
-                .append("`name").append(FilterConstants.NEGATION_PREFIX).append("eq").append(FilterConstants.CASE_INSENSITIVE_SUFFIX).append("=John`\n\n");
+                .append("`name").append(NEGATION_PREFIX).append("eq").append(CASE_INSENSITIVE_SUFFIX).append("=John`\n\n");
+
+        descriptionMarkdown.append("\n### Sorting\n\n")
+                .append("The sorting order for the data. The format is `field_").append(SORT_PARAM).append("=direction`.\n\n")
+                .append("The available directions are: ")
+                .append(String.join(", ", ACCEPTED_SORT_VALUES))
+                .append(".\n\n");
+
+        descriptionMarkdown.append("Examples:\n\n")
+                .append("1. To sort the data by the `name` field in ascending order, use the following query parameter:\n")
+                .append("`name").append(FILTER_PARAM_SEPARATOR).append("asc`\n\n")
+                .append("2. To sort the data by the `name` field in descending order, use the following query parameter:\n")
+                .append("`name").append(FILTER_PARAM_SEPARATOR).append("desc`\n\n");
+
+        descriptionMarkdown.append("\n### Pagination\n\n")
+                .append("The following query parameters can be used to paginate the data:\n\n")
+                .append("|  Operation | Description |\n")
+                .append("| --- | --- |\n")
+                .append("| `").append(PAGE_PARAM).append("` | The page number to retrieve. Default is 1. |\n")
+                .append("| `").append(SIZE_PARAM).append("` | The number of elements to retrieve. Default is").append(DEFAULT_SIZE).append(". Maximum is ").append(MAX_SIZE).append(". |\n\n")
+                .append("Examples:\n\n")
+                .append("1. To get the data from page 2, use the following query parameter:\n")
+                .append("`").append(PAGE_PARAM).append("=2`\n\n")
+                .append("2. To change the size of the page to 100, use the following query parameter:\n")
+                .append("`").append(SIZE_PARAM).append("=100`\n\n");
 
         descriptionMarkdown.append("\n\n");
 
