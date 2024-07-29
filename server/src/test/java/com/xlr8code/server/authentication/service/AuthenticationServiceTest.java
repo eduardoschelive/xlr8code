@@ -57,6 +57,7 @@ class AuthenticationServiceTest {
                 "SIGN_UP_TEST",
                 "SIGN_UP_TEST@test.com",
                 PASSWORD,
+                PASSWORD,
                 new UserPreferencesDTO(Theme.LIGHT, Language.AMERICAN_ENGLISH),
                 new UserMetadataDTO(null)
         );

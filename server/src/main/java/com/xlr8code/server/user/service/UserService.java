@@ -9,10 +9,7 @@ import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +43,15 @@ public class UserService {
      *                      </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
+     * @throws PasswordMatchException         if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public User create(CreateUserDTO userCreateDTO) {
         this.validateUsername(userCreateDTO.username());
+
         this.validateEmail(userCreateDTO.email());
+
+        this.validatePasswordMatch(userCreateDTO.password(), userCreateDTO.passwordConfirmation());
 
         var user = userCreateDTO.toUser(passwordEncoder);
 
@@ -86,10 +87,12 @@ public class UserService {
      *                                This method changes the currentPassword of the user and ends all sessions of the user.
      *                                </p>
      * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordAlreadyUsedException if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
     public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
-        this.validatePasswordChange(newPassword, newPasswordConfirmation);
+        this.validatePasswordMatch(newPassword, newPasswordConfirmation);
+        this.validateNewPassword(user, newPassword);
         self.changeUserPassword(user, newPassword);
     }
 
@@ -186,6 +189,7 @@ public class UserService {
      * @throws UserNotFoundException if the user is not found
      * @throws IncorrectOldPasswordException if the old currentPassword is incorrect
      * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordAlreadyUsedException if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
     public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
@@ -203,7 +207,9 @@ public class UserService {
 
         this.validateOldPassword(user, updatePasswordDTO.oldPassword());
 
-        this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
+        this.validatePasswordMatch(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
+
+        this.validateNewPassword(user, updatePasswordDTO.newPassword());
 
         self.changeUserPassword(user, updatePasswordDTO.newPassword());
     }
@@ -226,6 +232,17 @@ public class UserService {
     private void validateOldPassword(User user, String rawPassword) {
         if (!user.getUserPassword().matches(rawPassword, passwordEncoder)) {
             throw new IncorrectOldPasswordException();
+        }
+    }
+
+    /**
+     * @param user       User to have the currentPassword updated
+     * @param newPassword New currentPassword to be validated
+     *
+     */
+    private void validateNewPassword(User user, String newPassword) {
+        if (user.getUserPassword().matches(newPassword, passwordEncoder)) {
+            throw new PasswordAlreadyUsedException();
         }
     }
 
@@ -272,7 +289,7 @@ public class UserService {
      * @param newPasswordConfirmation New currentPassword confirmation
      * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
      */
-    private void validatePasswordChange(String newPassword, String newPasswordConfirmation) {
+    private void validatePasswordMatch(String newPassword, String newPasswordConfirmation) {
         if (!newPassword.equals(newPasswordConfirmation)) {
             throw new PasswordMatchException();
         }

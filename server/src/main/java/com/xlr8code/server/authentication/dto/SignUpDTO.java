@@ -23,6 +23,9 @@ public record SignUpDTO(
         @Schema(description = "The password of the user")
         @NotBlank
         String password,
+        @Schema(description = "The password confirmation of the user. Must match the password")
+        @NotBlank
+        String passwordConfirmation,
         @Schema(description = "The preferences of the user")
         @NotNull
         UserPreferencesDTO preferences,
@@ -35,6 +38,7 @@ public record SignUpDTO(
                 this.username(),
                 this.email(),
                 this.password(),
+                this.passwordConfirmation(),
                 Set.of(UserRole.MEMBER.toRole()),
                 this.metadata(),
                 this.preferences(),

@@ -25,6 +25,7 @@ public class UserTestUtils {
                 username,
                 email,
                 password,
+                password,
                 Set.of(UserRole.DEFAULT.toRole()),
                 new UserMetadataDTO(null),
                 new UserPreferencesDTO(Theme.SYSTEM, Language.AMERICAN_ENGLISH),

@@ -6,10 +6,7 @@ import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
@@ -125,11 +122,11 @@ public class UserController {
     @ErrorResponses(value = {
             UserNotFoundException.class,
             IncorrectOldPasswordException.class,
-            PasswordMatchException.class
+            PasswordMatchException.class,
+            PasswordAlreadyUsedException.class
     })
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    // TODO: Add a validation that checks if the new password is different from the old password
     public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         this.userService.updateUserPassword(id, updatePasswordDTO);
 

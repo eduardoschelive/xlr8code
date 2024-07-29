@@ -101,7 +101,7 @@ class ArticleServiceTest {
             var updatedArticle = articleService.update(article.getId().toString(), articleDTO);
 
             assertNotNull(updatedArticle);
-            assertEquals(article.getId(), updatedArticle.getId());
+            assertEquals(article.getId(), updatedArticle.id());
         }
 
         @Test

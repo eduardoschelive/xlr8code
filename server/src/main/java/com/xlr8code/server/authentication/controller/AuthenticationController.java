@@ -7,6 +7,7 @@ import com.xlr8code.server.authentication.utils.SessionCookieUtils;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
+import com.xlr8code.server.user.exception.PasswordAlreadyUsedException;
 import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,8 @@ public class AuthenticationController {
     )
     @ErrorResponses(value = {
             EmailAlreadyInUseException.class,
-            UsernameAlreadyTakenException.class
+            UsernameAlreadyTakenException.class,
+            PasswordMatchException.class
     })
     @PostMapping(Endpoint.Authentication.SIGN_UP)
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDTO signUpBodyDTO) {
@@ -158,7 +160,8 @@ public class AuthenticationController {
     @ErrorResponses(value = {
             ExpiredPasswordResetCodeException.class,
             InvalidPasswordResetCodeException.class,
-            PasswordMatchException.class
+            PasswordMatchException.class,
+            PasswordAlreadyUsedException.class
     })
     @PostMapping(Endpoint.Authentication.RESET_PASSWORD)
     public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPasswordRequestDTO) {

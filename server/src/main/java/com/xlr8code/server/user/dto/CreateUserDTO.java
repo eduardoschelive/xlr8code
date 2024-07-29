@@ -17,7 +17,8 @@ public record CreateUserDTO(
         String email,
         @NotBlank
         String password,
-        // TODO: Add password confirmation
+        @NotNull
+        String passwordConfirmation,
         @NotNull
         Set<Role> roles,
         @NotNull UserMetadataDTO metadata,
