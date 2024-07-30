@@ -89,7 +89,7 @@ public class CategoryController {
     )
     @ErrorResponses(value = CategoryNotFoundException.class)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@Schema(description = "The unique identifier of the category")  @PathVariable String id) {
+    public ResponseEntity<Void> deleteCategory(@Schema(description = "The unique identifier of the category") @PathVariable String id) {
         this.categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -13,9 +13,6 @@ import java.util.*;
 @Component
 public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
 
-    @Value("${application.documentation-endpoint}")
-    private String documentationEndpoint;
-
     private static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
     private static final Locale DEFAULT_LOCALE = Locale.of("en_US");
     private static final Language[] SUPPORTED_LANGUAGES = Language.values();
@@ -23,6 +20,8 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private static final String QUALITY_PARAMETER = "q=";
     private static final String LOCALE_SEPARATOR = ",";
     private static final Double DEFAULT_QUALITY_SCORE = 1.0;
+    @Value("${application.documentation-endpoint}")
+    private String documentationEndpoint;
 
     /**
      * @param parts the parts of the language tag

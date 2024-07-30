@@ -40,7 +40,6 @@ public class CategorySlugValidator implements SlugValidator<Category> {
      * @param categoryLanguageDTOs the category language DTOs to validate
      * @throws com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException if there are duplicate slugs
      * @throws com.xlr8code.server.common.exception.SlugAlreadyExistsException        if any slug already exists
-     *
      */
     public void validateSlugs(Collection<CategoryLanguageDTO> categoryLanguageDTOs) {
         var slugs = categoryLanguageDTOs.stream().map(CategoryLanguageDTO::slug).toList();
@@ -49,10 +48,9 @@ public class CategorySlugValidator implements SlugValidator<Category> {
 
     /**
      * @param categoryDTO the category DTO to validate
-     * @param category   the category to validate
+     * @param category    the category to validate
      * @throws com.xlr8code.server.common.exception.DuplicateSlugInLanguagesException if there are duplicate slugs
      * @throws com.xlr8code.server.common.exception.SlugAlreadyExistsException        if any slug already exists
-     *
      */
     public void validateSlugs(CategoryDTO categoryDTO, Category category) {
         var categoryLanguagesDTOs = categoryDTO.languages().values();

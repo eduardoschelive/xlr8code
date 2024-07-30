@@ -108,7 +108,7 @@ public class CategoryService {
      * @param uuidString  the category id
      * @param categoryDTO the category to be updated
      * @return the updated translated category with the specified id and languages
-     * @throws CategoryNotFoundException           if the category does not exist
+     * @throws CategoryNotFoundException         if the category does not exist
      * @throws DuplicateSlugInLanguagesException if there are duplicate slugs
      * @throws SlugAlreadyExistsException        if any slug already exists
      */

@@ -11,8 +11,8 @@ import com.xlr8code.server.user.service.UserMetadataService;
 import com.xlr8code.server.user.service.UserPreferencesService;
 import com.xlr8code.server.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class UserController {
     )
     @ErrorResponses(UserNotFoundException.class)
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findUser(@PathVariable String id) {
+    public ResponseEntity<UserDTO> findUser(@Schema(description = "The user unique identifier") @PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
 
         return ResponseEntity.ok(userDTO);
@@ -64,7 +64,7 @@ public class UserController {
     @ErrorResponses(value = UserNotFoundException.class)
     @DeleteMapping("/{id}")
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@Schema(description = "The user unique identifier") @PathVariable String id) {
         this.userService.deleteByUUID(id);
 
         return ResponseEntity.noContent().build();
@@ -81,7 +81,10 @@ public class UserController {
     })
     @PutMapping("/{id}")
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<UserDTO> updateUser(
+            @Schema(description = "The user unique identifier") @PathVariable String id,
+            @Valid @RequestBody UpdateUserDTO updateUserDTO
+    ) {
         var updatedUserDTO = this.userService.updateByUUID(id, updateUserDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -94,7 +97,10 @@ public class UserController {
     @ErrorResponses(value = UserNotFoundException.class)
     @PutMapping("/{id}" + Endpoint.User.METADATA)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    public ResponseEntity<UserMetadataDTO> updateUserMetadata(@PathVariable String id, @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO) {
+    public ResponseEntity<UserMetadataDTO> updateUserMetadata(
+            @Schema(description = "The user unique identifier") @PathVariable String id,
+            @Valid @RequestBody UpdateUserMetadataDTO updateUserMetadataDTO
+    ) {
         var updatedUserDTO = this.userMetadataService.updateMetadataByUserUUID(id, updateUserMetadataDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -107,7 +113,10 @@ public class UserController {
     @ErrorResponses(value = UserNotFoundException.class)
     @PutMapping("/{id}" + Endpoint.User.PREFERENCES)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    public ResponseEntity<UserPreferencesDTO> updateUserPreferences(@PathVariable String id, @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO) {
+    public ResponseEntity<UserPreferencesDTO> updateUserPreferences(
+            @Schema(description = "The user unique identifier") @PathVariable String id,
+            @Valid @RequestBody UpdateUserPreferencesDTO updateUserPreferencesDTO
+    ) {
         var updatedUserDTO = this.userPreferencesService.updateUserPreferencesByUserUUID(id, updateUserPreferencesDTO);
 
         return ResponseEntity.ok(updatedUserDTO);
@@ -127,7 +136,10 @@ public class UserController {
     })
     @PatchMapping("/{id}" + Endpoint.User.PASSWORD)
     @PreAuthorize("@userSecurityService.canModifyResource(principal, #id)")
-    public ResponseEntity<Void> updateUserPassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+    public ResponseEntity<Void> updateUserPassword(
+            @Schema(description = "The user unique identifier") @PathVariable String id,
+            @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO
+    ) {
         this.userService.updateUserPassword(id, updatePasswordDTO);
 
         return ResponseEntity.noContent().build();

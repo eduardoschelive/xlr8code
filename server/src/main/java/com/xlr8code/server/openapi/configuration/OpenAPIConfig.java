@@ -1,7 +1,6 @@
 package com.xlr8code.server.openapi.configuration;
 
 import com.xlr8code.server.filter.enums.FilterOperation;
-import com.xlr8code.server.filter.utils.FilterConstants;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;

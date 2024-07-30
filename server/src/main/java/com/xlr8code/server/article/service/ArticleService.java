@@ -112,13 +112,13 @@ public class ArticleService {
     }
 
     /**
-     * @param id        the id of the article
+     * @param id         the id of the article
      * @param articleDTO the article to be updated
      * @return the updated article
-     * @throws ArticleNotFoundException  if the article with the specified id does not exist
-     * @throws CategoryNotFoundException if the category with the specified id does not exist
+     * @throws ArticleNotFoundException          if the article with the specified id does not exist
+     * @throws CategoryNotFoundException         if the category with the specified id does not exist
      * @throws DuplicateSlugInLanguagesException if the slug is duplicated in the languages
-     * @throws SlugAlreadyExistsException if the slug already exists
+     * @throws SlugAlreadyExistsException        if the slug already exists
      */
     @Transactional
     public TranslatedArticleDTO update(String id, ArticleDTO articleDTO) {

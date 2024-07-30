@@ -72,7 +72,7 @@ public class ArticleController {
             description = "Use this endpoint to update an article by its unique identifier.",
             responses = @ApiResponse(responseCode = "200")
     )
-    @ErrorResponses(value =  {
+    @ErrorResponses(value = {
             ArticleNotFoundException.class,
             SlugAlreadyExistsException.class,
             DuplicateSlugInLanguagesException.class,
@@ -83,7 +83,7 @@ public class ArticleController {
             @Schema(description = "The article unique identifier") @PathVariable String id,
             @Valid @RequestBody ArticleDTO articleDTO
     ) {
-       var updatedArticle =  this.articleService.update(id, articleDTO);
+        var updatedArticle = this.articleService.update(id, articleDTO);
         return ResponseEntity.ok(updatedArticle);
     }
 

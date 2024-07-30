@@ -43,7 +43,7 @@ public class UserService {
      *                      </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
-     * @throws PasswordMatchException         if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public User create(CreateUserDTO userCreateDTO) {
@@ -86,7 +86,7 @@ public class UserService {
      *                                <p>
      *                                This method changes the currentPassword of the user and ends all sessions of the user.
      *                                </p>
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordMatchException       if the new currentPassword and the new currentPassword confirmation do not match
      * @throws PasswordAlreadyUsedException if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
@@ -186,10 +186,10 @@ public class UserService {
     /**
      * @param userId            UUID of the user
      * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
-     * @throws UserNotFoundException if the user is not found
+     * @throws UserNotFoundException         if the user is not found
      * @throws IncorrectOldPasswordException if the old currentPassword is incorrect
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
-     * @throws PasswordAlreadyUsedException if the new currentPassword is the same as the old currentPassword
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordAlreadyUsedException  if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
     public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
@@ -236,9 +236,8 @@ public class UserService {
     }
 
     /**
-     * @param user       User to have the currentPassword updated
+     * @param user        User to have the currentPassword updated
      * @param newPassword New currentPassword to be validated
-     *
      */
     private void validateNewPassword(User user, String newPassword) {
         if (user.getUserPassword().matches(newPassword, passwordEncoder)) {
