@@ -29,6 +29,13 @@ spring:
   messages:
     basename: i18n/messages
 
+springdoc:
+  api-docs:
+    path: /documentation/open-api
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 user:
   session:
     expiration-time: 7
@@ -51,6 +58,9 @@ mail:
 
 application:
   logo-url: http://localhost:8080/logo.png
+  documentation-endpoint: /documentation
+  name: xlr8code
+  url: https://xlr8code.com
 
 authentication:
   cleanup-cron: 0 0 0 * * * # every day at midnight

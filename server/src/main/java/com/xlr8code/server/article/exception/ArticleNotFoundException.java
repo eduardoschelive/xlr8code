@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public class ArticleNotFoundException extends ApplicationException {
 
     public ArticleNotFoundException(String articleId) {
-        super("ARTICLE_NOT_FOUND", articleId);
+        super("The article with the specified id was not found", articleId);
     }
 
     @Override
@@ -19,4 +19,10 @@ public class ArticleNotFoundException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "ARTICLE_NOT_FOUND";
+    }
+
 }

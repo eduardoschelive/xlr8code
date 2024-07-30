@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class DuplicateSlugInLanguagesException extends ApplicationException {
 
     public DuplicateSlugInLanguagesException(String slug) {
-        super("DUPLICATE_SLUG_IN_LANGUAGES", slug);
+        super("The slugs of multilanguage content should be unique to avoid conflicts in the url", slug);
     }
 
     @Override
@@ -16,6 +16,11 @@ public class DuplicateSlugInLanguagesException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "DUPLICATE_SLUG_IN_LANGUAGES";
     }
 
 }

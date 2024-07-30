@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public class UnsupportedFilterOperationException extends ApplicationException {
 
     public UnsupportedFilterOperationException(String operation) {
-        super("UNSUPPORTED_FILTER_OPERATION", operation, getSupportedOperations());
+        super("The specified filter operation is not supported", operation, getSupportedOperations());
     }
 
     private static String getSupportedOperations() {
@@ -21,6 +21,11 @@ public class UnsupportedFilterOperationException extends ApplicationException {
 
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "UNSUPPORTED_FILTER_OPERATION";
     }
 
 }

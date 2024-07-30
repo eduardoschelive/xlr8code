@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
@@ -20,6 +21,9 @@ class BooleanParsingStrategyTest {
 
     @Autowired
     private FilterTestRepository testRepository;
+
+    @Autowired
+    private FilterTestUtils filterTestUtils;
 
     @BeforeAll
     static void setup(@Autowired FilterTestUtils filterTestUtils) {
@@ -39,7 +43,10 @@ class BooleanParsingStrategyTest {
                 "booleanField_eq", "true"
         );
 
-        var results = testRepository.findAll(params, FilterTestEntity.class);
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        var results = testRepository.findAll(spec, pageable);
         assertEquals(1, results.getTotalElements());
     }
 
@@ -49,7 +56,10 @@ class BooleanParsingStrategyTest {
                 "booleanField_n-eq", "true"
         );
 
-        Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        var results = testRepository.findAll(spec, pageable);
         assertEquals(1, results.getTotalElements());
     }
 
@@ -59,18 +69,24 @@ class BooleanParsingStrategyTest {
                 "booleanField_eq", "invalid"
         );
 
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
         assertThrows(InvalidBooleanFilterValueException.class, () -> {
-            testRepository.findAll(params, FilterTestEntity.class);
+            testRepository.findAll(spec, pageable);
         });
     }
 
     @Test
     void it_should_filter_null_boolean_field() {
         var params = Map.of(
-                "booleanField_null",  ""
+                "booleanField_null", ""
         );
 
-        Page<FilterTestEntity> results = testRepository.findAll(params, FilterTestEntity.class);
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        Page<FilterTestEntity> results = testRepository.findAll(spec, pageable);
         assertEquals(1, results.getTotalElements());
     }
 

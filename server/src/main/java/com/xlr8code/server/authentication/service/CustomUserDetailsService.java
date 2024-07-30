@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login) {
-        return this.userService.findByLogin(login);
+        return this.userService.findByLogin(login).orElseThrow(IncorrectUsernameOrPasswordException::new);
     }
 
     /**

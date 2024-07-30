@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class PageNumberFormatException extends ApplicationException {
 
     public PageNumberFormatException(String parameterName) {
-        super("PAGE_NUMBER_FORMAT", parameterName);
+        super("The specified page number is not a valid number", parameterName);
     }
 
     @Override
@@ -18,4 +18,10 @@ public class PageNumberFormatException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_PAGE_NUMBER_FORMAT";
+    }
+
 }

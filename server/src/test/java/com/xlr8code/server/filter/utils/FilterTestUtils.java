@@ -1,6 +1,9 @@
 package com.xlr8code.server.filter.utils;
 
 import com.xlr8code.server.common.enums.Theme;
+import com.xlr8code.server.filter.FilterPagination;
+import com.xlr8code.server.filter.FilterSorting;
+import com.xlr8code.server.filter.FilterSpecification;
 import com.xlr8code.server.filter.entity.FilterOneToOneRelationTest;
 import com.xlr8code.server.filter.entity.FilterRelationTest;
 import com.xlr8code.server.filter.entity.FilterTestEntity;
@@ -8,7 +11,11 @@ import com.xlr8code.server.filter.repository.FilterOneToOneRelationRepository;
 import com.xlr8code.server.filter.repository.FilterRelationTestRepository;
 import com.xlr8code.server.filter.repository.FilterTestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +65,21 @@ public class FilterTestUtils {
         testRepository.deleteAll();
         relationTestRepository.deleteAll();
         oneToOneRelationRepository.deleteAll();
+    }
+
+    public Specification<FilterTestEntity> buildSpecification(Map<String, String> filters) {
+        var filterDetails = FilterUtils.extractFilterableFields(FilterTestEntity.class);
+        return new FilterSpecification<>(filters, filterDetails);
+    }
+
+    public PageRequest buildPageable(Map<String, String> filters) {
+        var filterDetails = FilterUtils.extractFilterableFields(FilterTestEntity.class);
+        var queryParameters = new QueryParameterDetails(filters);
+
+        var sort = new FilterSorting(queryParameters.getSortParameters(), filterDetails);
+        var pagination = new FilterPagination(queryParameters.getPaginationParameters());
+
+        return pagination.getPageRequest().withSort(sort.getSort());
     }
 
 }

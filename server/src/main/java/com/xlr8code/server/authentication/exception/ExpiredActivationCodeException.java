@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class ExpiredActivationCodeException extends ApplicationException {
 
     public ExpiredActivationCodeException() {
-        super("EXPIRED_ACTIVATION_CODE");
+        super("The activation code has expired and cannot be used for account activation");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class ExpiredActivationCodeException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "EXPIRED_ACTIVATION_CODE";
     }
 
 }

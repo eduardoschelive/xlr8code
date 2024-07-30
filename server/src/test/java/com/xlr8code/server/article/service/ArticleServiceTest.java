@@ -4,16 +4,17 @@ import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
 import com.xlr8code.server.category.entity.Category;
-import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.category.repository.CategoryRepository;
 import com.xlr8code.server.category.service.CategoryService;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.utils.ArticleTestUtils;
 import com.xlr8code.server.utils.CategoryTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,7 +100,7 @@ class ArticleServiceTest {
             var updatedArticle = articleService.update(article.getId().toString(), articleDTO);
 
             assertNotNull(updatedArticle);
-            assertEquals(article.getId(), updatedArticle.getId());
+            assertEquals(article.getId(), updatedArticle.id());
         }
 
         @Test
@@ -170,7 +171,7 @@ class ArticleServiceTest {
 
         @Test
         void it_should_return_all_articles() {
-            var result = articleService.findAll(Map.of(), Set.of(Language.AMERICAN_ENGLISH));
+            var result = articleService.findAll(Specification.where(null), Pageable.unpaged(), Set.of(Language.AMERICAN_ENGLISH));
 
             assertFalse(result.isEmpty());
         }

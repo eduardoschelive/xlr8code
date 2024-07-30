@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class IncorrectUsernameOrPasswordException extends ApplicationException {
 
     public IncorrectUsernameOrPasswordException() {
-        super("INCORRECT_USERNAME_OR_PASSWORD");
+        super("The username or password provided is incorrect");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class IncorrectUsernameOrPasswordException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.UNAUTHORIZED;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "INCORRECT_USERNAME_OR_PASSWORD";
     }
 
 }

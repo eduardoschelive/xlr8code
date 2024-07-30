@@ -1,12 +1,13 @@
 package com.xlr8code.server.authentication.config;
 
 import com.xlr8code.server.authentication.filter.SecurityFilter;
-import com.xlr8code.server.common.utils.Endpoint;
+import com.xlr8code.server.authentication.utils.EndpointSecurityDetails;
+import com.xlr8code.server.authentication.utils.EndpointSecurityUtils;
 import com.xlr8code.server.user.utils.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,23 +30,30 @@ public class WebSecurityConfig {
     private final SecurityFilter securityFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    private static void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
-        // USER
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
-        authorizeRequests.requestMatchers(HttpMethod.PATCH, Endpoint.User.BASE_PATH + "/**").hasRole(UserRole.MEMBER.name());
+    @Value("${application.documentation-endpoint}")
+    private String documentationEndpoint;
 
-        // CATEGORIES
-        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Categories.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+    private void configureEndpointSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests) {
+        EndpointSecurityUtils.ENDPOINT_SECURITY.forEach((path, securityDetails) ->
+                securityDetails.forEach(detail ->
+                        configureSecurity(authorizeRequests, detail, path)
+                )
+        );
 
-        // ARTICLE
-        authorizeRequests.requestMatchers(HttpMethod.POST, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.DELETE, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
-        authorizeRequests.requestMatchers(HttpMethod.PUT, Endpoint.Article.BASE_PATH + "/**").hasRole(UserRole.ADMIN.name());
+        authorizeRequests.requestMatchers(documentationEndpoint + "/**").permitAll();
 
-        authorizeRequests.anyRequest().permitAll();
+        authorizeRequests.anyRequest().denyAll();
+    }
+
+    private void configureSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizeRequests, EndpointSecurityDetails detail, String path) {
+        var configurer = authorizeRequests.requestMatchers(detail.method(), path);
+        var minimumRole = detail.minimumRole();
+
+        if (minimumRole != null) {
+            configurer.hasRole(minimumRole.name());
+            return;
+        }
+        configurer.permitAll();
     }
 
     @Bean
@@ -67,7 +75,7 @@ public class WebSecurityConfig {
 
     private void configureEndpoints(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeHttpRequests(WebSecurityConfig::configureEndpointSecurity);
+                .authorizeHttpRequests(this::configureEndpointSecurity);
     }
 
     private void configureFilters(HttpSecurity httpSecurity) {

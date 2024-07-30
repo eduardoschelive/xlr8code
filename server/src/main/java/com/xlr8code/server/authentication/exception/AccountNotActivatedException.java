@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class AccountNotActivatedException extends ApplicationException {
 
     public AccountNotActivatedException() {
-        super("ACCOUNT_NOT_ACTIVATED");
+        super("The account is not activated and cannot be used for authentication");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class AccountNotActivatedException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.UNAUTHORIZED;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "ACCOUNT_NOT_ACTIVATED";
     }
 
 }

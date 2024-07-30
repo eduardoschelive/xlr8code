@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class CategoryNotFoundException extends ApplicationException {
 
     public CategoryNotFoundException(String uuid) {
-        super("CATEGORY_NOT_FOUND", uuid);
+        super("The category with the specified id was not found", uuid);
     }
 
     @Override
@@ -18,4 +18,10 @@ public class CategoryNotFoundException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "CATEGORY_NOT_FOUND";
+    }
+
 }

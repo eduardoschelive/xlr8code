@@ -8,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterConstants {
 
-    public static final String SEARCH_PARAM_SEPARATOR = "_";
+    public static final String FILTER_PARAM_SEPARATOR = "_";
     public static final String NEGATION_PREFIX = "n-";
     public static final String CASE_INSENSITIVE_SUFFIX = "-i";
 
@@ -21,5 +21,7 @@ public class FilterConstants {
     public static final int MAX_SIZE = 1000;
 
     public static final List<String> ACCEPTED_SORT_VALUES = List.of("asc", "desc");
+
+    public static final String X_FILTER_RESULT_SIZE_HEADER = "X-Filter-Result-Size";
 
 }

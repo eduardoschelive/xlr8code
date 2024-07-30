@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * Base class for all application exceptions.
+ *
  * @implNote All classes that extends this, should have a static string field named "DOCUMENTATION_EXAMPLE" that contains a string in json format that represents the exception
  */
 public abstract class ApplicationException extends RuntimeException {
@@ -19,6 +20,11 @@ public abstract class ApplicationException extends RuntimeException {
         super(message);
         this.placeholders = placeholders;
     }
+
+    /**
+     * @return the error code of the exception (e.g. "AUTHENTICATION_ERROR")
+     */
+    public abstract String getErrorCode();
 
     /**
      * @return the message identifier of the exception (e.g. "authentication.error.session_expired")

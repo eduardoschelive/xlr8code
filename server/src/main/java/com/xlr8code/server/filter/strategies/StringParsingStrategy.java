@@ -7,53 +7,75 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringParsingStrategy extends ParsingStrategy {
 
     private static final String WILDCARD = "%";
 
     @Override
     public Predicate buildPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
-        var isNegated = filterOperationDetails.negated();
-        var isCaseInsensitive = filterOperationDetails.isCaseInsensitive();
-        var path = super.getPath(root, fieldName).as(String.class);
-        var operation = filterOperationDetails.filterOperation();
+        String stringValue = (String) value;
+        Expression<String> casedPath = getCasedPath(criteriaBuilder, root, fieldName, filterOperationDetails.isCaseInsensitive());
+        String casedValue = getCasedValue(stringValue, filterOperationDetails.isCaseInsensitive());
 
-        var stringValue = (String) value;
-
-        var casedValue = isCaseInsensitive ? stringValue.toLowerCase() : stringValue;
-        var casedPath = isCaseInsensitive ? criteriaBuilder.lower(path) : path;
-
-        var predicate = getPredicate(criteriaBuilder, casedPath, operation, casedValue);
+        Predicate predicate = createPredicate(criteriaBuilder, casedPath, filterOperationDetails.filterOperation(), casedValue);
         if (predicate == null) {
             return super.buildPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, stringValue);
         }
 
-        return isNegated ? criteriaBuilder.not(predicate) : predicate;
+        return filterOperationDetails.negated() ? criteriaBuilder.not(predicate) : predicate;
     }
 
-    private Predicate getPredicate(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, FilterOperation filterOperation, String casedValue) {
+    @Override
+    public List<FilterOperation> getSupportedFilterOperations() {
+        var superSupportedFilterOperations = super.getSupportedFilterOperations();
+        var supportedFilterOperations = new ArrayList<>(superSupportedFilterOperations);
+
+        supportedFilterOperations.addAll(List.of(
+                FilterOperation.STARTS_WITH,
+                FilterOperation.ENDS_WITH,
+                FilterOperation.LIKE,
+                FilterOperation.IN
+        ));
+
+        return supportedFilterOperations;
+    }
+
+    private Expression<String> getCasedPath(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, boolean isCaseInsensitive) {
+        Expression<String> path = super.getPath(root, fieldName).as(String.class);
+        return isCaseInsensitive ? criteriaBuilder.lower(path) : path;
+    }
+
+    private String getCasedValue(String value, boolean isCaseInsensitive) {
+        return isCaseInsensitive ? value.toLowerCase() : value;
+    }
+
+    private Predicate createPredicate(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, FilterOperation filterOperation, String casedValue) {
         return switch (filterOperation) {
             case EQUALITY -> criteriaBuilder.equal(casedPath, casedValue);
             case STARTS_WITH, ENDS_WITH, LIKE ->
-                    criteriaBuilder.like(casedPath, getOperationPattern(filterOperation, casedValue));
-            case IN -> getInClause(criteriaBuilder, casedPath, casedValue);
+                    criteriaBuilder.like(casedPath, getPattern(filterOperation, casedValue));
+            case IN -> createInClause(criteriaBuilder, casedPath, casedValue);
             default -> null;
         };
     }
 
-    private CriteriaBuilder.In<String> getInClause(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, String casedValue) {
-        var in = criteriaBuilder.in(casedPath);
-        for (var item : casedValue.split(",")) {
-            in.value(item);
+    private CriteriaBuilder.In<String> createInClause(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, String casedValue) {
+        CriteriaBuilder.In<String> inClause = criteriaBuilder.in(casedPath);
+        for (String item : casedValue.split(",")) {
+            inClause.value(item);
         }
-        return in;
+        return inClause;
     }
 
-    private String getOperationPattern(FilterOperation operation, String value) {
+    private String getPattern(FilterOperation operation, String value) {
         return switch (operation) {
             case STARTS_WITH -> value + WILDCARD;
             case ENDS_WITH -> WILDCARD + value;
             default -> WILDCARD + value + WILDCARD;
         };
     }
+
 }

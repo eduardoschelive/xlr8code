@@ -33,19 +33,19 @@ public class ApplicationExceptionHelper {
         var httpStatus = applicationException.getHttpStatus();
         var placeholders = applicationException.getPlaceholders();
         var messageIdentifier = applicationException.getMessageIdentifier();
-        var errorMessage = applicationException.getMessage();
+        var errorCode = applicationException.getErrorCode();
 
-        return this.buildApplicationExceptionResponseDTO(httpStatus, messageIdentifier, errorMessage, placeholders);
+        return this.buildApplicationExceptionResponseDTO(httpStatus, messageIdentifier, errorCode, placeholders);
     }
 
     /**
      * @param httpStatus        The http status to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorMessage      The error message to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param placeholders      The placeholders to be used in the message
      * @return {@link ApplicationExceptionResponseDTO} to be sent to the client
      */
-    public ApplicationExceptionResponseDTO buildApplicationExceptionResponseDTO(HttpStatus httpStatus, String messageIdentifier, String errorMessage, Object... placeholders) {
+    public ApplicationExceptionResponseDTO buildApplicationExceptionResponseDTO(HttpStatus httpStatus, String messageIdentifier, String errorCode, Object... placeholders) {
         var message = this.localeService.getMessage(messageIdentifier, httpServletRequest);
 
         if (placeholders != null) {
@@ -56,7 +56,7 @@ public class ApplicationExceptionHelper {
 
         return new ApplicationExceptionResponseDTO(
                 httpStatus.value(),
-                errorMessage,
+                errorCode,
                 message,
                 Instant.now(),
                 httpServletRequest.getRequestURI()
@@ -66,11 +66,11 @@ public class ApplicationExceptionHelper {
 
     /**
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorMessage      The error message to be sent to the client
+     * @param errorCode         The error message to be sent to the client
      * @param fieldErrors       The field errors to be sent to the client
      * @return {@link ApplicationFieldExceptionDTO} to be sent to the client
      */
-    public ApplicationFieldExceptionDTO buildApplicationFieldExceptionDTO(HttpStatus httpStatus, String messageIdentifier, String errorMessage, List<FieldError> fieldErrors) {
+    public ApplicationFieldExceptionDTO buildApplicationFieldExceptionDTO(HttpStatus httpStatus, String messageIdentifier, String errorCode, List<FieldError> fieldErrors) {
         var message = this.localeService.getMessage(messageIdentifier, httpServletRequest);
 
         var fields = fieldErrors.stream()
@@ -82,7 +82,7 @@ public class ApplicationExceptionHelper {
 
         return new ApplicationFieldExceptionDTO(
                 httpStatus.value(),
-                errorMessage,
+                errorCode,
                 message,
                 Instant.now(),
                 httpServletRequest.getRequestURI(),
@@ -103,12 +103,12 @@ public class ApplicationExceptionHelper {
     /**
      * @param httpStatus        The http status to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorMessage      The error message to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param placeholders      The placeholders to be used in the message
      * @return {@link ResponseEntity} to be sent to the client
      */
-    public ResponseEntity<Object> buildApplicationExceptionResponseEntity(HttpStatus httpStatus, HttpHeaders headers, String messageIdentifier, String errorMessage, Object... placeholders) {
-        var applicationExceptionResponseDTO = this.buildApplicationExceptionResponseDTO(httpStatus, messageIdentifier, errorMessage, placeholders);
+    public ResponseEntity<Object> buildApplicationExceptionResponseEntity(HttpStatus httpStatus, HttpHeaders headers, String messageIdentifier, String errorCode, Object... placeholders) {
+        var applicationExceptionResponseDTO = this.buildApplicationExceptionResponseDTO(httpStatus, messageIdentifier, errorCode, placeholders);
         return this.buildResponseEntityForException(httpStatus, headers, applicationExceptionResponseDTO);
     }
 
@@ -117,12 +117,12 @@ public class ApplicationExceptionHelper {
      * @param httpStatus        The http status to be sent to the client
      * @param headers           The headers to be sent to the client
      * @param messageIdentifier The message identifier to be used to retrieve the message from the message source
-     * @param errorMessage      The error message to be sent to the client
+     * @param errorCode         The error code to be sent to the client
      * @param fieldErrors       The field errors to be sent to the client
      * @return {@link ResponseEntity} to be sent to the client
      */
-    public ResponseEntity<Object> buildApplicationFieldExceptionResponseEntity(HttpStatus httpStatus, HttpHeaders headers, String messageIdentifier, String errorMessage, List<FieldError> fieldErrors) {
-        var applicationFieldExceptionDTO = this.buildApplicationFieldExceptionDTO(httpStatus, messageIdentifier, errorMessage, fieldErrors);
+    public ResponseEntity<Object> buildApplicationFieldExceptionResponseEntity(HttpStatus httpStatus, HttpHeaders headers, String messageIdentifier, String errorCode, List<FieldError> fieldErrors) {
+        var applicationFieldExceptionDTO = this.buildApplicationFieldExceptionDTO(httpStatus, messageIdentifier, errorCode, fieldErrors);
         return this.buildResponseEntityForException(httpStatus, headers, applicationFieldExceptionDTO);
     }
 

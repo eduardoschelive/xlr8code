@@ -22,7 +22,7 @@ public class ThymeleafTemplateConfig {
 
     private ClassLoaderTemplateResolver emailTemplateResolver() {
         var templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("templates/mail/");
+        templateResolver.setPrefix("templates/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());

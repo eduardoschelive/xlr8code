@@ -3,7 +3,6 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.common.utils.Endpoint;
-import com.xlr8code.server.filter.exception.NoMatchingEntitiesFoundException;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
 import com.xlr8code.server.user.exception.UserMetadataNotFoundException;
@@ -23,6 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -118,21 +119,11 @@ class UserControllerTest {
             var mapParams = Map.of("page", "0", "size", "10");
             var expected = new PageImpl<>(List.of(expectedUserDTO));
 
-            when(userService.findAll(mapParams)).thenReturn(expected);
+            when(userService.findAll(Specification.where(null), Pageable.unpaged())).thenReturn(expected);
 
             mockMvc.perform(get(Endpoint.User.BASE_PATH)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
-
-        }
-
-        @Test
-        void it_should_receive_error_when_page_is_empty() throws Exception {
-            when(userService.findAll(Map.of())).thenThrow(NoMatchingEntitiesFoundException.class);
-
-            mockMvc.perform(get(Endpoint.User.BASE_PATH)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
 
         }
 

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidRefreshSessionTokenException extends ApplicationException {
 
     public InvalidRefreshSessionTokenException() {
-        super("INVALID_REFRESH_SESSION_TOKEN");
+        super("The refresh session token provided is invalid");
     }
 
     @Override
@@ -17,6 +17,11 @@ public class InvalidRefreshSessionTokenException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.UNAUTHORIZED;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_REFRESH_SESSION_TOKEN";
     }
 
 }

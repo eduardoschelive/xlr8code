@@ -84,6 +84,7 @@ class AuthenticationControllerTest {
                     USERNAME,
                     email,
                     PASSWORD,
+                    PASSWORD,
                     new UserPreferencesDTO(Theme.SYSTEM, Language.AMERICAN_ENGLISH),
                     new UserMetadataDTO(null)
             );

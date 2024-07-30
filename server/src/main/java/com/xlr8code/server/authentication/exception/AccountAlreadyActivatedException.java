@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class AccountAlreadyActivatedException extends ApplicationException {
 
     public AccountAlreadyActivatedException() {
-        super("ACCOUNT_ALREADY_ACTIVATED");
+        super("The account is already activated and cannot be activated again");
     }
 
     @Override
@@ -18,5 +18,11 @@ public class AccountAlreadyActivatedException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "ACCOUNT_ALREADY_ACTIVATED";
+    }
+
 
 }

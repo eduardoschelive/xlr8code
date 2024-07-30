@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidSortDirectionException extends ApplicationException {
 
     public InvalidSortDirectionException(String direction) {
-        super("INVALID_SORT_DIRECTION", direction);
+        super("The specified sort direction is not valid", direction);
     }
 
     @Override
@@ -18,4 +18,10 @@ public class InvalidSortDirectionException extends ApplicationException {
     public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
+
+    @Override
+    public String getErrorCode() {
+        return "INVALID_SORT_DIRECTION";
+    }
+
 }

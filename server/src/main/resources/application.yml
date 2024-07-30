@@ -27,11 +27,11 @@ spring:
         starttls:
           enable: true
           required: true
-
 springdoc:
+  api-docs:
+    path: /documentation/open-api
   swagger-ui:
-    path: /documentation
-    disable-swagger-default-url: true
+    enabled: false
 
 logging:
   config: classpath:log4j2.xml
@@ -54,7 +54,10 @@ user:
     url: ${PASSWORD_RESET_CODE_URL}
 
 application:
+  name: xlr8code
+  url: https://xlr8code.com
   logo-url: ${APPLICATION_LOGO_URL}
+  documentation-endpoint: /documentation
 
 mail:
   from: ${MAIL_FROM}

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class NoStrategyDefinedException extends ApplicationException {
 
     public NoStrategyDefinedException(String fieldName) {
-        super("NO_STRATEGY_DEFINED", fieldName);
+        super("No strategy has been defined for the specified field", fieldName);
     }
 
     @Override
@@ -17,6 +17,11 @@ public class NoStrategyDefinedException extends ApplicationException {
     @Override
     public HttpStatus getHttpStatus() {
         return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "NO_STRATEGY_DEFINED";
     }
 
 }

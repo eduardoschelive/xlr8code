@@ -16,4 +16,8 @@ public interface Mail {
 
     Locale getLocale();
 
+    default String getMailPath(String template) {
+        return "mail/" + template;
+    }
+
 }

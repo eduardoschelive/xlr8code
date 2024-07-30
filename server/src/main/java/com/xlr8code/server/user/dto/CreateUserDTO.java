@@ -18,6 +18,8 @@ public record CreateUserDTO(
         @NotBlank
         String password,
         @NotNull
+        String passwordConfirmation,
+        @NotNull
         Set<Role> roles,
         @NotNull UserMetadataDTO metadata,
         @NotNull

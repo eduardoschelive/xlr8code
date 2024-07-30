@@ -1,22 +1,18 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.utils.UserTestUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,26 +81,18 @@ class UserServiceTest {
         void it_should_find_user_by_username() {
             var user = userService.findByLogin(DEFAULT_USERNAME);
 
-            assertNotNull(user);
-            assertEquals(user, defaultUser);
+            assertTrue(user.isPresent());
+
+            assertEquals(user.get(), defaultUser);
         }
 
         @Test
         void it_should_find_user_by_email() {
             var user = userService.findByLogin(DEFAULT_EMAIL);
 
-            assertNotNull(user);
-            assertEquals(user, defaultUser);
-        }
+            assertTrue(user.isPresent());
 
-        @Test
-        void it_should_not_find_user_by_username() {
-            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_USERNAME));
-        }
-
-        @Test
-        void it_should_not_find_user_by_email() {
-            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_EMAIL));
+            assertEquals(user.get(), defaultUser);
         }
 
 
@@ -135,7 +123,7 @@ class UserServiceTest {
 
         @Test
         void it_should_find_all_users() {
-            var users = userService.findAll(Map.of());
+            var users = userService.findAll(Specification.where(null), Pageable.unpaged());
             assertFalse(users.isEmpty());
         }
 
@@ -233,6 +221,22 @@ class UserServiceTest {
             var user = userRepository.findById(defaultUser.getId()).orElseThrow(UserNotFoundException::new);
 
             assertTrue(passwordEncoder.matches(NEW_PASSWORD, user.getPassword()));
+        }
+
+        @Test
+        void it_should_not_update_password_when_new_passwords_do_not_match() {
+            var update = new UpdatePasswordDTO(DEFAULT_PASSWORD, NEW_PASSWORD, "not_matching_password");
+            var uuid = defaultUser.getId().toString();
+
+            assertThrows(PasswordMatchException.class, () -> userService.updateUserPassword(uuid, update));
+        }
+
+        @Test
+        void it_should_not_update_password_when_new_password_is_same_as_old_password() {
+            var update = new UpdatePasswordDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD, DEFAULT_PASSWORD);
+            var uuid = defaultUser.getId().toString();
+
+            assertThrows(PasswordAlreadyUsedException.class, () -> userService.updateUserPassword(uuid, update));
         }
 
         @Test

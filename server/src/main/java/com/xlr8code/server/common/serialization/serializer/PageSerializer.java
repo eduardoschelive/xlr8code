@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import java.io.IOException;
 
 @JsonComponent
-@SuppressWarnings({"java:S3740", "rawtypes"} ) // disable for testing purposes
+@SuppressWarnings({"java:S3740", "rawtypes"}) // disable for testing purposes
 public class PageSerializer extends JsonSerializer<PageImpl> {
 
     @Override

@@ -3,7 +3,6 @@ package com.xlr8code.server.authentication.service;
 import com.xlr8code.server.authentication.dto.*;
 import com.xlr8code.server.authentication.exception.AccountAlreadyActivatedException;
 import com.xlr8code.server.authentication.exception.AccountNotActivatedException;
-import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.authentication.repository.UserSessionRepository;
 import com.xlr8code.server.common.enums.Language;
@@ -11,6 +10,7 @@ import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.user.dto.UserMetadataDTO;
 import com.xlr8code.server.user.dto.UserPreferencesDTO;
 import com.xlr8code.server.user.entity.User;
+import com.xlr8code.server.user.exception.UserNotFoundException;
 import com.xlr8code.server.user.repository.UserRepository;
 import com.xlr8code.server.user.service.UserService;
 import com.xlr8code.server.utils.UserTestUtils;
@@ -56,6 +56,7 @@ class AuthenticationServiceTest {
         return new SignUpDTO(
                 "SIGN_UP_TEST",
                 "SIGN_UP_TEST@test.com",
+                PASSWORD,
                 PASSWORD,
                 new UserPreferencesDTO(Theme.LIGHT, Language.AMERICAN_ENGLISH),
                 new UserMetadataDTO(null)
@@ -166,7 +167,7 @@ class AuthenticationServiceTest {
 
         Executable executable = () -> authenticationService.forgotPassword(forgotPasswordDTO);
 
-        assertThrows(IncorrectUsernameOrPasswordException.class, executable);
+        assertThrows(UserNotFoundException.class, executable);
     }
 
     @Test

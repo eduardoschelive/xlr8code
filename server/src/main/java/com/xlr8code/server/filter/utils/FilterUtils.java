@@ -1,9 +1,15 @@
 package com.xlr8code.server.filter.utils;
 
+import com.xlr8code.server.filter.annotation.FilterEndpoint;
 import com.xlr8code.server.filter.annotation.Filterable;
 import com.xlr8code.server.filter.annotation.NestedFilterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.springframework.core.MethodParameter;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -12,7 +18,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.xlr8code.server.filter.utils.FilterConstants.SEARCH_PARAM_SEPARATOR;
+import static com.xlr8code.server.filter.utils.FilterConstants.FILTER_PARAM_SEPARATOR;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterUtils {
@@ -66,7 +72,7 @@ public class FilterUtils {
      * @return the field path extracted from the key
      */
     public static String extractFieldPath(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        int separatorIndex = key.lastIndexOf(FILTER_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(0, separatorIndex).trim() : null;
     }
 
@@ -75,8 +81,45 @@ public class FilterUtils {
      * @return the operation extracted from the key
      */
     public static String extractOperation(String key) {
-        int separatorIndex = key.lastIndexOf(SEARCH_PARAM_SEPARATOR);
+        int separatorIndex = key.lastIndexOf(FILTER_PARAM_SEPARATOR);
         return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
+    }
+
+    /**
+     * @param method the method to extract the filterable fields from
+     * @return a map of filterable fields and their details
+     * @throws IllegalArgumentException if the method is not annotated with @FilterEndpoint
+     */
+    public static Map<String, FilterFieldDetails> extractFilterableFieldsFromMethod(MethodParameter method) {
+        var annotation = method.getMethodAnnotation(FilterEndpoint.class);
+
+        if (annotation == null) {
+            throw new IllegalArgumentException("Method must be annotated with @FilterEndpoint");
+        }
+
+        return extractFilterableFields(annotation.value());
+    }
+
+    /**
+     * @param webRequest the web request to extract the query parameters from
+     * @return the query parameters extracted from the web request
+     * @see QueryParameterDetails
+     */
+    public static QueryParameterDetails extractQueryParameters(WebRequest webRequest) {
+        var queryParamsMap = new HashMap<String, String>();
+        webRequest.getParameterNames().forEachRemaining(name -> queryParamsMap.put(name, webRequest.getParameter(name)));
+        return new QueryParameterDetails(queryParamsMap);
+    }
+
+    /**
+     * @param page the page to build the response entity from
+     * @param <T>  the type of the page
+     * @return the response entity built from the page
+     */
+    public static <T> ResponseEntity<Page<T>> buildResponseEntity(Page<T> page) {
+        var responseHeaders = new HttpHeaders();
+        responseHeaders.add(FilterConstants.X_FILTER_RESULT_SIZE_HEADER, String.valueOf(page.getTotalElements()));
+        return ResponseEntity.ok().headers(responseHeaders).body(page);
     }
 
 }

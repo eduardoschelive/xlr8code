@@ -9,20 +9,19 @@ import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.dto.UpdateUserDTO;
 import com.xlr8code.server.user.dto.UserDTO;
 import com.xlr8code.server.user.entity.User;
-import com.xlr8code.server.user.exception.EmailAlreadyInUseException;
-import com.xlr8code.server.user.exception.IncorrectOldPasswordException;
-import com.xlr8code.server.user.exception.UserNotFoundException;
-import com.xlr8code.server.user.exception.UsernameAlreadyTakenException;
+import com.xlr8code.server.user.exception.*;
 import com.xlr8code.server.user.repository.UserRepository;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,11 +43,15 @@ public class UserService {
      *                      </p>
      * @throws UsernameAlreadyTakenException if the username is already taken
      * @throws EmailAlreadyInUseException    if the email is already in use
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
      */
     @Transactional
     public User create(CreateUserDTO userCreateDTO) {
         this.validateUsername(userCreateDTO.username());
+
         this.validateEmail(userCreateDTO.email());
+
+        this.validatePasswordMatch(userCreateDTO.password(), userCreateDTO.passwordConfirmation());
 
         var user = userCreateDTO.toUser(passwordEncoder);
 
@@ -57,11 +60,12 @@ public class UserService {
 
 
     /**
-     * @param queryParameters All the query parameters from the request
+     * @param specification {@link Specification} of {@link User}
+     * @param pageable      {@link Pageable} of the query
      * @return {@link Page} of {@link UserDTO} with the given query parameters
      */
-    public Page<UserDTO> findAll(Map<String, String> queryParameters) {
-        var users = this.userRepository.findAll(queryParameters, User.class);
+    public Page<UserDTO> findAll(Specification<User> specification, Pageable pageable) {
+        var users = this.userRepository.findAll(specification, pageable);
         return users.map(UserDTO::from);
     }
 
@@ -71,9 +75,8 @@ public class UserService {
      * @throws IncorrectUsernameOrPasswordException if the username or currentPassword is incorrect
      */
     @Transactional(readOnly = true)
-    public User findByLogin(String login) {
-        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login)
-                .orElseThrow(IncorrectUsernameOrPasswordException::new);
+    public Optional<User> findByLogin(String login) {
+        return this.userRepository.findUserByUsernameOrEmailIgnoreCase(login, login);
     }
 
     /**
@@ -83,11 +86,13 @@ public class UserService {
      *                                <p>
      *                                This method changes the currentPassword of the user and ends all sessions of the user.
      *                                </p>
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordMatchException       if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordAlreadyUsedException if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
     public void changePassword(User user, String newPassword, String newPasswordConfirmation) {
-        this.validatePasswordChange(newPassword, newPasswordConfirmation);
+        this.validatePasswordMatch(newPassword, newPasswordConfirmation);
+        this.validateNewPassword(user, newPassword);
         self.changeUserPassword(user, newPassword);
     }
 
@@ -181,6 +186,10 @@ public class UserService {
     /**
      * @param userId            UUID of the user
      * @param updatePasswordDTO {@link UpdatePasswordDTO} of the user
+     * @throws UserNotFoundException         if the user is not found
+     * @throws IncorrectOldPasswordException if the old currentPassword is incorrect
+     * @throws PasswordMatchException        if the new currentPassword and the new currentPassword confirmation do not match
+     * @throws PasswordAlreadyUsedException  if the new currentPassword is the same as the old currentPassword
      */
     @Transactional
     public void updateUserPassword(String userId, UpdatePasswordDTO updatePasswordDTO) {
@@ -198,17 +207,15 @@ public class UserService {
 
         this.validateOldPassword(user, updatePasswordDTO.oldPassword());
 
-        this.validatePasswordChange(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
+        this.validatePasswordMatch(updatePasswordDTO.newPassword(), updatePasswordDTO.newPasswordConfirmation());
+
+        this.validateNewPassword(user, updatePasswordDTO.newPassword());
 
         self.changeUserPassword(user, updatePasswordDTO.newPassword());
     }
 
     /**
      * @param user User to have the currentPassword changed
-     * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
-     *                                <p>
-     *                                This will end all user sessions and save the user to the database. The user will need to log in again.a
-     *                                </p>
      */
     @Transactional
     public void changeUserPassword(User user, String newPassword) {
@@ -225,6 +232,16 @@ public class UserService {
     private void validateOldPassword(User user, String rawPassword) {
         if (!user.getUserPassword().matches(rawPassword, passwordEncoder)) {
             throw new IncorrectOldPasswordException();
+        }
+    }
+
+    /**
+     * @param user        User to have the currentPassword updated
+     * @param newPassword New currentPassword to be validated
+     */
+    private void validateNewPassword(User user, String newPassword) {
+        if (user.getUserPassword().matches(newPassword, passwordEncoder)) {
+            throw new PasswordAlreadyUsedException();
         }
     }
 
@@ -271,7 +288,7 @@ public class UserService {
      * @param newPasswordConfirmation New currentPassword confirmation
      * @throws PasswordMatchException if the new currentPassword and the new currentPassword confirmation do not match
      */
-    private void validatePasswordChange(String newPassword, String newPasswordConfirmation) {
+    private void validatePasswordMatch(String newPassword, String newPasswordConfirmation) {
         if (!newPassword.equals(newPasswordConfirmation)) {
             throw new PasswordMatchException();
         }
