@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: dev
   flyway:
     locations: classpath:db/migration
   messages:
@@ -54,10 +52,10 @@ user:
     url: ${PASSWORD_RESET_CODE_URL}
 
 application:
-  name: xlr8code
-  url: https://xlr8code.com
+  name: ${APPLICATION_NAME}
+  url: ${APPLICATION_URL}
   logo-url: ${APPLICATION_LOGO_URL}
-  documentation-endpoint: /documentation
+  documentation-endpoint: ${DOCUMENTATION_ENDPOINT}
 
 mail:
   from: ${MAIL_FROM}
