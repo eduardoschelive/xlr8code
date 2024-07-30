@@ -52,7 +52,6 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUser(@Schema(description = "The user unique identifier") @PathVariable String id) {
         var userDTO = this.userService.findByUUID(id);
-
         return ResponseEntity.ok(userDTO);
     }
 

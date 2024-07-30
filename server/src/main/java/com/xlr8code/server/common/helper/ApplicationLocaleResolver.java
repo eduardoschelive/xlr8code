@@ -3,6 +3,7 @@ package com.xlr8code.server.common.helper;
 import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.common.utils.DoubleUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
 
     private static final String ACCEPT_LANGUAGE_HEADER = "Accept-Language";
@@ -20,6 +22,7 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
     private static final String QUALITY_PARAMETER = "q=";
     private static final String LOCALE_SEPARATOR = ",";
     private static final Double DEFAULT_QUALITY_SCORE = 1.0;
+
     @Value("${application.documentation-endpoint}")
     private String documentationEndpoint;
 
@@ -33,7 +36,6 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
      * It is needed because of variants like "pt-BR" and "pt".
      */
     private static String getLocaleString(String parts) {
-        // pt_BR -> pt-BR
         var replacedParts = parts.replace("-", "_");
         var splitLanguageCountry = replacedParts.split("_");
 
@@ -60,7 +62,7 @@ public class ApplicationLocaleResolver extends AcceptHeaderLocaleResolver {
      */
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
-        if (documentationEndpoint.contains(request.getRequestURI())) {
+        if (!request.getRequestURI().isEmpty() && documentationEndpoint.contains(request.getRequestURI())) {
             return DEFAULT_LOCALE;
         }
 

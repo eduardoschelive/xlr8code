@@ -38,8 +38,4 @@ public class Endpoint {
         public static final String BASE_PATH = "/articles";
     }
 
-    public record Documentation() {
-        public static final String BASE_PATH = "/documentation";
-    }
-
 }

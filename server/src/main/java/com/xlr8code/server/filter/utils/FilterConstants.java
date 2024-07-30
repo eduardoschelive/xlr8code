@@ -22,4 +22,6 @@ public class FilterConstants {
 
     public static final List<String> ACCEPTED_SORT_VALUES = List.of("asc", "desc");
 
+    public static final String X_FILTER_RESULT_SIZE_HEADER = "X-Filter-Result-Size";
+
 }

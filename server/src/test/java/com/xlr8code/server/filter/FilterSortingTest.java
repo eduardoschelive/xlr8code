@@ -67,7 +67,7 @@ class FilterSortingTest {
 
     @Test
     void it_should_return_empty_sort_when_sort_params_are_empty() {
-        Map<String,String> sortParams = Map.of();
+        Map<String, String> sortParams = Map.of();
 
         var filterSorting = new FilterSorting(sortParams, filterDetailsMap);
 

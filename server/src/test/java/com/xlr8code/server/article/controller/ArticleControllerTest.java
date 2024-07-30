@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,14 +45,11 @@ class ArticleControllerTest {
 
         @Test
         void it_should_return_201_created() throws Exception {
-            // given
             var createArticleDTO = ArticleTestUtils.buildArticleDTO();
             var uuidToReturn = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-            // when
 
             when(articleService.create(createArticleDTO)).thenReturn(Article.builder().id(uuidToReturn).build());
 
-            // then
             mockMvc.perform(post(Endpoint.Article.BASE_PATH)
                             .with(SecurityMockMvcRequestPostProcessors.user(admin))
                             .header("Accept-Language", "en-US, pt-BR")
@@ -79,7 +78,7 @@ class ArticleControllerTest {
     class UpdateTests {
 
         @Test
-        void it_should_return_204_no_content() throws Exception {
+        void it_should_return_200_when_updating_an_article() throws Exception {
             var articleId = UUID.randomUUID().toString();
             var updateArticleDTO = ArticleTestUtils.buildArticleDTO();
 
@@ -88,13 +87,13 @@ class ArticleControllerTest {
                             .header("Accept-Language", "en-US, pt-BR")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JsonTestUtils.asJsonString(updateArticleDTO)))
-                    .andExpect(status().isNoContent());
+                    .andExpect(status().isOk());
         }
 
     }
 
     @Nested
-    class GetTests {
+    class FindTests {
 
         @Test
         void it_should_return_200_ok() throws Exception {
@@ -106,6 +105,11 @@ class ArticleControllerTest {
 
         @Test
         void it_should_return_200_ok_when_finding_all() throws Exception {
+            when(articleService.findAll(
+                    any(),
+                    any(),
+                    any()
+            )).thenReturn(Page.empty());
             mockMvc.perform(get(Endpoint.Article.BASE_PATH))
                     .andExpect(status().isOk());
         }

@@ -1,12 +1,13 @@
 package com.xlr8code.server.common.helper;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Locale;
@@ -16,9 +17,11 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@SpringBootTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ApplicationLocaleResolverTest {
 
+    @Autowired
     private ApplicationLocaleResolver localeResolver;
 
     private static Stream<Arguments> provideTestData() {
@@ -31,11 +34,6 @@ class ApplicationLocaleResolverTest {
                 arguments("en-US", Locale.of("en_US")), // Test case for resolving locale with dash
                 arguments("pt-BR", Locale.of("pt_BR")) // Test case for resolving locale with dash
         );
-    }
-
-    @BeforeEach
-    void setUp() {
-        localeResolver = new ApplicationLocaleResolver();
     }
 
     @ParameterizedTest

@@ -63,15 +63,15 @@ CREATE TABLE IF NOT EXISTS user_codes
 
 CREATE TABLE IF NOT EXISTS category
 (
-    category_id  UUID PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+    category_id UUID PRIMARY KEY,
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS i18n_category
 (
     id          UUID PRIMARY KEY,
-    category_id   UUID REFERENCES category (category_id),
+    category_id UUID REFERENCES category (category_id),
     language    TEXT NOT NULL,
     title       TEXT NOT NULL,
     slug        TEXT NOT NULL UNIQUE,
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS articles
     previous_article_id UUID REFERENCES articles (article_id),
     next_article_id     UUID REFERENCES articles (article_id),
     parent_article_id   UUID,
-    category_id           UUID,
+    category_id         UUID,
     created_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     updated_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     position            INT,
@@ -106,26 +106,26 @@ CREATE TABLE IF NOT EXISTS i18n_articles
 
 CREATE TABLE IF NOT EXISTS filter_test_table
 (
-    id            SERIAL PRIMARY KEY,
-    string_field  TEXT    NOT NULL,
-    boolean_field BOOLEAN,
-    enum_theme_field    TEXT
+    id               SERIAL PRIMARY KEY,
+    string_field     TEXT NOT NULL,
+    boolean_field    BOOLEAN,
+    enum_theme_field TEXT
 );
 
 CREATE TABLE IF NOT EXISTS filter_relation_test_table
 (
-    id                   SERIAL PRIMARY KEY,
-    filter_test_entity_id SERIAL  NOT NULL,
-    string_relation_field         TEXT    NOT NULL,
-    boolean_relation_field        BOOLEAN NOT NULL,
+    id                     SERIAL PRIMARY KEY,
+    filter_test_entity_id  SERIAL  NOT NULL,
+    string_relation_field  TEXT    NOT NULL,
+    boolean_relation_field BOOLEAN NOT NULL,
     FOREIGN KEY (filter_test_entity_id) REFERENCES filter_test_table (id)
 );
 
 CREATE TABLE IF NOT EXISTS filter_one_to_one_relation_test_table
 (
-    id                   SERIAL PRIMARY KEY,
-    filter_test_entity_id SERIAL  NOT NULL,
-    string_relation_field         TEXT    NOT NULL,
-    boolean_relation_field        BOOLEAN NOT NULL,
+    id                     SERIAL PRIMARY KEY,
+    filter_test_entity_id  SERIAL  NOT NULL,
+    string_relation_field  TEXT    NOT NULL,
+    boolean_relation_field BOOLEAN NOT NULL,
     FOREIGN KEY (filter_test_entity_id) REFERENCES filter_test_table (id)
 );

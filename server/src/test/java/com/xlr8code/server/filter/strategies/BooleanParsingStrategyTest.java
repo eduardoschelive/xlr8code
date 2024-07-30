@@ -80,7 +80,7 @@ class BooleanParsingStrategyTest {
     @Test
     void it_should_filter_null_boolean_field() {
         var params = Map.of(
-                "booleanField_null",  ""
+                "booleanField_null", ""
         );
 
         var spec = filterTestUtils.buildSpecification(params);

@@ -4,7 +4,10 @@ import com.xlr8code.server.common.enums.Theme;
 import com.xlr8code.server.filter.entity.FilterTestEntity;
 import com.xlr8code.server.filter.repository.FilterTestRepository;
 import com.xlr8code.server.filter.utils.FilterTestUtils;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -43,16 +46,6 @@ class StringParsingStrategyTest {
         filterTestUtils.clearRepositories();
     }
 
-    @ParameterizedTest
-    @MethodSource("provideFilterParameters")
-    void it_should_filter_with_string_field(Map<String, String> params, long expectedSize) {
-        var spec = filterTestUtils.buildSpecification(params);
-        var pageable = Pageable.unpaged();
-
-        var results = testRepository.findAll(spec, pageable);
-        assertEquals(expectedSize, results.getTotalElements());
-    }
-
     private static Stream<Arguments> provideFilterParameters() {
         return Stream.of(
                 Arguments.of(Map.of("stringField_eq", "stringField"), 1),
@@ -64,5 +57,15 @@ class StringParsingStrategyTest {
                 Arguments.of(Map.of("stringField_lk", "stringField"), 1),
                 Arguments.of(Map.of("stringField_in", "stringField,stringField1"), 1)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideFilterParameters")
+    void it_should_filter_with_string_field(Map<String, String> params, long expectedSize) {
+        var spec = filterTestUtils.buildSpecification(params);
+        var pageable = Pageable.unpaged();
+
+        var results = testRepository.findAll(spec, pageable);
+        assertEquals(expectedSize, results.getTotalElements());
     }
 }

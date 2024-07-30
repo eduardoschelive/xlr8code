@@ -11,6 +11,7 @@ import com.xlr8code.server.common.exception.SlugAlreadyExistsException;
 import com.xlr8code.server.common.service.LocaleService;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
+import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,7 +63,7 @@ public class CategoryController {
     public ResponseEntity<Page<TranslatedCategoryDTO>> listCategories(Specification<Category> specification, Pageable pageable, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
         var result = categoryService.findAll(specification, pageable, languages);
-        return ResponseEntity.ok(result);
+        return FilterUtils.buildResponseEntity(result);
     }
 
     @Operation(

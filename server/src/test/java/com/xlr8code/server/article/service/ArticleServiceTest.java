@@ -4,9 +4,9 @@ import com.xlr8code.server.article.entity.Article;
 import com.xlr8code.server.article.exception.ArticleNotFoundException;
 import com.xlr8code.server.article.repository.ArticleRepository;
 import com.xlr8code.server.category.entity.Category;
-import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.category.repository.CategoryRepository;
 import com.xlr8code.server.category.service.CategoryService;
+import com.xlr8code.server.common.enums.Language;
 import com.xlr8code.server.utils.ArticleTestUtils;
 import com.xlr8code.server.utils.CategoryTestUtils;
 import org.junit.jupiter.api.*;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;

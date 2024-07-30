@@ -6,6 +6,9 @@ import com.xlr8code.server.filter.annotation.NestedFilterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.core.MethodParameter;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
@@ -82,6 +85,11 @@ public class FilterUtils {
         return (separatorIndex != -1) ? key.substring(separatorIndex + 1).trim() : null;
     }
 
+    /**
+     * @param method the method to extract the filterable fields from
+     * @return a map of filterable fields and their details
+     * @throws IllegalArgumentException if the method is not annotated with @FilterEndpoint
+     */
     public static Map<String, FilterFieldDetails> extractFilterableFieldsFromMethod(MethodParameter method) {
         var annotation = method.getMethodAnnotation(FilterEndpoint.class);
 
@@ -92,10 +100,26 @@ public class FilterUtils {
         return extractFilterableFields(annotation.value());
     }
 
+    /**
+     * @param webRequest the web request to extract the query parameters from
+     * @return the query parameters extracted from the web request
+     * @see QueryParameterDetails
+     */
     public static QueryParameterDetails extractQueryParameters(WebRequest webRequest) {
         var queryParamsMap = new HashMap<String, String>();
         webRequest.getParameterNames().forEachRemaining(name -> queryParamsMap.put(name, webRequest.getParameter(name)));
         return new QueryParameterDetails(queryParamsMap);
+    }
+
+    /**
+     * @param page the page to build the response entity from
+     * @param <T>  the type of the page
+     * @return the response entity built from the page
+     */
+    public static <T> ResponseEntity<Page<T>> buildResponseEntity(Page<T> page) {
+        var responseHeaders = new HttpHeaders();
+        responseHeaders.add(FilterConstants.X_FILTER_RESULT_SIZE_HEADER, String.valueOf(page.getTotalElements()));
+        return ResponseEntity.ok().headers(responseHeaders).body(page);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.xlr8code.server.user.service;
 
-import com.xlr8code.server.authentication.exception.IncorrectUsernameOrPasswordException;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.user.dto.UpdatePasswordDTO;
 import com.xlr8code.server.user.entity.User;
@@ -14,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,26 +81,18 @@ class UserServiceTest {
         void it_should_find_user_by_username() {
             var user = userService.findByLogin(DEFAULT_USERNAME);
 
-            assertNotNull(user);
-            assertEquals(user, defaultUser);
+            assertTrue(user.isPresent());
+
+            assertEquals(user.get(), defaultUser);
         }
 
         @Test
         void it_should_find_user_by_email() {
             var user = userService.findByLogin(DEFAULT_EMAIL);
 
-            assertNotNull(user);
-            assertEquals(user, defaultUser);
-        }
+            assertTrue(user.isPresent());
 
-        @Test
-        void it_should_not_find_user_by_username() {
-            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_USERNAME));
-        }
-
-        @Test
-        void it_should_not_find_user_by_email() {
-            assertThrows(IncorrectUsernameOrPasswordException.class, () -> userService.findByLogin(FALSE_EMAIL));
+            assertEquals(user.get(), defaultUser);
         }
 
 

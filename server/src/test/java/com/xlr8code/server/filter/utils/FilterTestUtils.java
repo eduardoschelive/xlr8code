@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.Map;
 
 @Service
@@ -75,7 +74,7 @@ public class FilterTestUtils {
 
     public PageRequest buildPageable(Map<String, String> filters) {
         var filterDetails = FilterUtils.extractFilterableFields(FilterTestEntity.class);
-        var queryParameters = new  QueryParameterDetails(filters);
+        var queryParameters = new QueryParameterDetails(filters);
 
         var sort = new FilterSorting(queryParameters.getSortParameters(), filterDetails);
         var pagination = new FilterPagination(queryParameters.getPaginationParameters());
