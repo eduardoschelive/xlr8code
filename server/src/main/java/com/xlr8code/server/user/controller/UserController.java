@@ -3,6 +3,7 @@ package com.xlr8code.server.user.controller;
 import com.xlr8code.server.authentication.exception.PasswordMatchException;
 import com.xlr8code.server.common.utils.Endpoint;
 import com.xlr8code.server.filter.annotation.FilterEndpoint;
+import com.xlr8code.server.filter.utils.FilterUtils;
 import com.xlr8code.server.openapi.annotation.ErrorResponses;
 import com.xlr8code.server.user.dto.*;
 import com.xlr8code.server.user.entity.User;
@@ -41,7 +42,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserDTO>> listUsers(Specification<User> specification, Pageable pageable) {
         var users = this.userService.findAll(specification, pageable);
-        return ResponseEntity.ok(users);
+        return FilterUtils.buildResponseEntity(users);
     }
 
     @Operation(
