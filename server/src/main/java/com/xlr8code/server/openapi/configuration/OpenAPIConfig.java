@@ -30,7 +30,7 @@ public class OpenAPIConfig {
         return new OpenAPI()
                 .info(new Info().title(this.applicationName)
                         .description(buildDescription())
-                        .version("v0.0.1"));
+                        .version("v0.0.2"));
     }
 
     private String buildDescription() {
