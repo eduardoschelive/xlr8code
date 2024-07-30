@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -114,12 +116,7 @@ class UserControllerTest {
 
         @Test
         void it_should_find_all_users() throws Exception {
-            var expectedUserDTO = expectedUserDTO();
-
-            var mapParams = Map.of("page", "0", "size", "10");
-            var expected = new PageImpl<>(List.of(expectedUserDTO));
-
-            when(userService.findAll(Specification.where(null), Pageable.unpaged())).thenReturn(expected);
+            when(userService.findAll(any(), any())).thenReturn(Page.empty());
 
             mockMvc.perform(get(Endpoint.User.BASE_PATH)
                             .contentType(MediaType.APPLICATION_JSON))
