@@ -14,6 +14,7 @@
     <name>server</name>
     <description>server</description>
     <properties>
+        <java.version>21</java.version>
         <native.maven.plugin.version>0.10.2</native.maven.plugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -143,7 +144,7 @@
                 <version>3.11.0</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.source}</target>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
 
