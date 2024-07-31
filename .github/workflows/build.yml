@@ -18,9 +18,10 @@ jobs:
           java-version: 21
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: 'server'
       - name: Build native image
         id: native-image
-        run: 'mvnw package -Pnative'
+        run: mvn package -Pnative
         working-directory: 'server'
       - name: Login to DockerHub
         id: docker-login
