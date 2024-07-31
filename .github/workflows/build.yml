@@ -2,6 +2,7 @@ name: 'Build application'
 on:
   release: 
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -42,4 +43,3 @@ jobs:
           file: ./server/Dockerfile
           push: true
           tags: ${{ steps.extract-metadata.outputs.tags }}
-          labels: ${{ steps.extract-metadata.outputs.labels }}
