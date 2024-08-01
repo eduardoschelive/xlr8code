@@ -17,7 +17,7 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         working-directory: server
-        run: mvn -B package --file pom.xml -DskipTests
+        run: mvnw -B package --file pom.xml -DskipTests
       - name: Extract project version from pom.xml
         id: extract-version
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
