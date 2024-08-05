@@ -52,12 +52,10 @@ public class User extends AuditableEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @BatchSize(size = 10)
     private UserMetadata metadata;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @BatchSize(size = 10)
     private UserPreferences preferences;
 
     @ManyToMany(fetch = FetchType.EAGER)
