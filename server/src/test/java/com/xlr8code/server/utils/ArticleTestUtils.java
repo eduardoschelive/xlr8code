@@ -25,6 +25,10 @@ public class ArticleTestUtils {
         return buildArticleDTO(null, null, null, 1);
     }
 
+    public static ArticleDTO buildArticleDTO(String categoryId) {
+        return buildArticleDTO(categoryId, null, null, 1);
+    }
+
     public static ArticleLanguageDTO buildArticleLanguageDTO(String title, String slug, String content) {
         return new ArticleLanguageDTO(title, slug, content);
     }
