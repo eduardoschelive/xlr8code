@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Schema(name = "Article")
 public record ArticleDTO(
         @Schema(description = "The category unique identifier")
-        @ExistingCategory(optional = true)
+        @ExistingCategory
         String categoryId,
         @Schema(description = "The previous article unique identifier")
         @ExistingArticle(optional = true)
