@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class DateTimeUtilsTest {
@@ -28,6 +27,24 @@ class DateTimeUtilsTest {
         var isExpired = DateTimeUtils.isExpired(expiresAt);
 
         assertTrue(isExpired);
+    }
+
+    @Test
+    void it_should_parse_instant() {
+        var instant = "2021-08-01T00:00:00Z";
+
+        var parsedInstant = DateTimeUtils.parseInstant(instant);
+
+        assertNotNull(parsedInstant);
+    }
+
+    @Test
+    void it_should_not_parse_instant() {
+        var instant = "invalid";
+
+        var parsedInstant = DateTimeUtils.parseInstant(instant);
+
+        assertNull(parsedInstant);
     }
 
 

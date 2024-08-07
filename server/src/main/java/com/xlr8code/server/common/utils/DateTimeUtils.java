@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -24,6 +25,19 @@ public class DateTimeUtils {
      */
     public static boolean isExpired(Instant expiresAt) {
         return expiresAt.isBefore(Instant.now());
+    }
+
+    /**
+     * @param instant the string to be parsed
+     * @return the Instant corresponding to the given string or null if the string is not a valid Instant
+     * @see Instant#parse(CharSequence)
+     */
+    public static Instant parseInstant(String instant) {
+        try {
+            return Instant.parse(instant);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
 }
