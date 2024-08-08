@@ -21,9 +21,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,10 +114,10 @@ public class ArticleController {
     @GetMapping
     @MultiLanguageContent
     @FilterEndpoint(Article.class)
-    public ResponseEntity<Page<TranslatedArticleDTO>> listArticles(Specification<Article> specification, Pageable pageable, HttpServletRequest request) {
+    public ResponseEntity<PagedModel<TranslatedArticleDTO>> listArticles(Specification<Article> specification, Pageable pageable, HttpServletRequest request) {
         var languages = this.localeService.getAllAcceptedLanguages(request);
         var result = this.articleService.findAll(specification, pageable, languages);
-        return FilterUtils.buildResponseEntity(result);
+        return FilterUtils.buildResponseEntity(new PagedModel<>(result));
     }
 
 }

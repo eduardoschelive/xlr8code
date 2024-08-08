@@ -20,9 +20,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,10 +60,11 @@ public class CategoryController {
     @GetMapping
     @MultiLanguageContent
     @FilterEndpoint(Category.class)
-    public ResponseEntity<Page<TranslatedCategoryDTO>> listCategories(Specification<Category> specification, Pageable pageable, HttpServletRequest request) {
+    public ResponseEntity<PagedModel<TranslatedCategoryDTO>> listCategories(Specification<Category> specification, Pageable pageable, HttpServletRequest request) {
         var languages = localeService.getAllAcceptedLanguages(request);
         var result = categoryService.findAll(specification, pageable, languages);
-        return FilterUtils.buildResponseEntity(result);
+        var pagedModel = new PagedModel<>(result);
+        return FilterUtils.buildResponseEntity(pagedModel);
     }
 
     @Operation(

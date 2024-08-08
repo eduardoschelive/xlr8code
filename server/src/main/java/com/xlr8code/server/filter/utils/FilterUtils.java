@@ -6,7 +6,7 @@ import com.xlr8code.server.filter.annotation.NestedFilterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.core.MethodParameter;
-import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
@@ -116,9 +116,8 @@ public class FilterUtils {
      * @param <T>  the type of the page
      * @return the response entity built from the page
      */
-    public static <T> ResponseEntity<Page<T>> buildResponseEntity(Page<T> page) {
+    public static <T> ResponseEntity<PagedModel<T>> buildResponseEntity(PagedModel<T> page) {
         var responseHeaders = new HttpHeaders();
-        responseHeaders.add(FilterConstants.X_FILTER_RESULT_SIZE_HEADER, String.valueOf(page.getTotalElements()));
         return ResponseEntity.ok().headers(responseHeaders).body(page);
     }
 
