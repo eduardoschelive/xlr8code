@@ -9,14 +9,13 @@ import org.springframework.core.MethodParameter;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.xlr8code.server.filter.utils.FilterConstants.FILTER_PARAM_SEPARATOR;
 
@@ -35,9 +34,20 @@ public class FilterUtils {
     }
 
     private static void traverseFields(Deque<String> fieldPathStack, Class<?> currentClass, Map<String, FilterFieldDetails> fieldDetailsHashMap) {
-        for (var field : currentClass.getDeclaredFields()) {
+        for (var field : getAllFieldsUpTo(currentClass, Object.class)) {
             evaluateField(field, fieldPathStack, fieldDetailsHashMap);
         }
+    }
+
+    private static Iterable<Field> getAllFieldsUpTo(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
+        var currentClassFields = new ArrayList<>(Arrays.asList(startClass.getDeclaredFields()));
+        var parentClass = startClass.getSuperclass();
+
+        if (parentClass != null && !parentClass.equals(exclusiveParent)) {
+            currentClassFields.addAll((List<Field>) getAllFieldsUpTo(parentClass, exclusiveParent));
+        }
+
+        return currentClassFields;
     }
 
     private static void evaluateField(Field field, Deque<String> fieldPathStack, Map<String, FilterFieldDetails> fieldDetailsHashMap) {
