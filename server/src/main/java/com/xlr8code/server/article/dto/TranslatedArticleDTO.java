@@ -5,6 +5,7 @@ import com.xlr8code.server.article.entity.I18nArticle;
 import com.xlr8code.server.common.enums.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +18,9 @@ public record TranslatedArticleDTO(
         @Schema(description = "The article relation information")
         ArticleRelationDTO articleRelation,
         @Schema(description = "The article translations")
-        Map<Language, ArticleTranslationDTO> languages
+        Map<Language, ArticleTranslationDTO> languages,
+        @Schema(description = "The article creation date")
+        Instant createdAt
 ) {
 
     public static TranslatedArticleDTO fromEntity(Article article, Set<Language> languages) {
@@ -31,7 +34,7 @@ public record TranslatedArticleDTO(
 
         var articleRelation = ArticleRelationDTO.fromEntity(article.getArticleRelation());
 
-        return new TranslatedArticleDTO(article.getId(), articleRelation, articleLanguages);
+        return new TranslatedArticleDTO(article.getId(), articleRelation, articleLanguages, article.getCreatedAt());
     }
 
 }

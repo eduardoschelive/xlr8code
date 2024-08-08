@@ -1,5 +1,6 @@
 package com.xlr8code.server.common.entity;
 
+import com.xlr8code.server.filter.annotation.Filterable;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -17,6 +18,7 @@ public class AuditableEntity {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
+    @Filterable
     protected Instant createdAt;
 
     @UpdateTimestamp
