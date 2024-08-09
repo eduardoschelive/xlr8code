@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.lang.invoke.MethodType;
+import java.time.Instant;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,7 +20,8 @@ public class ParsingStrategySelector {
             Boolean.class, new BooleanParsingStrategy(),
             Theme.class, new EnumParsingStrategy<>(Theme::fromCode),
             Language.class, new EnumParsingStrategy<>(Language::fromCode),
-            UserRole.class, new EnumParsingStrategy<>(UserRole::valueOf)
+            UserRole.class, new EnumParsingStrategy<>(UserRole::valueOf),
+            Instant.class, new InstantParsingStrategy()
     );
 
     private static Class<?> getWrapper(Class<?> expectedType) {
