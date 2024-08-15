@@ -4,40 +4,70 @@ import com.xlr8code.server.filter.enums.FilterOperation;
 import com.xlr8code.server.filter.exception.UnsupportedFilterOperationOnFieldException;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.hibernate.query.sqm.ComparisonOperator.GREATER_THAN_OR_EQUAL;
 
 public class InstantParsingStrategy extends ParsingStrategy {
 
     @Override
     public Predicate buildPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
         var stringValue = value.toString().trim();
-        var instantValue = Instant.parse(stringValue);
 
-        var predicate = createPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, instantValue);
+        var predicate = createPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, stringValue);
         if (predicate == null) {
-            return super.buildPredicate(criteriaBuilder, root, fieldName, filterOperationDetails, instantValue);
+            return super.buildPredicate(criteriaBuilder, root, fieldName, filterOperationDetails,  Instant.parse(stringValue));
         }
         return filterOperationDetails.negated() ? criteriaBuilder.not(predicate) : predicate;
     }
 
-    private Predicate createPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, Object value) {
-        var path = getPath(root, fieldName);
+    private Predicate createPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String fieldName, FilterOperationDetails filterOperationDetails, String stringValue) {
+       Path<Instant> path = getPath(root, fieldName);
         return switch (filterOperationDetails.filterOperation()) {
-            case EQUALITY -> criteriaBuilder.equal(path, LocalDateTime.ofInstant((Instant) value, ZoneId.systemDefault()));
-            case NULL -> criteriaBuilder.isNull(path);
+            case GREATER_THAN -> criteriaBuilder.greaterThan(path,  Instant.parse(stringValue));
+            case GREATER_THAN_OR_EQUAL_TO -> criteriaBuilder.greaterThanOrEqualTo(path,  Instant.parse(stringValue));
+            case LESS_THAN -> criteriaBuilder.lessThan(path,  Instant.parse(stringValue));
+            case LESS_THAN_OR_EQUAL_TO -> criteriaBuilder.lessThanOrEqualTo(path,  Instant.parse(stringValue));
+            case BETWEEN -> buildBetweenCriteria(criteriaBuilder, path, stringValue );
             default -> null;
         };
     }
 
+    private static Predicate buildBetweenCriteria(CriteriaBuilder criteriaBuilder, Path<Instant> path, String stringValue) {
+        // Split the string into two parts
+        var values = stringValue.split(",");
+        if (values.length != 2) {
+            throw new IllegalArgumentException("The value for the between operation must contain two values separated by a comma.");
+        }
+
+        var lowerBound = Instant.parse(values[0].trim());
+        var upperBound = Instant.parse(values[1].trim());
+
+        return criteriaBuilder.between(path, lowerBound, upperBound);
+    }
+
     @Override
     public List<FilterOperation> getSupportedFilterOperations() {
-        return super.getSupportedFilterOperations();
+        var superSupportedFilterOperations = super.getSupportedFilterOperations();
+        var supportedFilterOperations = new ArrayList<>(superSupportedFilterOperations);
+
+        supportedFilterOperations.addAll(List.of(
+                FilterOperation.GREATER_THAN,
+                FilterOperation.GREATER_THAN_OR_EQUAL_TO,
+                FilterOperation.LESS_THAN,
+                FilterOperation.LESS_THAN_OR_EQUAL_TO,
+                FilterOperation.BETWEEN
+        ));
+
+        return supportedFilterOperations;
     }
 
 

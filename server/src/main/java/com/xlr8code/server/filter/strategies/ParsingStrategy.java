@@ -43,10 +43,10 @@ public abstract class ParsingStrategy {
         };
     }
 
-    public Path<Object> getPath(Root<?> root, String fieldName) {
+    public <T> Path<T>  getPath(Root<?> root, String fieldName) {
         if (fieldName.contains(".")) {
             var parts = fieldName.split("\\.");
-            var path = root.get(parts[0]);
+            var path = root.<T>get(parts[0]);
             for (int i = 1; i < parts.length; i++) {
                 path = path.get(parts[i]);
             }
