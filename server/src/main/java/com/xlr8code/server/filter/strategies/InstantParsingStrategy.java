@@ -1,20 +1,19 @@
 package com.xlr8code.server.filter.strategies;
 
 import com.xlr8code.server.filter.enums.FilterOperation;
-import com.xlr8code.server.filter.exception.UnsupportedFilterOperationOnFieldException;
+import com.xlr8code.server.filter.exception.InvalidInstantBoundsException;
+import com.xlr8code.server.filter.exception.RequiredParamSizeException;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.utils.FilterParsingUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.util.Assert;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hibernate.query.sqm.ComparisonOperator.GREATER_THAN_OR_EQUAL;
 
 public class InstantParsingStrategy extends ParsingStrategy {
 
@@ -43,13 +42,17 @@ public class InstantParsingStrategy extends ParsingStrategy {
 
     private static Predicate buildBetweenCriteria(CriteriaBuilder criteriaBuilder, Path<Instant> path, String stringValue) {
         // Split the string into two parts
-        var values = stringValue.split(",");
+        var values = FilterParsingUtils.parseFilterValues(stringValue);
         if (values.length != 2) {
-            throw new IllegalArgumentException("The value for the between operation must contain two values separated by a comma.");
+            throw new RequiredParamSizeException(FilterOperation.BETWEEN.getSuffix(), 2);
         }
 
-        var lowerBound = Instant.parse(values[0].trim());
-        var upperBound = Instant.parse(values[1].trim());
+        var lowerBound = FilterParsingUtils.parseInstant(values[0].trim());
+        var upperBound = FilterParsingUtils.parseInstant(values[1].trim());
+
+        if (lowerBound.isAfter(upperBound)) {
+            throw new InvalidInstantBoundsException(lowerBound.toString(), upperBound.toString());
+        }
 
         return criteriaBuilder.between(path, lowerBound, upperBound);
     }

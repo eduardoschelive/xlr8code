@@ -9,6 +9,7 @@ import java.util.List;
 public class FilterConstants {
 
     public static final String FILTER_PARAM_SEPARATOR = "_";
+    public static final String FILTER_VALUE_SEPARATOR = ",";
     public static final String NEGATION_PREFIX = "n-";
     public static final String CASE_INSENSITIVE_SUFFIX = "-i";
 

@@ -2,6 +2,7 @@ package com.xlr8code.server.filter.strategies;
 
 import com.xlr8code.server.filter.enums.FilterOperation;
 import com.xlr8code.server.filter.utils.FilterOperationDetails;
+import com.xlr8code.server.filter.utils.FilterParsingUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
@@ -63,8 +64,8 @@ public class StringParsingStrategy extends ParsingStrategy {
     }
 
     private CriteriaBuilder.In<String> createInClause(CriteriaBuilder criteriaBuilder, Expression<String> casedPath, String casedValue) {
-        CriteriaBuilder.In<String> inClause = criteriaBuilder.in(casedPath);
-        for (String item : casedValue.split(",")) {
+        var inClause = criteriaBuilder.in(casedPath);
+        for (var item : FilterParsingUtils.parseFilterValues(casedValue)) {
             inClause.value(item);
         }
         return inClause;
