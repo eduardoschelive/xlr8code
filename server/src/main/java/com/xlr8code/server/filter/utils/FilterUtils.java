@@ -10,7 +10,6 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
@@ -128,6 +127,13 @@ public class FilterUtils {
      */
     public static <T> ResponseEntity<PagedModel<T>> buildResponseEntity(PagedModel<T> page) {
         var responseHeaders = new HttpHeaders();
+        var pageMetadata = page.getMetadata();
+
+        if (pageMetadata != null) {
+            var totalElements = pageMetadata.totalElements();
+            responseHeaders.add(FilterConstants.X_FILTER_RESULT_SIZE_HEADER, String.valueOf(totalElements));
+        }
+
         return ResponseEntity.ok().headers(responseHeaders).body(page);
     }
 
