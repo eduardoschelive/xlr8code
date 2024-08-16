@@ -41,6 +41,7 @@ public class WebSecurityConfig {
         );
 
         authorizeRequests.requestMatchers(documentationEndpoint + "/**").permitAll();
+        authorizeRequests.requestMatchers("/error/**").permitAll();
 
         authorizeRequests.anyRequest().denyAll();
     }
