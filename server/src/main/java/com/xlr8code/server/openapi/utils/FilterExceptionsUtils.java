@@ -21,8 +21,11 @@ public class FilterExceptionsUtils {
                 NoSuchSortableFieldException.class,
                 PageNumberFormatException.class,
                 PageSizeFormatException.class,
+                RequiredParamSizeException.class,
                 UnsupportedFilterOperationException.class,
-                UnsupportedFilterOperationOnFieldException.class
+                UnsupportedFilterOperationOnFieldException.class,
+                InvalidInstantBoundsException.class,
+                InvalidInstantFormatException.class
         );
     }
 
