@@ -9,11 +9,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.xlr8code.server.filter.utils.FilterConstants.BETWEEN_FILTER_SIZE;
 
 public class InstantParsingStrategy extends ParsingStrategy {
 
@@ -43,8 +44,8 @@ public class InstantParsingStrategy extends ParsingStrategy {
     private static Predicate buildBetweenCriteria(CriteriaBuilder criteriaBuilder, Path<Instant> path, String stringValue) {
         // Split the string into two parts
         var values = FilterParsingUtils.parseFilterValues(stringValue);
-        if (values.length != 2) {
-            throw new RequiredParamSizeException(FilterOperation.BETWEEN.getSuffix(), 2);
+        if (values.length != BETWEEN_FILTER_SIZE) {
+            throw new RequiredParamSizeException(FilterOperation.BETWEEN.getSuffix(), BETWEEN_FILTER_SIZE);
         }
 
         var lowerBound = FilterParsingUtils.parseInstant(values[0].trim());

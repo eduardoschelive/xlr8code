@@ -6,6 +6,7 @@ import com.xlr8code.server.filter.annotation.NestedFilterable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -41,5 +42,9 @@ public class FilterTestEntity {
     @NestedFilterable
     @OneToOne(mappedBy = "testEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private FilterOneToOneRelationTest testOneToOneRelationEntity;
+
+    @Filterable
+    @Column(name = "instantField")
+    private Instant instantField;
 
 }
