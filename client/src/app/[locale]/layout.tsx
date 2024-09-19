@@ -1,5 +1,6 @@
-import { ProvidersWrapper } from './_providers/wrapper'
+import { Navbar } from '@/components/layout/Navbar'
 import '../globals.css'
+import { ProvidersWrapper } from './_providers/wrapper'
 
 export default function RootLayout({
   children,
@@ -10,8 +11,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
-        <ProvidersWrapper>{children}</ProvidersWrapper>
+      <body className="bg-crust">
+        <ProvidersWrapper>
+          <Navbar />
+          {children}
+        </ProvidersWrapper>
       </body>
     </html>
   )
