@@ -8,8 +8,8 @@
   --base: #1e1e2e;
 }
 
-[data-theme='light'] {
-  --crust: #dce0e8;
-  --mantle: #e6e9ef;
+.light {
+  --mantle: #dce0e8;
+  --crust: #e6e9ef;
   --base: #eff1f5;
 }
