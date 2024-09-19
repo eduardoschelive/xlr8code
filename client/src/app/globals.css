@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #11111B;
+}
+
+[data-theme="ligth"] {
+  --background: #dce0e8;
+}
