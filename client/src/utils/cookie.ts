@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest, NextResponse } from 'next/server'
 
 export type CookieCapableObject = NextRequest | NextResponse
 
 export function getCookieValue(
   object: CookieCapableObject,
   cookieName: string,
-  defaultValue: string = ''
+  defaultValue = ''
 ): string {
   return object.cookies.get(cookieName)?.value || defaultValue
 }

@@ -1,5 +1,5 @@
 import createMiddleware from 'next-intl/middleware'
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 import {
   APPLICATION_LOCALE_COOKIE_NAME,
   NEXT_LOCALE_COOKIE_NAME,
