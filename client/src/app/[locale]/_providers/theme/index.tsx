@@ -1,13 +1,14 @@
+import { SUPPORTED_THEMES } from '@/utils/theme'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <NextThemesProvider
       attribute="class"
-      enableSystem
       enableColorScheme
       disableTransitionOnChange
+      themes={SUPPORTED_THEMES}
     >
       {children}
     </NextThemesProvider>
