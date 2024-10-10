@@ -1,6 +1,7 @@
 package com.xlr8code.server.openapi.utils;
 
 import com.xlr8code.server.common.exception.ApplicationException;
+import com.xlr8code.server.common.utils.ClassUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,11 @@ public class OpenAPIUtils {
             var args = getArgs(arguments);
             return exception.cast(constructor.newInstance(args));
         } catch (Exception e) {
+            var constructor = exception.getDeclaredConstructors()[0];
+            var arguments = constructor.getParameters();
+            var args = getArgs(arguments);
+
+            System.out.println(args);
             throw new RuntimeException("Could not create exception mock", e);
         }
     }
@@ -34,9 +40,10 @@ public class OpenAPIUtils {
     }
 
     public static Object getMockArg(Parameter argument) {
-        return switch (argument.getType().getName()) {
+        var wrapper = ClassUtils.getWrapper(argument.getType());
+        return switch (wrapper.getName()) {
             case "java.lang.String" -> argument.getName();
-            case "java.lang.Integer" -> 1;
+            case "java.lang.Integer" -> "{{Integer value}}";
             default -> null;
         };
     }
