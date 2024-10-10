@@ -17,11 +17,6 @@ public class OpenAPIUtils {
             var args = getArgs(arguments);
             return exception.cast(constructor.newInstance(args));
         } catch (Exception e) {
-            var constructor = exception.getDeclaredConstructors()[0];
-            var arguments = constructor.getParameters();
-            var args = getArgs(arguments);
-
-            System.out.println(args);
             throw new RuntimeException("Could not create exception mock", e);
         }
     }
@@ -43,7 +38,7 @@ public class OpenAPIUtils {
         var wrapper = ClassUtils.getWrapper(argument.getType());
         return switch (wrapper.getName()) {
             case "java.lang.String" -> argument.getName();
-            case "java.lang.Integer" -> "{{Integer value}}";
+            case "java.lang.Integer" -> 2;
             default -> null;
         };
     }
