@@ -1,5 +1,9 @@
 {
   "Home": {
     "title": "Welcome"
+  },
+  "Auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
   }
 }

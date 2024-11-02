@@ -1,4 +1,5 @@
 import { ThemeSwitch } from "../ThemeSwitch"
+import { UserIcon } from "../UserIcon"
 
 export const Navbar = () => {
   return (
@@ -6,6 +7,7 @@ export const Navbar = () => {
       <h1 className='font-bold text-2xl text-white'>Next.js Starter</h1>
       <nav>
         <ThemeSwitch />
+        <UserIcon />
       </nav>
     </header>
   )

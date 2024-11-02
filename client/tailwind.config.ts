@@ -18,6 +18,33 @@ const config: Config = {
     },
   },
   darkMode: 'class',
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        dark: {
+          colors: {
+            background: '#11111B', // Crust
+            foreground: '#cdd6f4', // Text
+            divider: '#cba6f7', // Mauve
+            overlay: '#181825', // Mantle
+            focus: '#585b70', // Surface 2
+            content1: '#181825', // Mantle,
+            content2: '#313244', // Surface 0
+            content3: '#45475a', // Surface 1
+            content4: '#585b70', // Surface 2,
+            primary: '#cba6f7', // Mauve
+            secondary: '#b4befe', // Lavender
+            success: '#a6e3a1', // Green
+            warning: '#f9e2af', // Yellow
+            danger: '#f38ba8', // Red
+            default: {
+              DEFAULT: '#11111b', // Crust
+              foreground: '#cdd6f4', // Text
+            },
+          },
+        },
+      },
+    }),
+  ],
 }
 export default config
