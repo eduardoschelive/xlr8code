@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 import { LocaleProvider } from '../locale'
 import { ThemeProvider } from '../theme'
 import { UIProvider } from '../ui'

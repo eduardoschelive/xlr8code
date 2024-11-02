@@ -21,7 +21,9 @@ export const ThemeSwitch = () => {
     const newTheme = isDarkTheme ? 'light' : 'dark'
     const { current: currentButton } = buttonRef
 
-    if (!currentButton || !document.startViewTransition || isReducedMotion) {
+    const canAnimate = currentButton && Boolean(document.startViewTransition) && !isReducedMotion
+    
+    if (!canAnimate) {
       setTheme(newTheme)
       return
     }
@@ -36,7 +38,7 @@ export const ThemeSwitch = () => {
     animateThemeTransition(currentButton)
   }
 
-  if (!isMounted) return null
+  if (!isMounted) { return null }
 
   return (
     <Button

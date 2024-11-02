@@ -1,9 +1,9 @@
-import { ThemeSwitch } from '../ThemeSwitcher'
+import { ThemeSwitch } from "../ThemeSwitch"
 
-export const Navbar = async () => {
+export const Navbar = () => {
   return (
-    <header className="bg-base flex items-center justify-between p-4">
-      <h1 className="text-2xl font-bold text-white">Next.js Starter</h1>
+    <header className='flex items-center justify-between bg-base p-4'>
+      <h1 className='font-bold text-2xl text-white'>Next.js Starter</h1>
       <nav>
         <ThemeSwitch />
       </nav>
