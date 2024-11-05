@@ -3,7 +3,9 @@ import { LocaleProvider } from '../locale'
 import { ThemeProvider } from '../theme'
 import { UIProvider } from '../ui'
 
-export const ProvidersWrapper = ({ children }: PropsWithChildren): ReactNode => {
+export const ProvidersWrapper = ({
+  children,
+}: PropsWithChildren): ReactNode => {
   return (
     <LocaleProvider>
       <ThemeProvider>

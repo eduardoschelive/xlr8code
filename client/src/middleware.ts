@@ -12,7 +12,9 @@ import type { NextRequest, NextResponse } from 'next/server'
 
 const handleI18nRouting = createMiddleware(routing)
 
-const handleI18nRoutingWithCustomCookie = (request: NextRequest): NextResponse<unknown> => {
+const handleI18nRoutingWithCustomCookie = (
+  request: NextRequest
+): NextResponse<unknown> => {
   const cookieValue = getCookieValue(request, APPLICATION_LOCALE_COOKIE_NAME)
   setCookie(request, NEXT_LOCALE_COOKIE_NAME, cookieValue)
 
