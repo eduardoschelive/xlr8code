@@ -1,8 +1,7 @@
-import { Modal, ModalBody, ModalContent } from "@nextui-org/modal";
+import { Modal, ModalBody, ModalContent } from '@nextui-org/modal'
+import type { ReactNode } from 'react'
 
-export default function SignInModal() {
-  console.log(`[SignInModal]`)
-
+export default function SignInModal(): ReactNode {
   return (
     <Modal isOpen>
       <ModalContent>

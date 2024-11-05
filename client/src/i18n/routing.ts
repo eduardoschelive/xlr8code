@@ -5,7 +5,7 @@ import { SUPPORTED_LOCALES } from './locale'
 export const routing = defineRouting({
   locales: SUPPORTED_LOCALES,
   defaultLocale: 'en-US',
-  localePrefix: 'always'
+  localePrefix: 'always',
 })
 
 export const { Link, redirect, usePathname, useRouter } =

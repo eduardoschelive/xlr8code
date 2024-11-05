@@ -2,14 +2,13 @@
 
 import { Link } from '@/i18n/routing'
 import { Button } from '@nextui-org/button'
+import type { ReactNode } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 
-export const UserIcon = () => {
+export const UserIcon = (): ReactNode => {
   return (
-    <Link href="/sign-in" passHref>
-      <Button isIconOnly radius="full" variant="light">
-        <FaUserCircle size={24} />
-      </Button>
-    </Link>
+    <Button isIconOnly radius="full" variant="light" as={Link} href="/sign-in">
+      <FaUserCircle size={24} />
+    </Button>
   )
 }

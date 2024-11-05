@@ -1,1 +1,1 @@
-export const isRootPath = (pathname: string) => pathname === '/'
+export const isRootPath = (pathname: string): boolean => pathname === '/'

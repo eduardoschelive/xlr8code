@@ -1,10 +1,11 @@
-import { ThemeSwitch } from "../ThemeSwitch"
-import { UserIcon } from "../UserIcon"
+import type { ReactNode } from 'react'
+import { ThemeSwitch } from '../ThemeSwitch'
+import { UserIcon } from '../UserIcon'
 
-export const Navbar = () => {
+export const Navbar = (): ReactNode => {
   return (
-    <header className='flex items-center justify-between bg-base p-4'>
-      <h1 className='font-bold text-2xl text-white'>Next.js Starter</h1>
+    <header className="flex items-center justify-between bg-base p-4">
+      <h1 className="font-bold text-2xl text-white">Next.js Starter</h1>
       <nav>
         <ThemeSwitch />
         <UserIcon />

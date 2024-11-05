@@ -4,12 +4,12 @@ import { useIsMounted } from '@/hooks/useIsMounted'
 import { Button } from '@nextui-org/button'
 import { useReducedMotion } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { useRef } from 'react'
+import { type ReactNode, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { IoMoon, IoSunny } from 'react-icons/io5'
 import { animateThemeTransition } from './animations'
 
-export const ThemeSwitch = () => {
+export const ThemeSwitch = (): ReactNode => {
   const isMounted = useIsMounted()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const { resolvedTheme, setTheme } = useTheme()
@@ -17,12 +17,13 @@ export const ThemeSwitch = () => {
 
   const isDarkTheme = resolvedTheme === 'dark'
 
-  const handleThemeChange = async () => {
+  const handleThemeChange = async (): Promise<void> => {
     const newTheme = isDarkTheme ? 'light' : 'dark'
     const { current: currentButton } = buttonRef
 
-    const canAnimate = currentButton && Boolean(document.startViewTransition) && !isReducedMotion
-    
+    const canAnimate =
+      currentButton && Boolean(document.startViewTransition) && !isReducedMotion
+
     if (!canAnimate) {
       setTheme(newTheme)
       return
@@ -38,7 +39,9 @@ export const ThemeSwitch = () => {
     animateThemeTransition(currentButton)
   }
 
-  if (!isMounted) { return null }
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <Button
