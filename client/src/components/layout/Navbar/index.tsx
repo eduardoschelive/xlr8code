@@ -5,7 +5,7 @@ import { UserIcon } from '../UserIcon'
 export const Navbar = (): ReactNode => {
   return (
     <header className="flex items-center justify-between bg-base p-4">
-      <h1 className="font-bold text-2xl text-white">Next.js Starter</h1>
+      <h1 className="font-bold text-2xl text-white">xlr8code</h1>
       <nav>
         <ThemeSwitch />
         <UserIcon />

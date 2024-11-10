@@ -5,12 +5,12 @@ import '../globals.css'
 
 type RootLayoutProps = {
   params: Promise<{ locale: string }>
-  auth: ReactNode
+  modals: ReactNode
 }
 
 export default async function RootLayout({
   children,
-  auth,
+  modals,
   params,
 }: PropsWithChildren<RootLayoutProps>): Promise<ReactNode> {
   const { locale } = await params
@@ -20,7 +20,7 @@ export default async function RootLayout({
         <ProvidersWrapper>
           <Navbar />
           {children}
-          {auth}
+          {modals}
         </ProvidersWrapper>
       </body>
     </html>
