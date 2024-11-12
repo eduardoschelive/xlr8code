@@ -6,9 +6,7 @@ export default function SignInModal(): ReactNode {
   return (
     <RouteModal>
       <ModalContent>
-        <ModalHeader>
-          Sign In
-        </ModalHeader>
+        <ModalHeader>Sign In</ModalHeader>
         <ModalBody>
           <div>Login Modal</div>
         </ModalBody>
