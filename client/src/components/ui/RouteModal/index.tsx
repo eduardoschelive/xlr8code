@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 
 type RouteModalProps = {} & ModalProps
 
-export const RouteModal = ({ children }: RouteModalProps): ReactNode => {
+export const RouteModal = ({ children, ...props }: RouteModalProps): ReactNode => {
   const { back } = useRouter()
 
   const handleCloseRouteModal = (): void => {
@@ -15,7 +15,7 @@ export const RouteModal = ({ children }: RouteModalProps): ReactNode => {
 
   // Route modals are always open
   return (
-    <Modal isOpen onClose={handleCloseRouteModal}>
+    <Modal isOpen onClose={handleCloseRouteModal} {...props}>
       {children}
     </Modal>
   )

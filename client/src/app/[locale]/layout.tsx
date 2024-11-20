@@ -1,4 +1,3 @@
-import { Navbar } from '@/components/layout/Navbar'
 import { ProvidersWrapper } from '@/providers/wrapper'
 import type { PropsWithChildren, ReactNode } from 'react'
 import '../globals.css'
@@ -18,7 +17,6 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className="bg-crust">
         <ProvidersWrapper>
-          <Navbar />
           {children}
           {modals}
         </ProvidersWrapper>
