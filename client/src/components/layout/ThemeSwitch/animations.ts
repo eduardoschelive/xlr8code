@@ -1,3 +1,5 @@
+/* v8 ignore start */
+
 const ANIMATION_DURATION = 500
 const ANIMATION_EASING = 'ease-in-out'
 

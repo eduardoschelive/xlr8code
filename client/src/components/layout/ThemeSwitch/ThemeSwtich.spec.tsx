@@ -47,7 +47,7 @@ describe('ThemeSwitch', () => {
     expect(screen.queryByRole('button')).toBeNull()
   })
 
-  it('toggles theme on button click', () => {
+  it('changes theme to dark on light mode', () => {
     const setThemeMock = vi.fn()
     mockUseIsMounted(true)
     mockUseTheme('light', setThemeMock)
@@ -59,4 +59,29 @@ describe('ThemeSwitch', () => {
 
     expect(setThemeMock).toHaveBeenCalledWith('dark')
   })
+
+  it('changes theme to light on dark mode', () => {
+    const setThemeMock = vi.fn()
+    mockUseIsMounted(true)
+    mockUseTheme('dark', setThemeMock)
+
+    render(<ThemeSwitch />)
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    expect(setThemeMock).toHaveBeenCalledWith('light')
+  })
+
+  it('does not change theme when not mounted', () => {
+    const setThemeMock = vi.fn()
+    mockUseIsMounted(false)
+    mockUseTheme('light', setThemeMock)
+
+    render(<ThemeSwitch />)
+
+    const button = screen.queryByRole('button')
+    expect(button).toBeNull()
+  })
+
 })

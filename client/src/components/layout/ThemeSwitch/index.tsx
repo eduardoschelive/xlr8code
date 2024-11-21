@@ -29,11 +29,14 @@ export const ThemeSwitch = (): ReactNode => {
       return
     }
 
+    /* v8 ignore start */
+    // Can't find a way to test this block
     const transition = document.startViewTransition(() => {
       flushSync(() => {
         setTheme(newTheme)
       })
     })
+    /* v8 ignore end */
 
     await transition.ready
     animateThemeTransition(currentButton)
