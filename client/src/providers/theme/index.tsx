@@ -1,4 +1,5 @@
-import { SUPPORTED_THEMES } from '@/utils/theme'
+
+import { SUPPORTED_THEMES } from '@/constants/Theme'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import type { PropsWithChildren, ReactNode } from 'react'
 

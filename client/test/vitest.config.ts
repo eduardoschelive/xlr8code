@@ -1,5 +1,6 @@
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react'
+import { defineConfig, coverageConfigDefaults } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -9,7 +10,13 @@ export default defineConfig({
     alias: {
       '@/*': new URL('./src/', import.meta.url).pathname,
     },
-    exclude: ['**/node_modules/**'],
+    coverage: {
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        '**/*.type.ts',
+        '**/*.config.*',
+      ],
+    }
   },
-  plugins: [tsconfigPaths()]
+  plugins: [tsconfigPaths(), react()]
 })
