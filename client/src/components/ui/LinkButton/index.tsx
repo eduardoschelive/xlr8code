@@ -14,7 +14,8 @@ export const LinkButton = ({
   ...props
 }: PropsWithChildren<LinkButtonProps>): ReactNode => {
   return (
-    <Button as={Link} href={href} {...props}>
+    // biome-ignore lint/a11y/useSemanticElements: This is a button that acts as a link
+    <Button as={Link} href={href} {...props} role="link">
       {children}
     </Button>
   )
